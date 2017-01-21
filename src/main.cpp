@@ -9,8 +9,8 @@
 #include "../info/DeviceInfo.h"
 #include "../info/NetworkInfo.h"
 
-#define DEVICE "sonoff-touch"
-#define FW_VERSION "0.0.1"
+#define DEVICE "sonoff-touch-custom"
+#define FW_VERSION "0.0.2"
 
 IPAddress ip(192, 168, 1, IP_NUMBER);
 IPAddress gateway(192, 168, 1, 1);
@@ -260,8 +260,8 @@ void loop()
     {
       if (connected)
       {
-
-        client.publish(statusTopic, "TOGGLE");
+        Serial.println("Secondary topic: TOGGLE");
+        client.publish(secondaryTopic, "TOGGLE");
       }
       longPressStatus = false;
     }
