@@ -9,12 +9,18 @@
 #include "../info/DeviceInfo.h"
 #include "../info/NetworkInfo.h"
 
-#define DEVICE "sonoff-touch-custom"
+#define FW "sonoff-touch-custom"
 #define FW_VERSION "0.0.2"
 
 IPAddress ip(192, 168, 1, IP_NUMBER);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 0, 0);
+
+const char *deviceNameTopic = "/" DEVICE_NAME;
+const char *deviceIpTopic = "/" DEVICE_NAME "/ip";
+const char *deviceTypeTopic = "/" DEVICE_NAME "/type";
+const char *fwTopic = "/" DEVICE_NAME "/fw";
+const char *fwVersionTopic = "/" DEVICE_NAME "/fw/version";
 
 const char *setTopic = SET_TOPIC;
 const char *statusTopic = STATUS_TOPIC;
@@ -52,8 +58,22 @@ void connectWifi()
   delay(1000);
 }
 
+void publishDeviceInfo()
+{
+  Serial.println("Publising device information...");
+
+  client.publish(deviceNameTopic, DEVICE_NAME);
+  client.publish(deviceIpTopic, IP_NUMBER);
+  client.publish(deviceTypeTopic, DEVICE_TYPE);
+  client.publish(fwTopic, FW);
+  client.publish(fwVersionTopic, FW_VERSION);
+
+  Serial.println("Publising device information done!");
+}
+
 void checkConnectivity()
 {
+    lastConnectivityCheck = millis();
     Serial.println("Checking connectivity...");
 
     if(WiFi.status() != WL_CONNECTED)
@@ -69,13 +89,13 @@ void checkConnectivity()
 
         if (!client.connected())
         {
-            if (client.connect(NAME, MQTT_USERNAME, MQTT_PASSWORD))
+            if (client.connect(DEVICE_NAME, MQTT_USERNAME, MQTT_PASSWORD))
             {
                 Serial.println("MQTT connected!");
 
-                connected = true;
-
                 client.subscribe(setTopic);
+                publishDeviceInfo();
+                connected = true;
             }
             else
             {
@@ -86,7 +106,12 @@ void checkConnectivity()
         else
         {
             Serial.println("MQTT connection OK");
-            connected = true;
+
+            if(!connected)
+            {
+              publishDeviceInfo();
+              connected = true;
+            }
         }
     }
 }
@@ -167,51 +192,56 @@ void buttonChangeCallback()
     }
 }
 
+
+
 void setup() {
-    //Configure pins
+    // Init serial comm
+    Serial.begin(115200);
+
+    // Print Device Info
+    Serial.println("Initializing device...");
+    Serial.println("Device Info:");
+    Serial.print("\tFW: ");
+    Serial.println(FW);
+    Serial.print("\tFW Version: ");
+    Serial.println(FW_VERSION);
+    Serial.println();
+    Serial.print("\tDevice type: ");
+    Serial.println(DEVICE_TYPE);
+    Serial.print("\tDevice name: ");
+    Serial.println(DEVICE_NAME);
+    Serial.print("\tIP: ");
+    Serial.println(IP_NUMBER);
+    Serial.print("\tMQTT Status Topic: ");
+    Serial.println(STATUS_TOPIC);
+    Serial.print("\tMQTT Set Topic: ");
+    Serial.println(SET_TOPIC);
+    Serial.print("\tMQTT Secondary Topic: ");
+    Serial.println(SECONDARY_TOPIC);
+
+    // Configure pins
     relay.setup(RELAY_PIN, RELAY_HIGH_LVL);
     pinMode(BUTTON_PIN, INPUT_PULLUP);
 
-    //Init serial comm
-    Serial.begin(115200);
-
-    //Print Device Info
-    Serial.println("Initializing device...");
-    Serial.println("Device Info:");
-    Serial.print("\tDevice: ");
-    Serial.println(DEVICE);
-    Serial.print("FW Version: ");
-    Serial.println(FW_VERSION);
-    Serial.println();
-    Serial.print("Name: ");
-    Serial.println(NAME);
-    Serial.print("IP: ");
-    Serial.println(IP_NUMBER);
-    Serial.print("MQTT Status Topic: ");
-    Serial.println(STATUS_TOPIC);
-    Serial.print("MQTT Set Topic: ");
-    Serial.println(SET_TOPIC);
-    Serial.print("MQTT Secondary Topic: ");
-    Serial.println(SECONDARY_TOPIC);
-
-    //OTA setup
-    ArduinoOTA.setPort(OTA_PORT);
-    ArduinoOTA.setHostname(NAME);
-    ArduinoOTA.setPassword(OTA_PASS);
-    ArduinoOTA.begin();
-
-    //Enable interrupt for button press
+    // Enable interrupt for button press
     Serial.println("Enabling switch interrupt");
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonChangeCallback, CHANGE);
 
-    //Init wifi
-    initWifi();
+    // OTA setup
+    ArduinoOTA.setPort(OTA_PORT);
+    ArduinoOTA.setHostname(DEVICE_NAME);
+    ArduinoOTA.setPassword(OTA_PASS);
+    ArduinoOTA.begin();
 
-    //Connect to Wifi and MQTT server.
+    // Configure MQTT server.
     client.setServer(MQTT_SERVER, MQTT_PORT);
     client.setCallback(MQTTcallback);
+
+    // Init WIFI
+    initWifi();
+
+    // Connect to WIFI and MQTT
     checkConnectivity();
-    lastConnectivityCheck = millis();
 }
 
 void loop()
@@ -220,7 +250,6 @@ void loop()
     if (millis() - lastConnectivityCheck >= 5000)
     {
         checkConnectivity();
-        lastConnectivityCheck = millis();
     }
 
     //Process MQTT client events
