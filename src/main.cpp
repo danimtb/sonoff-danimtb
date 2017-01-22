@@ -39,7 +39,7 @@ void initWifi()
 {
     Serial.println();
     Serial.print("Wifi SSID: ");
-    Serial.println(SSID);
+    Serial.println(WIFI_SSID);
     WiFi.config(ip, gateway, subnet);
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
@@ -48,7 +48,7 @@ void initWifi()
 void connectWifi()
 {
   Serial.println("Connecting...");
-  WiFi.begin(SSID, PASS);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
   delay(1000);
 }
 
@@ -197,7 +197,7 @@ void setup() {
     //OTA setup
     ArduinoOTA.setPort(OTA_PORT);
     ArduinoOTA.setHostname(NAME);
-    //ArduinoOTA.setPassword(OTA_PASS);
+    ArduinoOTA.setPassword(OTA_PASS);
     ArduinoOTA.begin();
 
     //Enable interrupt for button press
