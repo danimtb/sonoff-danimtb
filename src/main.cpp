@@ -10,7 +10,7 @@
 #include "../info/NetworkInfo.h"
 
 #define FW "sonoff-touch-custom"
-#define FW_VERSION "0.0.2"
+#define FW_VERSION "0.0.4"
 
 IPAddress ip(192, 168, 1, IP_NUMBER);
 IPAddress gateway(192, 168, 1, 1);
@@ -60,15 +60,18 @@ void connectWifi()
 
 void publishDeviceInfo()
 {
-  Serial.println("Publising device information...");
+  Serial.println("Publishing device information...");
+
+  char ip[3];
+  sprintf(ip, "%d", IP_NUMBER);
 
   client.publish(deviceNameTopic, DEVICE_NAME);
-  client.publish(deviceIpTopic, IP_NUMBER);
+  client.publish(deviceIpTopic, ip);
   client.publish(deviceTypeTopic, DEVICE_TYPE);
   client.publish(fwTopic, FW);
   client.publish(fwVersionTopic, FW_VERSION);
 
-  Serial.println("Publising device information done!");
+  Serial.println("Publishing device information done!");
 }
 
 void checkConnectivity()
@@ -106,12 +109,8 @@ void checkConnectivity()
         else
         {
             Serial.println("MQTT connection OK");
-
-            if(!connected)
-            {
-              publishDeviceInfo();
-              connected = true;
-            }
+            publishDeviceInfo();
+            connected = true;
         }
     }
 }
