@@ -1,0 +1,209 @@
+#include "WifiMQTTManager.h"
+
+void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint8_t mqttPort, std::string mqttUsername, std::string mqttPassword, std::string deviceName, uint8_t ipNumber, std::string deviceType, std::string fw, std::string fwVersion)
+{
+	m_wifiSSID = wifiSSID;
+	m_wifiPASS = wifiPASS;
+	m_mqttServer = mqttServer;
+	m_mqttPort = mqttPort;
+	m_mqttUsername = mqttUsername;
+	m_mqttPassword = mqttPassword;
+	m_ipNumber = ipNumber;
+	m_deviceName = deviceName;
+	m_deviceType = deviceType;
+	m_fw = fw;
+	m_fwVersion = fwVersion;
+
+	m_deviceNameTopic = "/" + m_deviceName;
+	m_deviceIpTopic = m_deviceNameTopic + "/ip";
+	m_deviceTypeTopic = m_deviceNameTopic + "/type";
+	m_fwTopic = m_deviceNameTopic + "/fw";
+	m_fwVersionTopic = m_fwTopic + "/version";
+
+	m_ip = new IPAddress(192, 168, 1, m_ipNumber);
+	m_gateway = new IPAddress(192, 168, 1, 1);
+	m_subnet = new IPAddress(255, 255, 0, 0);
+
+	m_pubSubClient = new PubSubClient(m_wifiClient);
+	m_pubSubClient->setServer(mqttServer.c_str(), mqttPort);
+
+	m_connected = false;
+	m_tempTopic = "";
+	m_tempPayload = "";
+	m_publishMQTT = false;
+	m_refreshTime = 2000;//300000;
+
+	m_deviceStatusInfoTimer.setup(RT_ON);
+	m_deviceStatusInfoTimer.load(m_refreshTime);
+
+	this->initWifi();
+}
+
+void WifiMQTTManager::initWifi()
+{
+		Serial.println("WifiMQTTManager::initWifi()");
+    WiFi.config(*m_ip, *m_gateway, *m_subnet);
+    WiFi.disconnect();
+    WiFi.mode(WIFI_STA);
+}
+
+
+void WifiMQTTManager::connectWifi()
+{
+	Serial.println("WifiMQTTManager::connectWifi()");
+  WiFi.begin(m_wifiSSID.c_str(), m_wifiPASS.c_str());
+  delay(1000);
+}
+
+void WifiMQTTManager::publishDeviceStatusInfo()
+{
+	Serial.println("WifiMQTTManager::publishDeviceStatusInfo()");
+  char ip[3];
+  sprintf(ip, "%d", m_ipNumber);
+
+  m_pubSubClient->publish(m_deviceNameTopic.c_str(), m_deviceName.c_str());
+  m_pubSubClient->publish(m_deviceIpTopic.c_str(), ip);
+  m_pubSubClient->publish(m_deviceTypeTopic.c_str(), m_deviceType.c_str());
+  m_pubSubClient->publish(m_fwTopic.c_str(), m_fw.c_str());
+  m_pubSubClient->publish(m_fwVersionTopic.c_str(), m_fwVersion.c_str());
+
+	this->refreshStatusTopics();
+}
+
+void WifiMQTTManager::checkConnectivity()
+{
+    if(WiFi.status() != WL_CONNECTED)
+    {
+        m_connected = false;
+        this->connectWifi();
+    }
+    else
+    {
+        if (!m_pubSubClient->connected())
+        {
+            if (m_pubSubClient->connect(m_deviceName.c_str(), m_mqttUsername.c_str(), m_mqttPassword.c_str()))
+            {
+							for (int i = 0; i < m_subscribeTopics.size(); i++)
+							{
+                m_pubSubClient->subscribe(m_subscribeTopics[i].c_str());
+							}
+
+							this->publishDeviceStatusInfo();
+							m_connected = true;
+            }
+            else
+            {
+                //MQTT connection failed
+                m_connected = false;
+            }
+        }
+        else
+        {
+            m_connected = true;
+        }
+    }
+}
+
+void WifiMQTTManager::addStatusTopic(std::string statusTopic)
+{
+	m_statusTopics[statusTopic] = "";
+}
+
+void WifiMQTTManager::eraseStatusTopic(std::string statusTopic)
+{
+	m_statusTopics.erase(statusTopic);
+}
+
+void WifiMQTTManager::addSubscribeTopic(std::string subscribeTopic)
+{
+	m_subscribeTopics.push_back(subscribeTopic);
+}
+
+void WifiMQTTManager::eraseSubscribeTopic(std::string statusTopic)
+{
+	// TODO: improve erase of topic
+
+	for (int i = 0; i < m_subscribeTopics.size(); i++)
+	{
+		if (statusTopic == m_subscribeTopics[i])
+		{
+			m_subscribeTopics.erase(m_subscribeTopics.begin() + i);
+		}
+	}
+}
+
+void WifiMQTTManager::publishMQTT(std::string topic, std::string payload)
+{
+	if(m_statusTopics.find(topic) != m_statusTopics.end())
+	{
+		if(strcmp(m_statusTopics[topic].c_str(), payload.c_str()))
+		{
+			m_statusTopics[topic] = payload;
+			m_publishMQTT = true;
+		}
+	}
+	else
+	{
+		m_tempTopic = topic;
+		m_tempPayload = payload;
+		m_publishMQTT = true;
+	}
+}
+
+void WifiMQTTManager::setCallback(void (*callback)(char*, uint8_t*, unsigned int))
+{
+	m_pubSubClient->setCallback(callback);
+}
+
+void WifiMQTTManager::loop()
+{
+	m_pubSubClient->loop();
+
+	if (m_connected)
+	{
+
+		if (m_deviceStatusInfoTimer.check())
+		{
+			this->publishDeviceStatusInfo();
+
+			m_deviceStatusInfoTimer.load(m_refreshTime); //reload timer
+		}
+
+
+		if (m_publishMQTT)
+		{
+			if (m_tempTopic != "")
+			{
+				m_pubSubClient->publish(m_tempTopic.c_str(), m_tempPayload.c_str());
+				m_tempTopic = "";
+				m_tempPayload = "";
+			}
+
+			this->refreshStatusTopics();
+
+			m_publishMQTT = false;
+		}
+	}
+}
+
+void WifiMQTTManager::refreshStatusTopics()
+{
+	for (std::map<std::string, std::string>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
+	{
+		m_pubSubClient->publish(it->first.c_str(), it->second.c_str());
+	}
+}
+
+bool WifiMQTTManager::connected()
+{
+	return m_connected;
+}
+
+WifiMQTTManager::~WifiMQTTManager()
+{
+	delete m_ip;
+	delete m_gateway;
+	delete m_subnet;
+
+	delete m_pubSubClient;
+}
