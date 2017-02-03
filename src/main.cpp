@@ -1,119 +1,62 @@
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-#include <ESP8266mDNS.h>
+#include <string>
+
 #include <ArduinoOTA.h>
 
 #include "Relay.h"
 #include "LED.h"
+#include "Button.h"
+#include "WifiMQTTManager.h"
+
+//#################### FW DATA ####################
+
+#define FW "sonoff-danimtb"
+#define FW_VERSION "0.0.4"
+
+//#################### ####### ####################
+
+
+//################## DEVICE DATA ##################
 
 #include "../info/DeviceInfo.h"
 #include "../info/NetworkInfo.h"
 
-#define FW "sonoff-touch-custom"
-#define FW_VERSION "0.0.4"
+// #define ENABLE_SONOFF_TOUCH_ESP01 for "sonoff-touch-esp01"
+// #define ENABLE_SONOFF_TOUCH for "sonoff-touch"
+// #define ENABLE_SONOFF_S20 for "sonoff-s20"
+// #define ENABLE_SONOFF for "sonoff"
 
-IPAddress ip(192, 168, 1, IP_NUMBER);
-IPAddress gateway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 0, 0);
+#ifdef DEVICE_TYPE_SONOFF_TOUCH_ESP01
+    #define BUTTON_PIN 0
+    #define RELAY_PIN 2
+#endif
 
-const char *deviceNameTopic = "/" DEVICE_NAME;
-const char *deviceIpTopic = "/" DEVICE_NAME "/ip";
-const char *deviceTypeTopic = "/" DEVICE_NAME "/type";
-const char *fwTopic = "/" DEVICE_NAME "/fw";
-const char *fwVersionTopic = "/" DEVICE_NAME "/fw/version";
+#ifdef DEVICE_TYPE_SONOFF_TOUCH
+    #define BUTTON_PIN 0
+    #define RELAY_PIN 12
+    #define LED_PIN 13
+#endif
 
-const char *setTopic = SET_TOPIC;
-const char *statusTopic = STATUS_TOPIC;
-const char *secondaryTopic = SECONDARY_TOPIC;
+#ifdef ENABLE_SONOFF_S20
+    #define BUTTON_PIN 0
+    #define RELAY_PIN 12
+    #define LED_PIN 13
+#endif
 
-bool connected = false;
-bool desiredRelayState = false;
-bool longPressStatus = false;
+#ifdef ENABLE_SONOFF
+    #define BUTTON_PIN 0
+    #define RELAY_PIN 12
+    #define LED_PIN 13
+#endif
 
-unsigned long millisSinceChange = 0;
-unsigned long lastConnectivityCheck = 0;
+//################## ########### ##################
 
-#define BUTTON_PIN 0
-#define RELAY_PIN 2
+std::string setTopic = SET_TOPIC;
+std::string statusTopic = STATUS_TOPIC;
+std::string secondaryTopic = SECONDARY_TOPIC;
 
-WiFiClient espClient;
-PubSubClient client(espClient);
-
+WifiMQTTManager wifiMQTTManager;
 Relay relay;
-
-void initWifi()
-{
-    Serial.println();
-    Serial.print("Wifi SSID: ");
-    Serial.println(WIFI_SSID);
-    WiFi.config(ip, gateway, subnet);
-    WiFi.disconnect();
-    WiFi.mode(WIFI_STA);
-}
-
-void connectWifi()
-{
-  Serial.println("Connecting...");
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-  delay(1000);
-}
-
-void publishDeviceInfo()
-{
-  Serial.println("Publishing device information...");
-
-  char ip[3];
-  sprintf(ip, "%d", IP_NUMBER);
-
-  client.publish(deviceNameTopic, DEVICE_NAME);
-  client.publish(deviceIpTopic, ip);
-  client.publish(deviceTypeTopic, DEVICE_TYPE);
-  client.publish(fwTopic, FW);
-  client.publish(fwVersionTopic, FW_VERSION);
-
-  Serial.println("Publishing device information done!");
-}
-
-void checkConnectivity()
-{
-    lastConnectivityCheck = millis();
-    Serial.println("Checking connectivity...");
-
-    if(WiFi.status() != WL_CONNECTED)
-    {
-        Serial.println("Wifi not connected");
-        connected = false;
-
-        connectWifi();
-    }
-    else
-    {
-        Serial.println("Wifi connection OK");
-
-        if (!client.connected())
-        {
-            if (client.connect(DEVICE_NAME, MQTT_USERNAME, MQTT_PASSWORD))
-            {
-                Serial.println("MQTT connected!");
-
-                client.subscribe(setTopic);
-                publishDeviceInfo();
-                connected = true;
-            }
-            else
-            {
-                Serial.print("MQTT connection failed: ");
-                Serial.println(client.state());
-            }
-        }
-        else
-        {
-            Serial.println("MQTT connection OK");
-            publishDeviceInfo();
-            connected = true;
-        }
-    }
-}
+Button button;
 
 void MQTTcallback(char* topic, byte* payload, unsigned int length)
 {
@@ -121,26 +64,28 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length)
     Serial.print(topic);
     Serial.println("] ");
 
-    //Set end of payload string to length
-    payload[length] = '\0';
+    //ALWAYS DO THIS: Set end of payload string to length
+    payload[length] = '\0'; //Do not delete
 
-    if (!strcmp(topic, setTopic))
+    if (!strcmp(topic, setTopic.c_str()))
     {
-        payload[length] = '\0';
         if (!strcasecmp((char *)payload, "ON"))
         {
             Serial.println("ON");
-            desiredRelayState = true;
+            relay.on();
+            wifiMQTTManager.publishMQTT(statusTopic, "ON");
         }
         else if (!strcasecmp((char *)payload, "OFF"))
         {
             Serial.println("OFF");
-            desiredRelayState = false;
+            relay.off();
+            wifiMQTTManager.publishMQTT(statusTopic, "OFF");
         }
         else if (!strcasecmp((char *)payload, "TOGGLE"))
         {
             Serial.println("TOGGLE");
-            desiredRelayState = !desiredRelayState;
+            relay.commute();
+            wifiMQTTManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
         }
         else
         {
@@ -155,76 +100,14 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length)
     }
 }
 
-void shortPress()
+void setup()
 {
-  desiredRelayState = !desiredRelayState;
-}
-
-void longPress()
-{
-  longPressStatus = true;
-}
-
-void buttonChangeCallback()
-{
-    if (digitalRead(0) == 1)
-    {
-        //Button has been released, trigger one of the two possible options.
-
-        if (millis() - millisSinceChange > 500)
-        {
-            longPress();
-        }
-        else if (millis() - millisSinceChange > 100)
-        {
-            //Short press
-            shortPress();
-        }
-        else
-        {
-            //Too short to register as a press
-        }
-    }
-    else
-    {
-        millisSinceChange = millis();
-    }
-}
-
-
-
-void setup() {
     // Init serial comm
     Serial.begin(115200);
 
-    // Print Device Info
-    Serial.println("Initializing device...");
-    Serial.println("Device Info:");
-    Serial.print("\tFW: ");
-    Serial.println(FW);
-    Serial.print("\tFW Version: ");
-    Serial.println(FW_VERSION);
-    Serial.println();
-    Serial.print("\tDevice type: ");
-    Serial.println(DEVICE_TYPE);
-    Serial.print("\tDevice name: ");
-    Serial.println(DEVICE_NAME);
-    Serial.print("\tIP: ");
-    Serial.println(IP_NUMBER);
-    Serial.print("\tMQTT Status Topic: ");
-    Serial.println(STATUS_TOPIC);
-    Serial.print("\tMQTT Set Topic: ");
-    Serial.println(SET_TOPIC);
-    Serial.print("\tMQTT Secondary Topic: ");
-    Serial.println(SECONDARY_TOPIC);
-
     // Configure pins
     relay.setup(RELAY_PIN, RELAY_HIGH_LVL);
-    pinMode(BUTTON_PIN, INPUT_PULLUP);
-
-    // Enable interrupt for button press
-    Serial.println("Enabling switch interrupt");
-    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonChangeCallback, CHANGE);
+    button.setup(BUTTON_PIN, PULLDOWN);
 
     // OTA setup
     ArduinoOTA.setPort(OTA_PORT);
@@ -232,67 +115,43 @@ void setup() {
     ArduinoOTA.setPassword(OTA_PASS);
     ArduinoOTA.begin();
 
-    // Configure MQTT server.
-    client.setServer(MQTT_SERVER, MQTT_PORT);
-    client.setCallback(MQTTcallback);
-
-    // Init WIFI
-    initWifi();
-
-    // Connect to WIFI and MQTT
-    checkConnectivity();
+    // Configure MQTT server
+    wifiMQTTManager.setup(WIFI_SSID, WIFI_PASS, MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, DEVICE_NAME, IP_NUMBER, DEVICE_TYPE, FW, FW_VERSION);
+    wifiMQTTManager.addStatusTopic(statusTopic);
+    wifiMQTTManager.addSubscribeTopic(setTopic);
+    wifiMQTTManager.setCallback(MQTTcallback);
 }
 
 void loop()
 {
+    //Process Button events
+    button.loop();
 
-    if (millis() - lastConnectivityCheck >= 5000)
-    {
-        checkConnectivity();
-    }
+    //Process Wifi and MQTT events
+    wifiMQTTManager.loop();
 
-    //Process MQTT client events
-    client.loop();
-
-    //Handle OTA FW updates.
+    //Handle OTA FW updates
     ArduinoOTA.handle();
 
-
-    //Change relay state if needed
-    if (desiredRelayState != relay.getState())
+    //Button press
+    if (button.shortPress())
     {
-      if(desiredRelayState)
-      {
-        relay.on();
+        Serial.println("button.shortPress()");
+        relay.commute();
 
-        if (connected)
+        if (wifiMQTTManager.connected())
         {
-          Serial.println("Status topic: ON");
-          client.publish(statusTopic, "ON");
+            wifiMQTTManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
         }
-      }
-      else
-      {
-        relay.off();
-
-        if (connected)
-        {
-          Serial.println("Status topic: OFF");
-          client.publish(statusTopic, "OFF");
-        }
-      }
     }
-
-    //Publish to secondary topic
-    if (longPressStatus)
+    if (button.longPress())
     {
-      if (connected)
-      {
-        Serial.println("Secondary topic: TOGGLE");
-        client.publish(secondaryTopic, "TOGGLE");
-      }
-      longPressStatus = false;
-    }
+        Serial.println("button.longPress()");
 
-    delay(50);
+        if (wifiMQTTManager.connected())
+        {
+            Serial.println("Secondary topic: TOGGLE");
+            wifiMQTTManager.publishMQTT(secondaryTopic, "TOGGLE");
+        }
+    }
 }
