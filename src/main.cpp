@@ -7,18 +7,27 @@
 #include "../lib/Button/Button.h"
 #include "../lib/WifiMQTTManager/WifiMQTTManager.h"
 
+
 //#################### FW DATA ####################
 
 #define FW "sonoff-danimtb"
 #define FW_VERSION "0.0.4"
 
-//#################### ####### ####################
+//#################### ======= ####################
+
+
+
+//################## NETWORK DATA #################
+
+#include "../data/NetworkData.h"
+
+//################## ============ #################
+
 
 
 //################## DEVICE DATA ##################
 
-#include "../info/DeviceInfo.h"
-#include "../info/NetworkInfo.h"
+#include "../data/DeviceData.h"
 
 // #define ENABLE_SONOFF_TOUCH_ESP01 for "sonoff-touch-esp01"
 // #define ENABLE_SONOFF_TOUCH for "sonoff-touch"
@@ -48,7 +57,9 @@
     #define LED_PIN 13
 #endif
 
-//################## ########### ##################
+//################## ============ ##################
+
+
 
 std::string setTopic = SET_TOPIC;
 std::string statusTopic = STATUS_TOPIC;

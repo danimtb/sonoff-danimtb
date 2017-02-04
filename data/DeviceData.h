@@ -1,5 +1,6 @@
 #define DEVICE_NAME ""
-#define DEVICE_TYPE "sonoff-touch-esp01"
+#define DEVICE_TYPE ""
+#define ENABLE_SONOFF_TOUCH_ESP01
 
 #define IP_NUMBER 000
 
