@@ -2,10 +2,10 @@
 
 #include <ArduinoOTA.h>
 
-#include "Relay.h"
-#include "LED.h"
-#include "Button.h"
-#include "WifiMQTTManager.h"
+#include "../lib/Relay/Relay.h"
+#include "../lib/LED/LED.h"
+#include "../lib/Button/Button.h"
+#include "../lib/WifiMQTTManager/WifiMQTTManager.h"
 
 //#################### FW DATA ####################
 
@@ -25,12 +25,12 @@
 // #define ENABLE_SONOFF_S20 for "sonoff-s20"
 // #define ENABLE_SONOFF for "sonoff"
 
-#ifdef DEVICE_TYPE_SONOFF_TOUCH_ESP01
+#ifdef ENABLE_SONOFF_TOUCH_ESP01
     #define BUTTON_PIN 0
     #define RELAY_PIN 2
 #endif
 
-#ifdef DEVICE_TYPE_SONOFF_TOUCH
+#ifdef ENABLE_SONOFF_TOUCH
     #define BUTTON_PIN 0
     #define RELAY_PIN 12
     #define LED_PIN 13
@@ -57,6 +57,7 @@ std::string secondaryTopic = SECONDARY_TOPIC;
 WifiMQTTManager wifiMQTTManager;
 Relay relay;
 Button button;
+LED led;
 
 void MQTTcallback(char* topic, byte* payload, unsigned int length)
 {
@@ -105,9 +106,18 @@ void setup()
     // Init serial comm
     Serial.begin(115200);
 
+
     // Configure pins
     relay.setup(RELAY_PIN, RELAY_HIGH_LVL);
     button.setup(BUTTON_PIN, PULLDOWN);
+
+    #ifdef LED_PIN
+    led.setup(LED_PIN, LED_LOW_LVL);
+    led.on();
+    delay(300);
+    led.off();
+    #endif
+
 
     // OTA setup
     ArduinoOTA.setPort(OTA_PORT);
@@ -124,16 +134,16 @@ void setup()
 
 void loop()
 {
-    //Process Button events
+    // Process Button events
     button.loop();
 
-    //Process Wifi and MQTT events
+    // Process Wifi and MQTT events
     wifiMQTTManager.loop();
 
-    //Handle OTA FW updates
+    // Handle OTA FW updates
     ArduinoOTA.handle();
 
-    //Button press
+    // Button press
     if (button.shortPress())
     {
         Serial.println("button.shortPress()");
@@ -154,4 +164,16 @@ void loop()
             wifiMQTTManager.publishMQTT(secondaryTopic, "TOGGLE");
         }
     }
+
+    #ifdef LED_PIN
+        // LED Status
+        if (wifiMQTTManager.connected())
+        {
+            led.on();
+        }
+        else
+        {
+            led.off();
+        }
+    #endif
 }
