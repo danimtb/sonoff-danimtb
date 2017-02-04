@@ -32,8 +32,8 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     m_tempTopic = "";
     m_tempPayload = "";
     m_publishMQTT = false;
-    m_deviceStatusInfoTime = 10000;//300000;
-    m_checkConnectivityTime = 2000;
+    m_deviceStatusInfoTime = 5*60*1000; // 5 min
+    m_checkConnectivityTime = 20000; // 20 secs
 
     m_deviceStatusInfoTimer.setup(RT_ON);
     m_deviceStatusInfoTimer.load(m_deviceStatusInfoTime);
