@@ -1,3 +1,3 @@
-sonoff-touch-custom
-===================
-Custom FW for Itead Sonoff Touch device with esp01 mod.
+sonoff-danimtb
+==============
+Alternative firmware for Itead Sonoff devices and custom Sonoff Touch ESP01.
