@@ -1,8 +1,6 @@
 sonoff-danimtb
 ==============
-Alternative firmware for Itead Sonoff devices and custom Sonoff Touch ESP01.
 
-# Description
 This FW is an alternative FW for some sonoff devices to use them with MQTT communication protocol. The main purpose for this firmware is to perform as best with [Home Assistant](home-assistant.io).
 
 It is design with these features in mind:
