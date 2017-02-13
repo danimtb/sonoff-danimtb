@@ -29,29 +29,34 @@
 
 #include "../data/DeviceData.h"
 
-// #define ENABLE_SONOFF_TOUCH_ESP01 for "sonoff-touch-esp01"
-// #define ENABLE_SONOFF_TOUCH for "sonoff-touch"
-// #define ENABLE_SONOFF_S20 for "sonoff-s20"
-// #define ENABLE_SONOFF for "sonoff"
+//################## ============ ##################
+
+
+
+//################## DEVICE TYPE ##################
 
 #ifdef ENABLE_SONOFF_TOUCH_ESP01
+    #define DEVICE_TYPE "sonoff-touch-esp01"
     #define BUTTON_PIN 0
     #define RELAY_PIN 2
 #endif
 
 #ifdef ENABLE_SONOFF_TOUCH
+    #define DEVICE_TYPE "sonoff-touch"
     #define BUTTON_PIN 0
     #define RELAY_PIN 12
     #define LED_PIN 13
 #endif
 
 #ifdef ENABLE_SONOFF_S20
+    #define DEVICE_TYPE "sonoff-s20"
     #define BUTTON_PIN 0
     #define RELAY_PIN 12
     #define LED_PIN 13
 #endif
 
 #ifdef ENABLE_SONOFF
+    #define DEVICE_TYPE "sonoff"
     #define BUTTON_PIN 0
     #define RELAY_PIN 12
     #define LED_PIN 13
@@ -123,10 +128,10 @@ void setup()
     button.setup(BUTTON_PIN, PULLDOWN);
 
     #ifdef LED_PIN
-    led.setup(LED_PIN, LED_LOW_LVL);
-    led.on();
-    delay(300);
-    led.off();
+        led.setup(LED_PIN, LED_LOW_LVL);
+        led.on();
+        delay(300);
+        led.off();
     #endif
 
 
