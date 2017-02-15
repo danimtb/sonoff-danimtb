@@ -11,8 +11,9 @@ WifiMQTTManager::WifiMQTTManager()
 
     m_deviceStatusInfoTimer.setup(RT_ON);
     m_checkConnectivityTimer.setup(RT_ON);
-}
 
+    m_deviceMac = this->getMacAddress();
+}
 
 void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion);
 {
@@ -29,6 +30,7 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     m_fwVersion = fwVersion;
 
     m_deviceNameTopic = "/" + m_deviceName;
+    m_deviceMacTopic = m_deviceNameTopic + "/mac";
     m_deviceIpTopic = m_deviceNameTopic + "/ip";
     m_deviceTypeTopic = m_deviceNameTopic + "/type";
     m_fwTopic = m_deviceNameTopic + "/fw";
@@ -48,6 +50,19 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     this->initWifi();
 }
 
+String WifiMQTTManager::getMacAddress()
+{
+    // TODO: Check correct deletion of byte[6] macAddress and char* mac
+
+    byte[6] macAddress;
+    WiFi.macAddress(macAddress);
+
+    char* mac;
+    sprintf(mac, "%x:%x:%x:%x:%x:%x", macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
+
+    return String(mac);
+}
+
 void WifiMQTTManager::initWifi()
 {
     WiFi.config(m_ip, m_gateway, m_mask);
@@ -64,6 +79,7 @@ void WifiMQTTManager::connectWifi()
 void WifiMQTTManager::publishDeviceStatusInfo()
 {
     m_pubSubClient->publish(m_deviceNameTopic.c_str(), m_deviceName.c_str());
+    m_pubSubClient->publish(m_deviceMacTopic.c_str(), m_deviceMac.c_str());
     m_pubSubClient->publish(m_deviceIpTopic.c_str(), m_ip.toString().c_str());
     m_pubSubClient->publish(m_deviceTypeTopic.c_str(), m_deviceType.c_str());
     m_pubSubClient->publish(m_fwTopic.c_str(), m_fw.c_str());
