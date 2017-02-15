@@ -24,11 +24,10 @@ private:
     uint16_t m_mqttPort;
     std::string m_mqttUsername;
     std::string m_mqttPassword;
-    uint16_t m_ipNumber;
 
-    IPAddress* m_ip;
-    IPAddress* m_gateway;
-    IPAddress* m_subnet;
+    IPAddress m_ip;
+    IPAddress m_mask;
+    IPAddress m_gateway;
 
     std::string m_deviceName;
     std::string m_deviceType;
@@ -65,8 +64,11 @@ private:
     void refreshStatusTopics();
 
 public:
-    void setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword,
-                         std::string deviceName, uint16_t ipNumber, std::string deviceType, std::string fw, std::string fwVersion);
+    WifiManager();
+
+    void setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort,
+               std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway,
+               std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion);
 
     ~WifiMQTTManager();
 

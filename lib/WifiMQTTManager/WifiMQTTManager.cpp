@@ -1,7 +1,20 @@
 #include "WifiMQTTManager.h"
 
+WifiMQTTManager::WifiMQTTManager()
+{
+    m_connected = false;
+    m_tempTopic = "";
+    m_tempPayload = "";
+    m_publishMQTT = false;
+    m_deviceStatusInfoTime = 5*60*1000; // 5 min
+    m_checkConnectivityTime = 20000; // 20 secs
 
-void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, std::string deviceName, uint16_t ipNumber, std::string deviceType, std::string fw, std::string fwVersion)
+    m_deviceStatusInfoTimer.setup(RT_ON);
+    m_checkConnectivityTimer.setup(RT_ON);
+}
+
+
+void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion);
 {
     m_wifiSSID = wifiSSID;
     m_wifiPASS = wifiPASS;
@@ -21,24 +34,15 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     m_fwTopic = m_deviceNameTopic + "/fw";
     m_fwVersionTopic = m_fwTopic + "/version";
 
-    m_ip = new IPAddress(192, 168, 1, m_ipNumber);
-    m_gateway = new IPAddress(192, 168, 1, 1);
-    m_subnet = new IPAddress(255, 255, 0, 0);
+    m_ip.fromString(ip);
+    m_mask.fromString(mask);
+    m_gateway.fromString(gateway);
 
     m_pubSubClient = new PubSubClient(m_wifiClient);
     m_pubSubClient->setServer(mqttServer.c_str(), mqttPort);
 
-    m_connected = false;
-    m_tempTopic = "";
-    m_tempPayload = "";
-    m_publishMQTT = false;
-    m_deviceStatusInfoTime = 5*60*1000; // 5 min
-    m_checkConnectivityTime = 20000; // 20 secs
-
-    m_deviceStatusInfoTimer.setup(RT_ON);
     m_deviceStatusInfoTimer.load(m_deviceStatusInfoTime);
 
-    m_checkConnectivityTimer.setup(RT_ON);
     m_checkConnectivityTimer.load(m_checkConnectivityTime);
 
     this->initWifi();
@@ -46,11 +50,10 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
 
 void WifiMQTTManager::initWifi()
 {
-    WiFi.config(*m_ip, *m_gateway, *m_subnet);
+    WiFi.config(m_ip, m_gateway, m_mask);
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
 }
-
 
 void WifiMQTTManager::connectWifi()
 {
@@ -60,11 +63,8 @@ void WifiMQTTManager::connectWifi()
 
 void WifiMQTTManager::publishDeviceStatusInfo()
 {
-    char ip[3];
-    sprintf(ip, "%d", m_ipNumber);
-
     m_pubSubClient->publish(m_deviceNameTopic.c_str(), m_deviceName.c_str());
-    m_pubSubClient->publish(m_deviceIpTopic.c_str(), ip);
+    m_pubSubClient->publish(m_deviceIpTopic.c_str(), m_ip.toString().c_str());
     m_pubSubClient->publish(m_deviceTypeTopic.c_str(), m_deviceType.c_str());
     m_pubSubClient->publish(m_fwTopic.c_str(), m_fw.c_str());
     m_pubSubClient->publish(m_fwVersionTopic.c_str(), m_fwVersion.c_str());
@@ -217,9 +217,5 @@ bool WifiMQTTManager::connected()
 
 WifiMQTTManager::~WifiMQTTManager()
 {
-    delete m_ip;
-    delete m_gateway;
-    delete m_subnet;
-
     delete m_pubSubClient;
 }
