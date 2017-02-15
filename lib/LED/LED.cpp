@@ -7,6 +7,8 @@ void LED::setup(int pin, int type)
 	pinMode(m_pin, OUTPUT);
 	m_type = type;
 	m_state = false;
+	m_blinkPeriod = 0;
+	m_blinkTimer.setup(RT_ON);
 }
 
 void LED::on()
@@ -53,5 +55,24 @@ void LED::commute()
 	else
 	{
 		on();
+	}
+}
+
+void LED::blink(unsigned long blinkPeriod)
+{
+	if (m_blinkPeriod != blinkPeriod)
+	{
+		m_blinkPeriod = blinkPeriod;
+
+		this->on();
+		m_blinkTimer->load(m_blinkPeriod/2);
+	}
+	else
+	{
+		if (m_blinkTimer.check())
+		{
+			this->commute();
+			m_blinkTimer->load(m_blinkPeriod/2);		
+		}
 	}
 }
