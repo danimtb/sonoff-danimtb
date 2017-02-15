@@ -146,6 +146,7 @@ void setup()
     wifiMQTTManager.addStatusTopic(statusTopic);
     wifiMQTTManager.addSubscribeTopic(setTopic);
     wifiMQTTManager.setCallback(MQTTcallback);
+    wifiMQTTManager.startConnection();
 }
 
 void loop()

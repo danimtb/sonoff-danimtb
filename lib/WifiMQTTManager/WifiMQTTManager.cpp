@@ -136,6 +136,11 @@ void WifiMQTTManager::eraseSubscribeTopic(std::string statusTopic)
     }
 }
 
+void WifiMQTTManager::startConnection()
+{
+    this->checkConnectivity();
+}
+
 void WifiMQTTManager::publishMQTT(std::string topic, std::string payload)
 {
     // TODO: improve publish of topics

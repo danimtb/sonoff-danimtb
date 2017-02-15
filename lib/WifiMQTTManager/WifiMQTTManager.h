@@ -80,6 +80,8 @@ public:
     void addStatusTopic(std::string statusTopic);
     void eraseStatusTopic(std::string statusTopic);
 
+    void startConnection();
+
     void publishMQTT(std::string topic, std::string payload);
 
     bool connected();
