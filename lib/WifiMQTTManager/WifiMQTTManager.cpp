@@ -15,7 +15,7 @@ WifiMQTTManager::WifiMQTTManager()
     m_deviceMac = this->getMacAddress();
 }
 
-void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion);
+void WifiMQTTManager::setup(String wifiSSID, String wifiPASS, String mqttServer, uint16_t mqttPort, String mqttUsername, String mqttPassword, String ip, String mask, String gateway, String deviceName, String deviceType, String fw, String fwVersion)
 {
     m_wifiSSID = wifiSSID;
     m_wifiPASS = wifiPASS;
@@ -23,7 +23,6 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     m_mqttPort = mqttPort;
     m_mqttUsername = mqttUsername;
     m_mqttPassword = mqttPassword;
-    m_ipNumber = ipNumber;
     m_deviceName = deviceName;
     m_deviceType = deviceType;
     m_fw = fw;
@@ -54,7 +53,7 @@ String WifiMQTTManager::getMacAddress()
 {
     // TODO: Check correct deletion of byte[6] macAddress and char* mac
 
-    byte[6] macAddress;
+    byte macAddress[6];
     WiFi.macAddress(macAddress);
 
     char* mac;
@@ -124,22 +123,22 @@ void WifiMQTTManager::checkConnectivity()
     }
 }
 
-void WifiMQTTManager::addStatusTopic(std::string statusTopic)
+void WifiMQTTManager::addStatusTopic(String statusTopic)
 {
     m_statusTopics[statusTopic] = "";
 }
 
-void WifiMQTTManager::eraseStatusTopic(std::string statusTopic)
+void WifiMQTTManager::eraseStatusTopic(String statusTopic)
 {
     m_statusTopics.erase(statusTopic);
 }
 
-void WifiMQTTManager::addSubscribeTopic(std::string subscribeTopic)
+void WifiMQTTManager::addSubscribeTopic(String subscribeTopic)
 {
     m_subscribeTopics.push_back(subscribeTopic);
 }
 
-void WifiMQTTManager::eraseSubscribeTopic(std::string statusTopic)
+void WifiMQTTManager::eraseSubscribeTopic(String statusTopic)
 {
     // TODO: improve erase of topic
 
@@ -157,7 +156,7 @@ void WifiMQTTManager::startConnection()
     this->checkConnectivity();
 }
 
-void WifiMQTTManager::publishMQTT(std::string topic, std::string payload)
+void WifiMQTTManager::publishMQTT(String topic, String payload)
 {
     // TODO: improve publish of topics
 
@@ -225,7 +224,7 @@ void WifiMQTTManager::loop()
 
 void WifiMQTTManager::refreshStatusTopics()
 {
-    for (std::map<std::string, std::string>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
+    for (std::map<String, String>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
     {
         m_pubSubClient->publish(it->first.c_str(), it->second.c_str());
     }
