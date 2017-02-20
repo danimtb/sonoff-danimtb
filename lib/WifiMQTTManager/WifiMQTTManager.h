@@ -44,13 +44,13 @@ private:
 
     std::map<String, String> m_statusTopics;
     std::vector<String> m_subscribeTopics;
+    std::vector<std::pair<String, String>> m_tempPublishTopics;
 
     WiFiClient m_wifiClient;
     PubSubClient* m_pubSubClient;
 
     bool m_connected;
-    String m_tempTopic;
-    String m_tempPayload;
+
     bool m_publishMQTT;
 
     unsigned long m_deviceStatusInfoTime;
@@ -76,6 +76,8 @@ public:
     ~WifiMQTTManager();
 
     void setCallback(void (*callback)(char*, uint8_t*, unsigned int));
+    void setCheckConnectivityTime(unsigned long checkConnectivityTime);
+    void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
     void addSubscribeTopic(String subscribeTopic);
     void eraseSubscribeTopic(String statusTopic);

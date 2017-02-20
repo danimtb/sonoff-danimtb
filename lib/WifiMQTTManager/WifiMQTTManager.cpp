@@ -3,8 +3,6 @@
 WifiMQTTManager::WifiMQTTManager()
 {
     m_connected = false;
-    m_tempTopic = "";
-    m_tempPayload = "";
     m_publishMQTT = false;
     m_deviceStatusInfoTime = 5*60*1000; // 5 min
     m_checkConnectivityTime = 20000; // 20 secs
@@ -144,7 +142,7 @@ void WifiMQTTManager::eraseSubscribeTopic(String statusTopic)
 
     for (int i = 0; i < m_subscribeTopics.size(); i++)
     {
-        if (statusTopic == m_subscribeTopics[i])
+        if (m_subscribeTopics[i] == statusTopic)
         {
             m_subscribeTopics.erase(m_subscribeTopics.begin() + i);
         }
@@ -164,8 +162,6 @@ void WifiMQTTManager::stopConnection()
 
 void WifiMQTTManager::publishMQTT(String topic, String payload)
 {
-    // TODO: improve publish of topics
-
     if(m_statusTopics.find(topic) != m_statusTopics.end())
     {
         if(m_statusTopics[topic] != payload)
@@ -176,8 +172,10 @@ void WifiMQTTManager::publishMQTT(String topic, String payload)
     }
     else
     {
-        m_tempTopic = topic;
-        m_tempPayload = payload;
+        std::pair<String, String> tempPair;
+        tempPair.first = topic;
+        tempPair.second = payload;
+        m_tempPublishTopics.push_back(tempPair);
         m_publishMQTT = true;
     }
 }
@@ -185,6 +183,16 @@ void WifiMQTTManager::publishMQTT(String topic, String payload)
 void WifiMQTTManager::setCallback(void (*callback)(char*, uint8_t*, unsigned int))
 {
     m_pubSubClient->setCallback(callback);
+}
+
+void WifiMQTTManager::setCheckConnectivityTime(unsigned long checkConnectivityTime)
+{
+    m_checkConnectivityTime = checkConnectivityTime;
+}
+
+void WifiMQTTManager::setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime)
+{
+    m_deviceStatusInfoTime = deviceStatusInfoTime;
 }
 
 void WifiMQTTManager::loop()
@@ -214,11 +222,14 @@ void WifiMQTTManager::loop()
 
         if (m_publishMQTT)
         {
-            if (m_tempTopic != "")
+            if (!m_tempPublishTopics.empty())
             {
-                m_pubSubClient->publish(m_tempTopic.c_str(), m_tempPayload.c_str());
-                m_tempTopic = "";
-                m_tempPayload = "";
+                for (int i = 0; i < m_tempPublishTopics.size(); i++)
+                {
+                    m_pubSubClient->publish(m_tempPublishTopics[i].first.c_str(), m_tempPublishTopics[i].second.c_str());
+                }
+
+                m_tempPublishTopics.clear();
             }
 
             this->refreshStatusTopics();
