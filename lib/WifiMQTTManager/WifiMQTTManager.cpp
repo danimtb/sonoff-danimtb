@@ -156,6 +156,12 @@ void WifiMQTTManager::startConnection()
     this->checkConnectivity();
 }
 
+void WifiMQTTManager::stopConnection()
+{
+    m_pubSubClient->disconnect();
+    WiFi.disconnect();
+}
+
 void WifiMQTTManager::publishMQTT(String topic, String payload)
 {
     // TODO: improve publish of topics

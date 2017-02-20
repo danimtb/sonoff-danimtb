@@ -84,6 +84,7 @@ public:
     void eraseStatusTopic(String statusTopic);
 
     void startConnection();
+    void stopConnection();
 
     void publishMQTT(String topic, String payload);
 
