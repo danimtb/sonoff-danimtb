@@ -166,10 +166,11 @@ void setup()
     ArduinoOTA.begin();
 
     // Configure MQTT server
-    wifiMQTTManager.setup(WIFI_SSID, WIFI_PASS, MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, DEVICE_NAME, IP_NUMBER, DEVICE_TYPE, FW, FW_VERSION);
+    wifiMQTTManager.setup(WIFI_SSID, WIFI_PASS, MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, DEVICE_IP, DEVICE_MASK, DEVICE_GATEWAY, DEVICE_NAME, DEVICE_TYPE, FW, FW_VERSION);
     wifiMQTTManager.addStatusTopic(statusTopic);
     wifiMQTTManager.addSubscribeTopic(setTopic);
     wifiMQTTManager.setCallback(MQTTcallback);
+    wifiMQTTManager.startConnection();
 }
 
 void loop()

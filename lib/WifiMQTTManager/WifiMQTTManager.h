@@ -24,17 +24,18 @@ private:
     uint16_t m_mqttPort;
     std::string m_mqttUsername;
     std::string m_mqttPassword;
-    uint16_t m_ipNumber;
 
-    IPAddress* m_ip;
-    IPAddress* m_gateway;
-    IPAddress* m_subnet;
+    IPAddress m_ip;
+    IPAddress m_mask;
+    IPAddress m_gateway;
 
     std::string m_deviceName;
     std::string m_deviceType;
+    String m_deviceMac;
     std::string m_fw;
     std::string m_fwVersion;
 
+    String m_deviceMacTopic;
     std::string m_deviceIpTopic;
     std::string m_deviceNameTopic;
     std::string m_deviceTypeTopic;
@@ -60,13 +61,17 @@ private:
 
     void initWifi();
     void connectWifi();
+    String getMacAddress();
     void publishDeviceStatusInfo();
     void checkConnectivity();
     void refreshStatusTopics();
 
 public:
-    void setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword,
-                         std::string deviceName, uint16_t ipNumber, std::string deviceType, std::string fw, std::string fwVersion);
+    WifiManager();
+
+    void setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort,
+               std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway,
+               std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion);
 
     ~WifiMQTTManager();
 
@@ -77,6 +82,8 @@ public:
 
     void addStatusTopic(std::string statusTopic);
     void eraseStatusTopic(std::string statusTopic);
+
+    void startConnection();
 
     void publishMQTT(std::string topic, std::string payload);
 

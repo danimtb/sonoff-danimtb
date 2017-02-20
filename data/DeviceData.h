@@ -5,7 +5,9 @@
 // #define ENABLE_SONOFF for "sonoff"
 
 #define DEVICE_NAME ""
-#define IP_NUMBER 000
+#define DEVICE_IP ""
+#define DEVICE_MASK ""
+#define DEVICE_GATEWAY ""
 
 #define SET_TOPIC ""
 #define STATUS_TOPIC ""
