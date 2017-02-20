@@ -36,30 +36,30 @@
 //################## DEVICE TYPE ##################
 
 #ifdef ENABLE_SONOFF_TOUCH_ESP01
-    #define DEVICE_TYPE "sonoff-touch-esp01"
-    #define BUTTON_PIN 0
-    #define RELAY_PIN 2
+#define DEVICE_TYPE "sonoff-touch-esp01"
+#define BUTTON_PIN 0
+#define RELAY_PIN 2
 #endif
 
 #ifdef ENABLE_SONOFF_TOUCH
-    #define DEVICE_TYPE "sonoff-touch"
-    #define BUTTON_PIN 0
-    #define RELAY_PIN 12
-    #define LED_PIN 13
+#define DEVICE_TYPE "sonoff-touch"
+#define BUTTON_PIN 0
+#define RELAY_PIN 12
+#define LED_PIN 13
 #endif
 
 #ifdef ENABLE_SONOFF_S20
-    #define DEVICE_TYPE "sonoff-s20"
-    #define BUTTON_PIN 0
-    #define RELAY_PIN 12
-    #define LED_PIN 13
+#define DEVICE_TYPE "sonoff-s20"
+#define BUTTON_PIN 0
+#define RELAY_PIN 12
+#define LED_PIN 13
 #endif
 
 #ifdef ENABLE_SONOFF
-    #define DEVICE_TYPE "sonoff"
-    #define BUTTON_PIN 0
-    #define RELAY_PIN 12
-    #define LED_PIN 13
+#define DEVICE_TYPE "sonoff"
+#define BUTTON_PIN 0
+#define RELAY_PIN 12
+#define LED_PIN 13
 #endif
 
 //################## ============ ##################
@@ -117,23 +117,47 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length)
     }
 }
 
+void shortPress()
+{
+    Serial.println("button.shortPress()");
+    relay.commute();
+
+    if (wifiMQTTManager.connected())
+    {
+        wifiMQTTManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
+    }
+}
+
+void longPress()
+{
+    Serial.println("button.longPress()");
+
+    if (wifiMQTTManager.connected())
+    {
+        Serial.println("Secondary topic: TOGGLE");
+        wifiMQTTManager.publishMQTT(secondaryTopic, "TOGGLE");
+    }
+}
+
 void setup()
 {
     // Init serial comm
     Serial.begin(115200);
 
-
-    // Configure pins
+    // Configure Relay
     relay.setup(RELAY_PIN, RELAY_HIGH_LVL);
+
+    // Configure Button
     button.setup(BUTTON_PIN, PULLDOWN);
+    button.setShortPressCallback(shortPress);
+    button.setLongPressCallback(longPress);
 
-    #ifdef LED_PIN
-        led.setup(LED_PIN, LED_LOW_LVL);
-        led.on();
-        delay(300);
-        led.off();
-    #endif
-
+#ifdef LED_PIN
+    led.setup(LED_PIN, LED_LOW_LVL);
+    led.on();
+    delay(300);
+    led.off();
+#endif
 
     // OTA setup
     ArduinoOTA.setPort(OTA_PORT);
@@ -159,37 +183,15 @@ void loop()
     // Handle OTA FW updates
     ArduinoOTA.handle();
 
-    // Button press
-    if (button.shortPress())
+#ifdef LED_PIN
+    // LED Status
+    if (wifiMQTTManager.connected())
     {
-        Serial.println("button.shortPress()");
-        relay.commute();
-
-        if (wifiMQTTManager.connected())
-        {
-            wifiMQTTManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
-        }
+        led.on();
     }
-    if (button.longPress())
+    else
     {
-        Serial.println("button.longPress()");
-
-        if (wifiMQTTManager.connected())
-        {
-            Serial.println("Secondary topic: TOGGLE");
-            wifiMQTTManager.publishMQTT(secondaryTopic, "TOGGLE");
-        }
+        led.off();
     }
-
-    #ifdef LED_PIN
-        // LED Status
-        if (wifiMQTTManager.connected())
-        {
-            led.on();
-        }
-        else
-        {
-            led.off();
-        }
-    #endif
+#endif
 }

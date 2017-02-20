@@ -11,8 +11,9 @@ class Button
   public:
     void setup(uint8_t pin, uint8_t mode = PULLDOWN);
     bool isPressed();
-    bool shortPress();
-    bool longPress();
+    void setShortPressCallback(void (*callback)());
+    void setLongPressCallback(void (*callback)());
+    void setLongLongPressCallback(void (*callback)());
     void loop();
 
   private:
@@ -22,6 +23,10 @@ class Button
     unsigned long m_millisSincePressed;
     bool m_shortPress;
     bool m_longPress;
+
+    void (*m_shortPressCallback)(void);
+    void (*m_longPressCallback)(void);
+    void (*m_longlongPressCallback)(void);
 };
 
 #endif
