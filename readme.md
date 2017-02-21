@@ -42,7 +42,7 @@ This project is built with [platformio](platformio.org) to manage third party li
 
 To flash your devices, clone this repo and fill your device and network data. Then run this command to flash a device connected to your COM3 (remember your device should be in flash mode -GPIO0 to GND-):
 
-`$ platformio run --target upload --port COM3`
+`$ platformio run --target upload --upload-port COM3`
 
 Or to flash via Arduino OTA you'll need to indicate IP and OTA password for the device in *platformio.ini* file and then execute (ensure your device is already connected to wifi):
 
