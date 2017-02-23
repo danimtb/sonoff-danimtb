@@ -7,7 +7,6 @@ WifiMQTTManager::WifiMQTTManager()
     m_deviceStatusInfoTime = 5*60*1000; // 5 min
     m_checkConnectivityTime = 20000; // 20 secs
 
-    m_deviceMac = "";
     m_deviceStatusInfoTimer.setup(RT_ON);
     m_checkConnectivityTimer.setup(RT_ON);
 }
@@ -86,15 +85,24 @@ void WifiMQTTManager::checkConnectivity()
         if (WiFi.status() == WL_CONNECTED)
         {
             this->checkMQTTConnectivity();
-            m_deviceMac = this->getMacAddress();
+            this->setDeviceMac();
         }
     }
     else
     {
         this->checkMQTTConnectivity();
+        this->setDeviceMac();
+    }
+}
+
+void WifiMQTTManager::setDeviceMac()
+{
+    if (m_deviceMac.empty())
+    {
         m_deviceMac = this->getMacAddress();
     }
 }
+
 
 void WifiMQTTManager::checkMQTTConnectivity()
 {

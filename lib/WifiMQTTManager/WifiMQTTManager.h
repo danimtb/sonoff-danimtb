@@ -64,6 +64,7 @@ private:
     std::string getMacAddress();
     void publishDeviceStatusInfo();
     void checkConnectivity();
+    void setDeviceMac();
     void checkMQTTConnectivity();
     void refreshStatusTopics();
 
