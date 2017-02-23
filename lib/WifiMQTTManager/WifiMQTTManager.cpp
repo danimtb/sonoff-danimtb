@@ -9,10 +9,10 @@ WifiMQTTManager::WifiMQTTManager()
     m_deviceStatusInfoTime = 5*60*1000; // 5 min
     m_checkConnectivityTime = 20000; // 20 secs
 
+    m_deviceMac = "none"; //this->getMacAddress();
+
     m_deviceStatusInfoTimer.setup(RT_ON);
     m_checkConnectivityTimer.setup(RT_ON);
-
-    m_deviceMac = this->getMacAddress();
 }
 
 void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion)
@@ -51,15 +51,7 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
 
 std::string WifiMQTTManager::getMacAddress()
 {
-    // TODO: Check correct deletion of byte[6] macAddress and char* mac
-
-    byte macAddress[6];
-    WiFi.macAddress(macAddress);
-
-    char* mac;
-    sprintf(mac, "%x:%x:%x:%x:%x:%x", macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
-
-    return std::string(mac);
+    return std::string(WiFi.macAddress().c_str());
 }
 
 void WifiMQTTManager::initWifi()
