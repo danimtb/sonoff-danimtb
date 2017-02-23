@@ -49,17 +49,17 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     this->initWifi();
 }
 
-String WifiMQTTManager::getMacAddress()
+std::string WifiMQTTManager::getMacAddress()
 {
     // TODO: Check correct deletion of byte[6] macAddress and char* mac
 
-    byte[6] macAddress;
+    byte macAddress[6];
     WiFi.macAddress(macAddress);
 
     char* mac;
     sprintf(mac, "%x:%x:%x:%x:%x:%x", macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
 
-    return String(mac);
+    return std::string(mac);
 }
 
 void WifiMQTTManager::initWifi()

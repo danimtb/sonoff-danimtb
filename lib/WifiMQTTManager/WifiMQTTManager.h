@@ -31,11 +31,11 @@ private:
 
     std::string m_deviceName;
     std::string m_deviceType;
-    String m_deviceMac;
+    std::string m_deviceMac;
     std::string m_fw;
     std::string m_fwVersion;
 
-    String m_deviceMacTopic;
+    std::string m_deviceMacTopic;
     std::string m_deviceIpTopic;
     std::string m_deviceNameTopic;
     std::string m_deviceTypeTopic;
@@ -61,7 +61,7 @@ private:
 
     void initWifi();
     void connectWifi();
-    String getMacAddress();
+    std::string getMacAddress();
     void publishDeviceStatusInfo();
     void checkConnectivity();
     void refreshStatusTopics();
