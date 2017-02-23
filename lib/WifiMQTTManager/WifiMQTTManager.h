@@ -18,12 +18,12 @@
 class WifiMQTTManager
 {
 private:
-    String m_wifiSSID;
-    String m_wifiPASS;
-    String m_mqttServer;
+    std::string m_wifiSSID;
+    std::string m_wifiPASS;
+    std::string m_mqttServer;
     uint16_t m_mqttPort;
-    String m_mqttUsername;
-    String m_mqttPassword;
+    std::string m_mqttUsername;
+    std::string m_mqttPassword;
 
     IPAddress m_ip;
     IPAddress m_mask;
@@ -42,9 +42,9 @@ private:
     std::string m_fwTopic;
     std::string m_fwVersionTopic;
 
-    std::map<String, String> m_statusTopics;
-    std::vector<String> m_subscribeTopics;
-    std::vector<std::pair<String, String>> m_tempPublishTopics;
+    std::map<std::string, std::string> m_statusTopics;
+    std::vector<std::string> m_subscribeTopics;
+    std::vector<std::pair<std::string, std::string>> m_tempPublishTopics;
 
     WiFiClient m_wifiClient;
     PubSubClient* m_pubSubClient;
@@ -69,9 +69,9 @@ private:
 public:
     WifiMQTTManager();
 
-    void setup(String wifiSSID, String wifiPASS, String mqttServer, uint16_t mqttPort,
-               String mqttUsername, String mqttPassword, String ip, String mask, String gateway,
-               String deviceName, String deviceType, String fw, String fwVersion);
+    void setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort,
+               std::string mqttUsername, std::string mqttPassword, std::string ip, std::string mask, std::string gateway,
+               std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion);
 
     ~WifiMQTTManager();
 
@@ -79,16 +79,16 @@ public:
     void setCheckConnectivityTime(unsigned long checkConnectivityTime);
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
-    void addSubscribeTopic(String subscribeTopic);
-    void eraseSubscribeTopic(String statusTopic);
+    void addSubscribeTopic(std::string subscribeTopic);
+    void eraseSubscribeTopic(std::string statusTopic);
 
-    void addStatusTopic(String statusTopic);
-    void eraseStatusTopic(String statusTopic);
+    void addStatusTopic(std::string statusTopic);
+    void eraseStatusTopic(std::string statusTopic);
 
     void startConnection();
     void stopConnection();
 
-    void publishMQTT(String topic, String payload);
+    void publishMQTT(std::string topic, std::string payload);
 
     bool connected();
 

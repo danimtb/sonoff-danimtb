@@ -66,9 +66,9 @@
 
 
 
-String setTopic = SET_TOPIC;
-String statusTopic = STATUS_TOPIC;
-String secondaryTopic = SECONDARY_TOPIC;
+std::string setTopic = SET_TOPIC;
+std::string statusTopic = STATUS_TOPIC;
+std::string secondaryTopic = SECONDARY_TOPIC;
 
 WifiMQTTManager wifiMQTTManager;
 Relay relay;

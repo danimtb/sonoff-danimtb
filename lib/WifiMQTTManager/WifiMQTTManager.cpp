@@ -13,7 +13,7 @@ WifiMQTTManager::WifiMQTTManager()
     m_checkConnectivityTimer.setup(RT_ON);
 }
 
-void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion)
+void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, std::string ip, std::string mask, std::string gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion)
 {
     m_wifiSSID = wifiSSID;
     m_wifiPASS = wifiPASS;
@@ -33,9 +33,9 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     m_fwTopic = m_deviceNameTopic + "/fw";
     m_fwVersionTopic = m_fwTopic + "/version";
 
-    m_ip.fromString(ip);
-    m_mask.fromString(mask);
-    m_gateway.fromString(gateway);
+    m_ip.fromString(ip.c_str());
+    m_mask.fromString(mask.c_str());
+    m_gateway.fromString(gateway.c_str());
 
     m_pubSubClient = new PubSubClient(m_wifiClient);
     m_pubSubClient->setServer(mqttServer.c_str(), mqttPort);
@@ -113,22 +113,22 @@ void WifiMQTTManager::checkConnectivity()
     }
 }
 
-void WifiMQTTManager::addStatusTopic(String statusTopic)
+void WifiMQTTManager::addStatusTopic(std::string statusTopic)
 {
     m_statusTopics[statusTopic] = "";
 }
 
-void WifiMQTTManager::eraseStatusTopic(String statusTopic)
+void WifiMQTTManager::eraseStatusTopic(std::string statusTopic)
 {
     m_statusTopics.erase(statusTopic);
 }
 
-void WifiMQTTManager::addSubscribeTopic(String subscribeTopic)
+void WifiMQTTManager::addSubscribeTopic(std::string subscribeTopic)
 {
     m_subscribeTopics.push_back(subscribeTopic);
 }
 
-void WifiMQTTManager::eraseSubscribeTopic(String statusTopic)
+void WifiMQTTManager::eraseSubscribeTopic(std::string statusTopic)
 {
     // TODO: improve erase of topic
 
@@ -152,7 +152,7 @@ void WifiMQTTManager::stopConnection()
     WiFi.disconnect();
 }
 
-void WifiMQTTManager::publishMQTT(String topic, String payload)
+void WifiMQTTManager::publishMQTT(std::string topic, std::string payload)
 {
     if(m_statusTopics.find(topic) != m_statusTopics.end())
     {
@@ -164,7 +164,7 @@ void WifiMQTTManager::publishMQTT(String topic, String payload)
     }
     else
     {
-        std::pair<String, String> tempPair;
+        std::pair<std::string, std::string> tempPair;
         tempPair.first = topic;
         tempPair.second = payload;
         m_tempPublishTopics.push_back(tempPair);
@@ -233,7 +233,7 @@ void WifiMQTTManager::loop()
 
 void WifiMQTTManager::refreshStatusTopics()
 {
-    for (std::map<String, String>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
+    for (std::map<std::string, std::string>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
     {
         m_pubSubClient->publish(it->first.c_str(), it->second.c_str());
     }
