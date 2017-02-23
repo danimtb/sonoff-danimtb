@@ -29,18 +29,18 @@ private:
     IPAddress m_mask;
     IPAddress m_gateway;
 
-    String m_deviceName;
-    String m_deviceType;
-    String m_deviceMac;
-    String m_fw;
-    String m_fwVersion;
+    std::string m_deviceName;
+    std::string m_deviceType;
+    std::string m_deviceMac;
+    std::string m_fw;
+    std::string m_fwVersion;
 
-    String m_deviceMacTopic;
-    String m_deviceIpTopic;
-    String m_deviceNameTopic;
-    String m_deviceTypeTopic;
-    String m_fwTopic;
-    String m_fwVersionTopic;
+    std::string m_deviceMacTopic;
+    std::string m_deviceIpTopic;
+    std::string m_deviceNameTopic;
+    std::string m_deviceTypeTopic;
+    std::string m_fwTopic;
+    std::string m_fwVersionTopic;
 
     std::map<String, String> m_statusTopics;
     std::vector<String> m_subscribeTopics;
@@ -61,7 +61,7 @@ private:
 
     void initWifi();
     void connectWifi();
-    String getMacAddress();
+    std::string getMacAddress();
     void publishDeviceStatusInfo();
     void checkConnectivity();
     void refreshStatusTopics();
