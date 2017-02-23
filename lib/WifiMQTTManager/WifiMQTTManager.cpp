@@ -15,7 +15,7 @@ WifiMQTTManager::WifiMQTTManager()
     m_deviceMac = this->getMacAddress();
 }
 
-void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion);
+void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion)
 {
     m_wifiSSID = wifiSSID;
     m_wifiPASS = wifiPASS;
@@ -23,7 +23,6 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     m_mqttPort = mqttPort;
     m_mqttUsername = mqttUsername;
     m_mqttPassword = mqttPassword;
-    m_ipNumber = ipNumber;
     m_deviceName = deviceName;
     m_deviceType = deviceType;
     m_fw = fw;

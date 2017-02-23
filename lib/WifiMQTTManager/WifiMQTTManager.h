@@ -67,7 +67,7 @@ private:
     void refreshStatusTopics();
 
 public:
-    WifiManager();
+    WifiMQTTManager();
 
     void setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort,
                std::string mqttUsername, std::string mqttPassword, String ip, String mask, String gateway,
