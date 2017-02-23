@@ -83,33 +83,40 @@ void WifiMQTTManager::checkConnectivity()
     {
         m_connected = false;
         this->connectWifi();
+
+        if (WiFi.status() == WL_CONNECTED)
+        {
+            this->checkMQTTConnectivity();
+        }
     }
     else
     {
-        if (!m_pubSubClient->connected())
-        {
-            if (m_pubSubClient->connect(m_deviceName.c_str(), m_mqttUsername.c_str(), m_mqttPassword.c_str()))
-            {
-                for (int i = 0; i < m_subscribeTopics.size(); i++)
-                {
-                    m_pubSubClient->subscribe(m_subscribeTopics[i].c_str());
-                }
+        this->checkMQTTConnectivity();
+    }
+}
 
-                this->publishDeviceStatusInfo();
-                m_connected = true;
-            }
-            else
+void WifiMQTTManager::checkMQTTConnectivity()
+{
+    if (!m_pubSubClient->connected())
+    {
+        if (m_pubSubClient->connect(m_deviceName.c_str(), m_mqttUsername.c_str(), m_mqttPassword.c_str()))
+        {
+            for (int i = 0; i < m_subscribeTopics.size(); i++)
             {
-                Serial.println(m_deviceName.c_str());
-                Serial.println(m_mqttUsername.c_str());
-                Serial.println(m_mqttPassword.c_str());
-                m_connected = false;
+                m_pubSubClient->subscribe(m_subscribeTopics[i].c_str());
             }
+
+            this->publishDeviceStatusInfo();
+            m_connected = true;
         }
         else
         {
-            m_connected = true;
+            m_connected = false;
         }
+    }
+    else
+    {
+        m_connected = true;
     }
 }
 
