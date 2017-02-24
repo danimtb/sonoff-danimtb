@@ -5,7 +5,8 @@
 #include "../lib/Relay/Relay.h"
 #include "../lib/LED/LED.h"
 #include "../lib/Button/Button.h"
-#include "../lib/WifiMQTTManager/WifiMQTTManager.h"
+#include "../lib/MqttManager/MqttManager.h"
+#include "../lib/WifiManager/WifiManager.h"
 
 
 //#################### FW DATA ####################
@@ -70,7 +71,8 @@ std::string setTopic = SET_TOPIC;
 std::string statusTopic = STATUS_TOPIC;
 std::string secondaryTopic = SECONDARY_TOPIC;
 
-WifiMQTTManager wifiMQTTManager;
+WifiManager wifiManager;
+MqttManager mqttManager;
 Relay relay;
 Button button;
 LED led;
@@ -90,19 +92,19 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length)
         {
             Serial.println("ON");
             relay.on();
-            wifiMQTTManager.publishMQTT(statusTopic, "ON");
+            mqttManager.publishMQTT(statusTopic, "ON");
         }
         else if (!strcasecmp((char *)payload, "OFF"))
         {
             Serial.println("OFF");
             relay.off();
-            wifiMQTTManager.publishMQTT(statusTopic, "OFF");
+            mqttManager.publishMQTT(statusTopic, "OFF");
         }
         else if (!strcasecmp((char *)payload, "TOGGLE"))
         {
             Serial.println("TOGGLE");
             relay.commute();
-            wifiMQTTManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
+            mqttManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
         }
         else
         {
@@ -122,9 +124,9 @@ void shortPress()
     Serial.println("button.shortPress()");
     relay.commute();
 
-    if (wifiMQTTManager.connected())
+    if (mqttManager.connected())
     {
-        wifiMQTTManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
+        mqttManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
     }
 }
 
@@ -132,10 +134,10 @@ void longPress()
 {
     Serial.println("button.longPress()");
 
-    if (wifiMQTTManager.connected())
+    if (mqttManager.connected())
     {
         Serial.println("Secondary topic: TOGGLE");
-        wifiMQTTManager.publishMQTT(secondaryTopic, "TOGGLE");
+        mqttManager.publishMQTT(secondaryTopic, "TOGGLE");
     }
 }
 
@@ -165,12 +167,16 @@ void setup()
     ArduinoOTA.setPassword(OTA_PASS);
     ArduinoOTA.begin();
 
-    // Configure MQTT server
-    wifiMQTTManager.setup(WIFI_SSID, WIFI_PASS, MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, DEVICE_IP, DEVICE_MASK, DEVICE_GATEWAY, DEVICE_NAME, DEVICE_TYPE, FW, FW_VERSION);
-    wifiMQTTManager.addStatusTopic(statusTopic);
-    wifiMQTTManager.addSubscribeTopic(setTopic);
-    wifiMQTTManager.setCallback(MQTTcallback);
-    wifiMQTTManager.startConnection();
+    // Configure Wifi
+    wifiManager.setup(WIFI_SSID, WIFI_PASS, DEVICE_IP, DEVICE_MASK, DEVICE_GATEWAY, DEVICE_NAME);
+    wifiManager.connectStaWifi();
+
+    mqttManager.setup(MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD);
+    mqttManager.setDeviceData(DEVICE_NAME, DEVICE_TYPE, DEVICE_IP, FW, FW_VERSION);
+    mqttManager.addStatusTopic(statusTopic);
+    mqttManager.addSubscribeTopic(setTopic);
+    mqttManager.setCallback(MQTTcallback);
+    mqttManager.startConnection();
 }
 
 void loop()
@@ -178,15 +184,21 @@ void loop()
     // Process Button events
     button.loop();
 
-    // Process Wifi and MQTT events
-    wifiMQTTManager.loop();
+    // Check Wifi status
+    wifiManager.loop();
+
+    // Check MQTT status
+    if (wifiManager.connected())
+    {
+        mqttManager.loop();
+    }
 
     // Handle OTA FW updates
     ArduinoOTA.handle();
 
 #ifdef LED_PIN
     // LED Status
-    if (wifiMQTTManager.connected())
+    if (mqttManager.connected())
     {
         led.on();
     }
