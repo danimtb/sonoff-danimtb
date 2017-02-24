@@ -210,6 +210,10 @@ void loop()
     {
         led.on();
     }
+    else if(wifiManager.apModeEnabled())
+    {
+        led.blink(1000);
+    }
     else
     {
         led.off();
