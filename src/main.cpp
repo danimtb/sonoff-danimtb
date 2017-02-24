@@ -141,6 +141,13 @@ void longPress()
     }
 }
 
+void longlongPress()
+{
+    Serial.println("button.longlongPress()");
+    mqttManager.stopConnection();
+    wifiManager.createApWifi();
+}
+
 void setup()
 {
     // Init serial comm
@@ -153,6 +160,7 @@ void setup()
     button.setup(BUTTON_PIN, PULLDOWN);
     button.setShortPressCallback(shortPress);
     button.setLongPressCallback(longPress);
+    button.setLongLongPressCallback(longlongPress);
 
 #ifdef LED_PIN
     led.setup(LED_PIN, LED_LOW_LVL);
