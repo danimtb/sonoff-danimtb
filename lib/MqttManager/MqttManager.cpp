@@ -92,9 +92,9 @@ void MqttManager::addStatusTopic(std::string statusTopic)
     m_statusTopics[statusTopic] = "";
 }
 
-void MqttManager::eraseStatusTopic(std::string statusTopic)
+void MqttManager::clearStatusTopics()
 {
-    m_statusTopics.erase(statusTopic);
+    m_statusTopics.clear();
 }
 
 void MqttManager::addSubscribeTopic(std::string subscribeTopic)
@@ -102,17 +102,9 @@ void MqttManager::addSubscribeTopic(std::string subscribeTopic)
     m_subscribeTopics.push_back(subscribeTopic);
 }
 
-void MqttManager::eraseSubscribeTopic(std::string statusTopic)
+void MqttManager::clearSubscribeTopics()
 {
-    // TODO: improve erase of topic
-
-    for (int i = 0; i < m_subscribeTopics.size(); i++)
-    {
-        if (m_subscribeTopics[i] == statusTopic)
-        {
-            m_subscribeTopics.erase(m_subscribeTopics.begin() + i);
-        }
-    }
+    m_subscribeTopics.clear();
 }
 
 void MqttManager::startConnection()

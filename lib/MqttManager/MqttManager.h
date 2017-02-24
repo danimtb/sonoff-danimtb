@@ -71,10 +71,10 @@ public:
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
     void addSubscribeTopic(std::string subscribeTopic);
-    void eraseSubscribeTopic(std::string statusTopic);
+    void clearSubscribeTopics();
 
     void addStatusTopic(std::string statusTopic);
-    void eraseStatusTopic(std::string statusTopic);
+    void clearStatusTopics();
 
     void startConnection();
     void stopConnection();
