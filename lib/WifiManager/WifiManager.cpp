@@ -99,3 +99,8 @@ void WifiManager::setCheckConnectivityTime(unsigned long checkConnectivityTime)
 {
     m_checkConnectivityTime = checkConnectivityTime;
 }
+
+bool WifiManager::apModeEnabled()
+{
+    return m_apMode;
+}

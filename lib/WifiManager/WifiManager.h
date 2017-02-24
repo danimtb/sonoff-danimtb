@@ -46,6 +46,8 @@ public:
     void connectStaWifi();
     void createApWifi();
 
+    bool apModeEnabled();
+
     bool connected();
 
     void loop();
