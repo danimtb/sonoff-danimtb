@@ -144,8 +144,17 @@ void longPress()
 void longlongPress()
 {
     Serial.println("button.longlongPress()");
-    mqttManager.stopConnection();
-    wifiManager.createApWifi();
+
+    if(wifiManager.apModeEnabled())
+    {
+        wifiManager.connectStaWifi();
+        mqttManager.startConnection();
+    }
+    else
+    {
+        mqttManager.stopConnection();
+        wifiManager.createApWifi();
+    }
 }
 
 void setup()
