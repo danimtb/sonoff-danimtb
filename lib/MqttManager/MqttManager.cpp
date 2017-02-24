@@ -123,6 +123,7 @@ void MqttManager::startConnection()
 void MqttManager::stopConnection()
 {
     m_pubSubClient->disconnect();
+    m_connected = false;
 }
 
 void MqttManager::publishMQTT(std::string topic, std::string payload)
