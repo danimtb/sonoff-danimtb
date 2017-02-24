@@ -18,13 +18,6 @@ void MqttManager::setup(std::string mqttServer, uint16_t mqttPort, std::string m
     m_mqttUsername = mqttUsername;
     m_mqttPassword = mqttPassword;
 
-    m_deviceNameTopic = "/" + m_deviceName;
-    m_deviceMacTopic = m_deviceNameTopic + "/mac";
-    m_deviceIpTopic = m_deviceNameTopic + "/ip";
-    m_deviceTypeTopic = m_deviceNameTopic + "/type";
-    m_fwTopic = m_deviceNameTopic + "/fw";
-    m_fwVersionTopic = m_fwTopic + "/version";
-
     m_pubSubClient = new PubSubClient(m_wifiClient);
     m_pubSubClient->setServer(mqttServer.c_str(), mqttPort);
 
@@ -39,6 +32,13 @@ void MqttManager::setDeviceData(std::string deviceName, std::string deviceType, 
     m_deviceIP = deviceIP;
     m_fw = fw;
     m_fwVersion = fwVersion;
+
+    m_deviceNameTopic = "/" + m_deviceName;
+    m_deviceMacTopic = m_deviceNameTopic + "/mac";
+    m_deviceIpTopic = m_deviceNameTopic + "/ip";
+    m_deviceTypeTopic = m_deviceNameTopic + "/type";
+    m_fwTopic = m_deviceNameTopic + "/fw";
+    m_fwVersionTopic = m_fwTopic + "/version";
 }
 
 void MqttManager::publishDeviceStatusInfo()
