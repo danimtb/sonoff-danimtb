@@ -4,11 +4,9 @@ MqttManager::MqttManager()
 {
     m_connected = false;
     m_publishMQTT = false;
-    m_deviceStatusInfoTime = 5*60*1000; // 5 min
-    m_checkConnectivityTime = 20000; // 20 secs
 
-    m_deviceStatusInfoTimer.setup(RT_ON);
-    m_checkConnectivityTimer.setup(RT_ON);
+    m_deviceStatusInfoTimer.setup(RT_ON, 300000);
+    m_checkConnectivityTimer.setup(RT_ON, 20000);
 }
 
 void MqttManager::setup(std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword)
@@ -21,8 +19,8 @@ void MqttManager::setup(std::string mqttServer, uint16_t mqttPort, std::string m
     m_pubSubClient = new PubSubClient(m_wifiClient);
     m_pubSubClient->setServer(mqttServer.c_str(), mqttPort);
 
-    m_deviceStatusInfoTimer.load(m_deviceStatusInfoTime);
-    m_checkConnectivityTimer.load(m_checkConnectivityTime);
+    m_deviceStatusInfoTimer.start();
+    m_checkConnectivityTimer.start();
 }
 
 void MqttManager::setDeviceData(std::string deviceName, std::string deviceType, std::string deviceIP, std::string fw, std::string fwVersion)
@@ -143,14 +141,10 @@ void MqttManager::setCallback(void (*callback)(char*, uint8_t*, unsigned int))
     m_pubSubClient->setCallback(callback);
 }
 
-void MqttManager::setCheckConnectivityTime(unsigned long checkConnectivityTime)
-{
-    m_checkConnectivityTime = checkConnectivityTime;
-}
-
 void MqttManager::setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime)
 {
-    m_deviceStatusInfoTime = deviceStatusInfoTime;
+    m_deviceStatusInfoTimer.load(deviceStatusInfoTime);
+    m_deviceStatusInfoTimer.start();
 }
 
 void MqttManager::loop()
@@ -163,7 +157,7 @@ void MqttManager::loop()
     {
         this->checkConnectivity();
 
-        m_checkConnectivityTimer.load(m_checkConnectivityTime); //reload timer
+        m_checkConnectivityTimer.start(); //restart timer
     }
 
 
@@ -174,7 +168,7 @@ void MqttManager::loop()
         {
             this->publishDeviceStatusInfo();
 
-            m_deviceStatusInfoTimer.load(m_deviceStatusInfoTime); //reload timer
+            m_deviceStatusInfoTimer.start(); //restart timer
         }
 
 

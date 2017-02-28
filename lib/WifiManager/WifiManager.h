@@ -29,7 +29,6 @@ private:
     bool m_apMode;
 
     SimpleTimer m_checkConnectivityTimer;
-    unsigned long m_checkConnectivityTime;
 
     void checkConnectivity();
 
@@ -40,8 +39,6 @@ public:
     WifiManager();
 
     void setup(std::string staSSID, std::string staPASS, std::string ip, std::string mask, std::string gateway, std::string apSSID);
-
-    void setCheckConnectivityTime(unsigned long checkConnectivityTime);
 
     void connectStaWifi();
     void createApWifi();

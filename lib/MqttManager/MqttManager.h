@@ -44,13 +44,9 @@ private:
     PubSubClient* m_pubSubClient;
 
     bool m_connected;
-
     bool m_publishMQTT;
 
-    unsigned long m_deviceStatusInfoTime;
     SimpleTimer m_deviceStatusInfoTimer;
-
-    unsigned long m_checkConnectivityTime;
     SimpleTimer m_checkConnectivityTimer;
 
     void setDeviceMac();
@@ -67,7 +63,6 @@ public:
     void setDeviceData(std::string deviceName, std::string deviceType, std::string deviceIP, std::string fw, std::string fwVersion);
     void setCallback(void (*callback)(char*, uint8_t*, unsigned int));
 
-    void setCheckConnectivityTime(unsigned long checkConnectivityTime);
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
     void addSubscribeTopic(std::string subscribeTopic);

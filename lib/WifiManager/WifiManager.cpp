@@ -17,9 +17,8 @@ void WifiManager::setup(std::string staSSID, std::string staPASS, std::string ip
     m_mask.fromString(mask.c_str());
     m_gateway.fromString(gateway.c_str());
 
-    m_checkConnectivityTime = 20 * 1000;
-    m_checkConnectivityTimer.setup(RT_ON);
-    m_checkConnectivityTimer.load(m_checkConnectivityTime);
+    m_checkConnectivityTimer.setup(RT_ON, 20000);
+    m_checkConnectivityTimer.start();
 }
 
 void WifiManager::connectStaWifi()
@@ -85,7 +84,7 @@ void WifiManager::loop()
         if (m_checkConnectivityTimer.check())
         {
             this->checkConnectivity();
-            m_checkConnectivityTimer.load(m_checkConnectivityTime);
+            m_checkConnectivityTimer.start();
         }
     }
 }
@@ -93,11 +92,6 @@ void WifiManager::loop()
 bool WifiManager::connected()
 {
     return WiFi.status() == WL_CONNECTED;
-}
-
-void WifiManager::setCheckConnectivityTime(unsigned long checkConnectivityTime)
-{
-    m_checkConnectivityTime = checkConnectivityTime;
 }
 
 bool WifiManager::apModeEnabled()
