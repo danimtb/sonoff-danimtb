@@ -152,12 +152,12 @@ void setup()
     button.setShortPressCallback(shortPress);
     button.setLongPressCallback(longPress);
 
-#ifdef LED_PIN
-    led.setup(LED_PIN, LED_LOW_LVL);
-    led.on();
-    delay(300);
-    led.off();
-#endif
+    #ifdef LED_PIN
+        led.setup(LED_PIN, LED_LOW_LVL);
+        led.on();
+        delay(300);
+        led.off();
+    #endif
 
     // OTA setup
     ArduinoOTA.setPort(OTA_PORT);
@@ -184,15 +184,15 @@ void loop()
     // Handle OTA FW updates
     ArduinoOTA.handle();
 
-#ifdef LED_PIN
-    // LED Status
-    if (wifiMQTTManager.connected())
-    {
-        led.on();
-    }
-    else
-    {
-        led.off();
-    }
-#endif
+    #ifdef LED_PIN
+        // LED Status
+        if (wifiMQTTManager.connected())
+        {
+            led.on();
+        }
+        else
+        {
+            led.off();
+        }
+    #endif
 }

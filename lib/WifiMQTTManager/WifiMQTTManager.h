@@ -50,13 +50,9 @@ private:
     PubSubClient* m_pubSubClient;
 
     bool m_connected;
-
     bool m_publishMQTT;
 
-    unsigned long m_deviceStatusInfoTime;
     SimpleTimer m_deviceStatusInfoTimer;
-
-    unsigned long m_checkConnectivityTime;
     SimpleTimer m_checkConnectivityTimer;
 
     void initWifi();

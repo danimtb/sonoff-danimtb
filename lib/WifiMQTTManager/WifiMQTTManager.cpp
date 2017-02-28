@@ -4,11 +4,9 @@ WifiMQTTManager::WifiMQTTManager()
 {
     m_connected = false;
     m_publishMQTT = false;
-    m_deviceStatusInfoTime = 5*60*1000; // 5 min
-    m_checkConnectivityTime = 20000; // 20 secs
 
-    m_deviceStatusInfoTimer.setup(RT_ON);
-    m_checkConnectivityTimer.setup(RT_ON);
+    m_deviceStatusInfoTimer.setup(RT_ON, 300000);   // 5 min
+    m_checkConnectivityTimer.setup(RT_ON, 20000); // 20 secs
 }
 
 void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword, std::string ip, std::string mask, std::string gateway, std::string deviceName, std::string deviceType, std::string fw, std::string fwVersion)
@@ -38,9 +36,8 @@ void WifiMQTTManager::setup(std::string wifiSSID, std::string wifiPASS, std::str
     m_pubSubClient = new PubSubClient(m_wifiClient);
     m_pubSubClient->setServer(mqttServer.c_str(), mqttPort);
 
-    m_deviceStatusInfoTimer.load(m_deviceStatusInfoTime);
-
-    m_checkConnectivityTimer.load(m_checkConnectivityTime);
+    m_deviceStatusInfoTimer.start();
+    m_checkConnectivityTimer.start();
 
     this->initWifi();
 }
@@ -195,12 +192,14 @@ void WifiMQTTManager::setCallback(void (*callback)(char*, uint8_t*, unsigned int
 
 void WifiMQTTManager::setCheckConnectivityTime(unsigned long checkConnectivityTime)
 {
-    m_checkConnectivityTime = checkConnectivityTime;
+    m_checkConnectivityTimer.load(checkConnectivityTime);
+    m_checkConnectivityTimer.start();
 }
 
 void WifiMQTTManager::setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime)
 {
-    m_deviceStatusInfoTime = deviceStatusInfoTime;
+    m_deviceStatusInfoTimer.load(deviceStatusInfoTime);
+    m_deviceStatusInfoTimer.start();
 }
 
 void WifiMQTTManager::loop()
@@ -213,7 +212,7 @@ void WifiMQTTManager::loop()
     {
         this->checkConnectivity();
 
-        m_checkConnectivityTimer.load(m_checkConnectivityTime); //reload timer
+        m_checkConnectivityTimer.start(); //restart timer
     }
 
 
@@ -224,7 +223,7 @@ void WifiMQTTManager::loop()
         {
             this->publishDeviceStatusInfo();
 
-            m_deviceStatusInfoTimer.load(m_deviceStatusInfoTime); //reload timer
+            m_deviceStatusInfoTimer.start(); //restart timer
         }
 
 

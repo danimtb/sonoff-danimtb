@@ -64,7 +64,7 @@ DEFINES += "ARDUINO_ESP8266_ESP01"
 
 OTHER_FILES += platformio.ini
 
-SOURCES += src\main.cpp \
+SOURCES += src/main.cpp \
     .piolibdeps/PubSubClient_ID89/src/PubSubClient.cpp \
     lib/Button/Button.cpp \
     lib/LED/LED.cpp \
