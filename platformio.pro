@@ -71,20 +71,20 @@ SOURCES += src/main.cpp \
     lib/Relay/Relay.cpp \
     lib/SimpleTimer/SimpleTimer.cpp \
 	lib/WifiManager/WifiManager.cpp \
-	lib/MqttManager/MqttManager.cpp
+	lib/MqttManager/MqttManager.cpp \
+	lib/WebServer/WebServer.cpp
 
 DISTFILES += \
     lib/readme.txt
 
 HEADERS += \
     .piolibdeps/PubSubClient_ID89/src/PubSubClient.h \
-    info/DeviceInfo.h \
-    info/NetworkInfo.h \
     lib/Button/Button.h \
     lib/LED/LED.h \
     lib/Relay/Relay.h \
     lib/SimpleTimer/SimpleTimer.h \
 	lib/WifiManager/WifiManager.h \
 	lib/MqttManager/MqttManager.h \
+	lib/WebServer/WebServer.h \
     data/DeviceData.h \
     data/NetworkData.h

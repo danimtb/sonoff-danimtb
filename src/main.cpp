@@ -7,6 +7,7 @@
 #include "../lib/Button/Button.h"
 #include "../lib/MqttManager/MqttManager.h"
 #include "../lib/WifiManager/WifiManager.h"
+#include "../lib/WebServer/WebServer.h"
 
 
 //#################### FW DATA ####################
@@ -71,6 +72,7 @@ std::string setTopic = SET_TOPIC;
 std::string statusTopic = STATUS_TOPIC;
 std::string secondaryTopic = SECONDARY_TOPIC;
 
+WebServer webServer;
 WifiManager wifiManager;
 MqttManager mqttManager;
 Relay relay;
@@ -147,6 +149,7 @@ void longlongPress()
 
     if(wifiManager.apModeEnabled())
     {
+        webServer.stop();
         wifiManager.connectStaWifi();
         mqttManager.startConnection();
     }
@@ -154,6 +157,7 @@ void longlongPress()
     {
         mqttManager.stopConnection();
         wifiManager.createApWifi();
+        webServer.start();
     }
 }
 
@@ -188,12 +192,16 @@ void setup()
     wifiManager.setup(WIFI_SSID, WIFI_PASS, DEVICE_IP, DEVICE_MASK, DEVICE_GATEWAY, DEVICE_NAME);
     wifiManager.connectStaWifi();
 
+    // Configure MQTT
     mqttManager.setup(MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD);
     mqttManager.setDeviceData(DEVICE_NAME, DEVICE_TYPE, DEVICE_IP, FW, FW_VERSION);
     mqttManager.addStatusTopic(statusTopic);
     mqttManager.addSubscribeTopic(setTopic);
     mqttManager.setCallback(MQTTcallback);
     mqttManager.startConnection();
+
+    //Configure WebServer
+    webServer.setup();
 }
 
 void loop()
@@ -212,6 +220,12 @@ void loop()
 
     // Handle OTA FW updates
     ArduinoOTA.handle();
+
+    // Handle WebServer connections
+    if(wifiManager.apModeEnabled())
+    {
+        webServer.loop();
+    }
 
     #ifdef LED_PIN
         // LED Status
