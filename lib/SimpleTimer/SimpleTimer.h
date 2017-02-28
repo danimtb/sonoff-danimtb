@@ -15,7 +15,10 @@ private:
     int m_type;
 
 public:
-    void setup(unsigned int type);          // Set up type of timer: PULSE, RT_ON, RT_OFF
-    void load(unsigned long milliSeconds);  // Load and Init timer
-    bool check();                           // Check if time is over (loop)
+    SimpleTimer();
+    void setup(unsigned int type);                              // Set up type of timer: PULSE, RT_ON, RT_OFF
+    void setup(unsigned int type, unsigned long milliseconds);  // Set up type of timer (PULSE, RT_ON, RT_OFF) and time
+    void load(unsigned long milliSeconds);                      // Load timer with time
+    void start();                                               // Start timer counting time
+    bool check();                                               // Check if time is over (loop)
 };

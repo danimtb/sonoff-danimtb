@@ -12,7 +12,7 @@
 //#################### FW DATA ####################
 
 #define FW "sonoff-danimtb"
-#define FW_VERSION "0.0.5"
+#define FW_VERSION "0.0.6"
 
 //#################### ======= ####################
 
@@ -171,12 +171,12 @@ void setup()
     button.setLongPressCallback(longPress);
     button.setLongLongPressCallback(longlongPress);
 
-#ifdef LED_PIN
-    led.setup(LED_PIN, LED_LOW_LVL);
-    led.on();
-    delay(300);
-    led.off();
-#endif
+    #ifdef LED_PIN
+        led.setup(LED_PIN, LED_LOW_LVL);
+        led.on();
+        delay(300);
+        led.off();
+    #endif
 
     // OTA setup
     ArduinoOTA.setPort(OTA_PORT);
@@ -213,19 +213,19 @@ void loop()
     // Handle OTA FW updates
     ArduinoOTA.handle();
 
-#ifdef LED_PIN
-    // LED Status
-    if (mqttManager.connected())
-    {
-        led.on();
-    }
-    else if(wifiManager.apModeEnabled())
-    {
-        led.blink(1000);
-    }
-    else
-    {
-        led.off();
-    }
-#endif
+    #ifdef LED_PIN
+        // LED Status
+        if (mqttManager.connected())
+        {
+            led.on();
+        }
+        else if(wifiManager.apModeEnabled())
+        {
+            led.blink(1000);
+        }
+        else
+        {
+            led.off();
+        }
+    #endif
 }

@@ -66,13 +66,14 @@ void LED::blink(unsigned long blinkPeriod)
 
 		this->on();
         m_blinkTimer.load(m_blinkPeriod/2);
+        m_blinkTimer.start();
 	}
 	else
 	{
 		if (m_blinkTimer.check())
 		{
 			this->commute();
-            m_blinkTimer.load(m_blinkPeriod/2);
+            m_blinkTimer.start();
 		}
 	}
 }
