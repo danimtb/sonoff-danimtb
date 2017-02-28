@@ -71,7 +71,8 @@ SOURCES += src/main.cpp \
     lib/Relay/Relay.cpp \
     lib/SimpleTimer/SimpleTimer.cpp \
 	lib/WifiManager/WifiManager.cpp \
-	lib/MqttManager/MqttManager.cpp
+        lib/MqttManager/MqttManager.cpp \
+    lib/UpdateManager/UpdateManager.cpp
 
 DISTFILES += \
     lib/readme.txt
@@ -86,5 +87,6 @@ HEADERS += \
     lib/SimpleTimer/SimpleTimer.h \
 	lib/WifiManager/WifiManager.h \
 	lib/MqttManager/MqttManager.h \
+    lib/UpdateManager/UpdateManager.h \
     data/DeviceData.h \
     data/NetworkData.h
