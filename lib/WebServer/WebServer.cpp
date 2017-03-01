@@ -42,6 +42,7 @@ WebServer& WebServer::getInstance()
 WebServer::WebServer()
 {
     m_server = new ESP8266WebServer(80);
+    SPIFFS.begin();
 }
 
 WebServer::~WebServer()
