@@ -20,7 +20,13 @@ private:
     std::string m_fwVersion;
     std::string m_device;
 
+    std::string m_firmwareDownload;
+    std::string m_spiffsDownload;
+
     std::string getServerResponse();
+
+    bool updateSpiffs();
+    bool updateFirmware();
 
 public:
     UpdateManager();
