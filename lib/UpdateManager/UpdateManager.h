@@ -24,15 +24,14 @@ private:
     std::string m_spiffsDownload;
 
     std::string getServerResponse();
-
+    void checkUpdate();
     bool updateSpiffs();
     bool updateFirmware();
+    void update();
 
 public:
     UpdateManager();
     void setup(std::string host, std::string fw, std::string fwVersion, std::string device);
-    void checkUpdate();
-    void update();
     void loop();
 };
 
