@@ -8,3 +8,5 @@
 
 #define OTA_PORT 0000
 #define OTA_PASS ""
+
+#define UPDATE_SERVER ""

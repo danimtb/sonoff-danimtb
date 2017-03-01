@@ -7,6 +7,7 @@
 #include "../lib/Button/Button.h"
 #include "../lib/MqttManager/MqttManager.h"
 #include "../lib/WifiManager/WifiManager.h"
+#include "../lib/UpdateManager/UpdateManager.h"
 
 
 //#################### FW DATA ####################
@@ -71,6 +72,7 @@ std::string setTopic = SET_TOPIC;
 std::string statusTopic = STATUS_TOPIC;
 std::string secondaryTopic = SECONDARY_TOPIC;
 
+UpdateManager updateManager;
 WifiManager wifiManager;
 MqttManager mqttManager;
 Relay relay;
@@ -184,6 +186,9 @@ void setup()
     ArduinoOTA.setPassword(OTA_PASS);
     ArduinoOTA.begin();
 
+    // UpdateManager setup
+    updateManager.setup(UPDATE_SERVER, FW, FW_VERSION, DEVICE_TYPE);
+
     // Configure Wifi
     wifiManager.setup(WIFI_SSID, WIFI_PASS, DEVICE_IP, DEVICE_MASK, DEVICE_GATEWAY, DEVICE_NAME);
     wifiManager.connectStaWifi();
@@ -204,10 +209,11 @@ void loop()
     // Check Wifi status
     wifiManager.loop();
 
-    // Check MQTT status
+    // Check MQTT status and Updates
     if (wifiManager.connected())
     {
         mqttManager.loop();
+        updateManager.loop();
     }
 
     // Handle OTA FW updates
