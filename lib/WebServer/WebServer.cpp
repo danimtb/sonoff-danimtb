@@ -4,23 +4,38 @@ ESP8266WebServer* m_server;
 
 void handleRoot()
 {
-//    char temp[420];
-//    snprintf(temp, 400, "<html>\
-//                        <head>\
-//                        <title>ESP8266 Demo</title>\
-//                        <style>\
-//                        body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-//                        </style>\
-//                        </head>\
-//                        <body>\
-//                        <h1>Hello from ESP8266!</h1>\
-//                        F_name: <input type='text' name='fname'><br>\
-//                        <input type='submit' value='Submit'>\
-//                        </body>\
-//                        </html>"
-//            );
-//    m_server->send(200, "text/html", temp);
-    m_server->send(200, "text/plain", "Hola mundo!");
+    WebServer::getInstance().webServerHandleRoot();
+}
+
+void handleSubmit()
+{
+    WebServer::getInstance().webServerHandleSubmit();
+}
+
+void WebServer::webServerHandleRoot()
+{
+    m_server->streamFile(dataFile, "text/html");
+}
+
+void WebServer::webServerHandleSubmit()
+{
+    if (m_server->args() > 0 )
+    {
+        for ( uint8_t i = 0; i < m_server->args(); i++ )
+        {
+          std::string inputField(m_server->argName(i).c_str());
+          std::string inputContent(m_server->arg(i).c_str());
+          m_inputFieldsContent[inputField] = inputContent;
+       }
+
+       this->m_submitCallback(m_inputFieldsContent);
+    }
+}
+
+WebServer& WebServer::getInstance()
+{
+    static WebServer webServer;
+    return webServer;
 }
 
 WebServer::WebServer()
@@ -34,22 +49,38 @@ WebServer::~WebServer()
 }
 
 
-void WebServer::setup()
+void WebServer::setup(std::string htmlPagePath, void (*submitCallback)(std::map<std::string, std::string>))
 {
     m_server->on("/", handleRoot);
+    m_server->on("/submit", handleSubmit);
+
+    this->setHtmlPagePath(htmlPagePath);
+    this->setSubmitCallback(submitCallback);
 }
 
 void WebServer::start()
 {
+    m_htmlPage = SPIFFS.open(m_htmlPagePath.c_str(), "r");
     m_server->begin();
 }
 
 void WebServer::stop()
 {
     m_server->stop();
+    m_htmlPage.close();
 }
 
 void WebServer::loop()
 {
     m_server->handleClient();
+}
+
+void WebServer::setHtmlPagePath(std::string htmlPagePath)
+{
+    m_htmlPagePath = htmlPagePath;
+}
+
+void WebServer::setSubmitCallback(void (*submitCallback)(std::map<std::string, std::string>))
+{
+    m_submitCallback = submitCallback;
 }

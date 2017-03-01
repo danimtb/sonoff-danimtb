@@ -1,4 +1,5 @@
 #include <string>
+#include <map>
 
 #include <ArduinoOTA.h>
 
@@ -72,12 +73,16 @@ std::string setTopic = SET_TOPIC;
 std::string statusTopic = STATUS_TOPIC;
 std::string secondaryTopic = SECONDARY_TOPIC;
 
-WebServer webServer;
 WifiManager wifiManager;
 MqttManager mqttManager;
 Relay relay;
 Button button;
 LED led;
+
+void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsContent)
+{
+    //Save submited data
+}
 
 void MQTTcallback(char* topic, byte* payload, unsigned int length)
 {
@@ -149,7 +154,7 @@ void longlongPress()
 
     if(wifiManager.apModeEnabled())
     {
-        webServer.stop();
+        WebServer::getInstance().stop();
         wifiManager.connectStaWifi();
         mqttManager.startConnection();
     }
@@ -157,7 +162,7 @@ void longlongPress()
     {
         mqttManager.stopConnection();
         wifiManager.createApWifi();
-        webServer.start();
+        WebServer::getInstance().start();
     }
 }
 
@@ -201,7 +206,7 @@ void setup()
     mqttManager.startConnection();
 
     //Configure WebServer
-    webServer.setup();
+    WebServer::getInstance().setup("/index.html", webServerSubmitCallback);
 }
 
 void loop()
@@ -224,7 +229,7 @@ void loop()
     // Handle WebServer connections
     if(wifiManager.apModeEnabled())
     {
-        webServer.loop();
+        WebServer::getInstance().loop();
     }
 
     #ifdef LED_PIN
