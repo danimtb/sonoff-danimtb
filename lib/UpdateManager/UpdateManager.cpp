@@ -1,7 +1,7 @@
 #include "UpdateManager.h"
 
 #include <ArduinoJson.h>
-#include <ESP8266HTTPClient>
+#include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 
 UpdateManager::UpdateManager()
@@ -23,7 +23,7 @@ std::string UpdateManager::getServerResponse()
 {
     std::string request = m_host + "/" + m_fw + "/" + m_fwVersion + "/" + m_device;
 
-    ESP8266HTTPClient http;
+    HTTPClient http;
     http.begin(request.c_str());
     http.useHTTP10(true); // ?
     http.setTimeout(8000);
@@ -33,7 +33,7 @@ std::string UpdateManager::getServerResponse()
     std::string payload;
     if (httpCode > 0)
     {
-        payload = http.getString();
+        payload = http.getString().c_str();
     }
     else
     {
@@ -168,7 +168,7 @@ bool UpdateManager::updateFirmware()
 
 void UpdateManager::loop()
 {
-    if (m_checkUpdateTimer)
+    if (m_checkUpdateTimer.check())
     {
         this->checkUpdate();
         m_checkUpdateTimer.start();

@@ -5,52 +5,62 @@ else {
     HOMEDIR += $$(HOME)
 }
 
-INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoavr/cores/arduino"
-INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/toolchain-atmelavr/avr/include
-
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\tools\sdk\include"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\tools\sdk\lwip\include"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\cores\esp8266"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\variants\generic"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\.piolibdeps\PubSubClient_ID89\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266WiFi\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266mDNS"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ArduinoOTA"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\lib\LED"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\lib\Relay"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\src"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\lib\Button"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\lib\LED"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\lib\Relay"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\lib\SimpleTimer"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\.piolibdeps\PubSubClient_ID89\src"
-INCLUDEPATH += "$${HOMEDIR}\repos\sonoff-touch-custom\.piolibdeps\PubSubClient_ID89\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ArduinoOTA"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\DNSServer\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\EEPROM"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266AVRISP\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266HTTPClient\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266HTTPUpdateServer\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266SSDP"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266WebServer\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266WiFi\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266WiFiMesh\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266httpUpdate\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\ESP8266mDNS"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\Ethernet\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\GDBStub\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\Hash\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\SD\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\SPI"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\Servo\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\SoftwareSerial"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\TFT_Touch_Shield_V2"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\Ticker"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\Wire"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\framework-arduinoespressif8266\libraries\esp8266\src"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\toolchain-xtensa\lib\gcc\xtensa-lx106-elf\4.8.2\include"
-INCLUDEPATH += "$${HOMEDIR}\.platformio\packages\toolchain-xtensa\lib\gcc\xtensa-lx106-elf\4.8.2\include-fixed"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/tools/sdk/include"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/tools/sdk/lwip/include"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/cores/esp8266"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/variants/generic"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/PubSubClient_ID89/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFi/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/SimpleTimer"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266mDNS"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/MqttManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/LED"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/UpdateManager"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ArduinoOTA"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/Relay"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/Button"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/src"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/Button"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/LED"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/MqttManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/Relay"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/SimpleTimer"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/UpdateManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiMQTTManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/PubSubClient_ID89/src"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/PubSubClient_ID89/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ArduinoOTA"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/DNSServer/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/EEPROM"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266AVRISP/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPClient/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPUpdateServer/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266SSDP"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WebServer/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFi/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFiMesh/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266httpUpdate/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266mDNS"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/Ethernet/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/GDBStub/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/Hash/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/SD/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/SPI"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/Servo/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/SoftwareSerial"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/TFT_Touch_Shield_V2"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/Ticker"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/Wire"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/esp8266/src"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/toolchain-xtensa/xtensa-lx106-elf/include"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/toolchain-xtensa/lib/gcc/xtensa-lx106-elf/4.8.2/include"
+INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/toolchain-xtensa/lib/gcc/xtensa-lx106-elf/4.8.2/include-fixed"
 
 DEFINES += "ARDUINO=20300"
 DEFINES += "LWIP_OPEN_SRC"
@@ -66,27 +76,36 @@ OTHER_FILES += platformio.ini
 
 SOURCES += src/main.cpp \
     .piolibdeps/PubSubClient_ID89/src/PubSubClient.cpp \
+    .piolibdeps/PubSubClient_ID89/src/PubSubClient.cpp \
     lib/Button/Button.cpp \
     lib/LED/LED.cpp \
     lib/Relay/Relay.cpp \
     lib/SimpleTimer/SimpleTimer.cpp \
-	lib/WifiManager/WifiManager.cpp \
-        lib/MqttManager/MqttManager.cpp \
-    lib/UpdateManager/UpdateManager.cpp
-
-DISTFILES += \
-    lib/readme.txt
+    lib/WifiManager/WifiManager.cpp \
+    lib/MqttManager/MqttManager.cpp \
+    lib/UpdateManager/UpdateManager.cppSOURCES += src/main.cpp \
+    .piolibdeps/PubSubClient_ID89/src/PubSubClient.cpp \
+    .piolibdeps/PubSubClient_ID89/src/PubSubClient.cpp \
+    lib/Button/Button.cpp \
+    lib/LED/LED.cpp \
+    lib/Relay/Relay.cpp \
+    lib/SimpleTimer/SimpleTimer.cpp \
+    lib/WifiManager/WifiManager.cpp \
+    lib/MqttManager/MqttManager.cpp \
+    lib/UpdateManager/UpdateManager.cpp \
+    /home/daniel/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPUpdateServer/src/ESP8266HTTPClient.cpp
 
 HEADERS += \
     .piolibdeps/PubSubClient_ID89/src/PubSubClient.h \
+    /home/daniel/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266HTTPUpdateServer/src/ESP8266HTTPClient.h \
     info/DeviceInfo.h \
     info/NetworkInfo.h \
     lib/Button/Button.h \
     lib/LED/LED.h \
     lib/Relay/Relay.h \
     lib/SimpleTimer/SimpleTimer.h \
-	lib/WifiManager/WifiManager.h \
-	lib/MqttManager/MqttManager.h \
+    lib/WifiManager/WifiManager.h \
+    lib/MqttManager/MqttManager.h \
     lib/UpdateManager/UpdateManager.h \
     data/DeviceData.h \
     data/NetworkData.h
