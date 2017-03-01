@@ -14,7 +14,7 @@ void handleSubmit()
 
 void WebServer::webServerHandleRoot()
 {
-    m_server->streamFile(dataFile, "text/html");
+    m_server->streamFile(m_htmlPage, "text/html");
 }
 
 void WebServer::webServerHandleSubmit()

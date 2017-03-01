@@ -86,5 +86,5 @@ HEADERS += \
 	lib/WifiManager/WifiManager.h \
 	lib/MqttManager/MqttManager.h \
 	lib/WebServer/WebServer.h \
-    data/DeviceData.h \
-    data/NetworkData.h
+	config/DeviceData.h \
+	config/NetworkData.h
