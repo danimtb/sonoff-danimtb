@@ -23,12 +23,13 @@ void WebServer::webServerHandleSubmit()
     {
         for ( uint8_t i = 0; i < m_server->args(); i++ )
         {
-          std::string inputField(m_server->argName(i).c_str());
-          std::string inputContent(m_server->arg(i).c_str());
-          m_inputFieldsContent[inputField] = inputContent;
-       }
+            std::string inputField(m_server->argName(i).c_str());
+            std::string inputContent(m_server->arg(i).c_str());
+            m_inputFieldsContent[inputField] = inputContent;
+        }
 
-       this->m_submitCallback(m_inputFieldsContent);
+        m_server->send(200, "text/plain", "Changes saved!");
+        this->m_submitCallback(m_inputFieldsContent);
     }
 }
 
