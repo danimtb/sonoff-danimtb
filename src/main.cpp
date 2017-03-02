@@ -6,6 +6,7 @@
 #include "../lib/Relay/Relay.h"
 #include "../lib/LED/LED.h"
 #include "../lib/Button/Button.h"
+#include "../lib/DataManager/DataManager.h"
 #include "../lib/MqttManager/MqttManager.h"
 #include "../lib/WifiManager/WifiManager.h"
 #include "../lib/WebServer/WebServer.h"
@@ -73,6 +74,7 @@ std::string setTopic = SET_TOPIC;
 std::string statusTopic = STATUS_TOPIC;
 std::string secondaryTopic = SECONDARY_TOPIC;
 
+DataManager dataManager;
 WifiManager wifiManager;
 MqttManager mqttManager;
 Relay relay;
