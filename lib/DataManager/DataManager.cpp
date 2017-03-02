@@ -21,6 +21,7 @@ bool DataManager::EEPROMwriteAnything(uint16_t startAddress, uint16_t maxMemory,
           EEPROM.write(startAddress++, *p++);
     }
 
+    EEPROM.commit();
     return true;
 }
 
