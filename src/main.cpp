@@ -123,22 +123,15 @@ void shortPress()
 {
     Serial.println("button.shortPress()");
     relay.commute();
-
-    if (mqttManager.connected())
-    {
-        mqttManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
-    }
+    mqttManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
 }
 
 void longPress()
 {
     Serial.println("button.longPress()");
 
-    if (mqttManager.connected())
-    {
-        Serial.println("Secondary topic: TOGGLE");
-        mqttManager.publishMQTT(secondaryTopic, "TOGGLE");
-    }
+    Serial.println("Secondary topic: TOGGLE");
+    mqttManager.publishMQTT(secondaryTopic, "TOGGLE");
 }
 
 void longlongPress()
