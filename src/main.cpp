@@ -22,7 +22,7 @@
 
 //################## NETWORK DATA #################
 
-#include "../data/NetworkData.h"
+#include "../config/NetworkData.h"
 
 //################## ============ #################
 
@@ -30,7 +30,7 @@
 
 //################## DEVICE DATA ##################
 
-#include "../data/DeviceData.h"
+#include "../config/DeviceData.h"
 
 //################## ============ ##################
 
@@ -81,7 +81,8 @@ LED led;
 
 void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsContent)
 {
-    //Save submited data
+    Serial.println("webServerSubmitCallback");
+    Serial.println(inputFieldsContent["wifi_password"].c_str());
 }
 
 void MQTTcallback(char* topic, byte* payload, unsigned int length)
@@ -206,7 +207,7 @@ void setup()
     mqttManager.startConnection();
 
     //Configure WebServer
-    WebServer::getInstance().setup("/index.html", webServerSubmitCallback);
+    WebServer::getInstance().setup("/index.html.gz", webServerSubmitCallback);
 }
 
 void loop()

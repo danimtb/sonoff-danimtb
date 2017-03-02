@@ -14,7 +14,7 @@ void handleSubmit()
 
 void WebServer::webServerHandleRoot()
 {
-    m_server->streamFile(dataFile, "text/html");
+    m_server->streamFile(m_htmlPage, "text/html");
 }
 
 void WebServer::webServerHandleSubmit()
@@ -42,6 +42,7 @@ WebServer& WebServer::getInstance()
 WebServer::WebServer()
 {
     m_server = new ESP8266WebServer(80);
+    SPIFFS.begin();
 }
 
 WebServer::~WebServer()
