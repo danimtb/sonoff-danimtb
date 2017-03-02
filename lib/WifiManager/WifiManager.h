@@ -32,9 +32,6 @@ private:
 
     void checkConnectivity();
 
-    void disconnectStaWifi();
-    void destroyApWifi();
-
 public:
     WifiManager();
 
@@ -42,6 +39,8 @@ public:
 
     void connectStaWifi();
     void createApWifi();
+    void disconnectStaWifi();
+    void destroyApWifi();
 
     bool apModeEnabled();
 

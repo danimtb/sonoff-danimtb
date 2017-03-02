@@ -81,8 +81,11 @@ LED led;
 
 void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsContent)
 {
+    //Save config to dataManager
     Serial.println("webServerSubmitCallback");
     Serial.println(inputFieldsContent["wifi_password"].c_str());
+
+    ESP.restart(); // Restart device with new config
 }
 
 void MQTTcallback(char* topic, byte* payload, unsigned int length)
@@ -156,8 +159,9 @@ void longlongPress()
     if(wifiManager.apModeEnabled())
     {
         WebServer::getInstance().stop();
-        wifiManager.connectStaWifi();
-        mqttManager.startConnection();
+        wifiManager.destroyApWifi();
+
+        ESP.restart(); // Restart device
     }
     else
     {
