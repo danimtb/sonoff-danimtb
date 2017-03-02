@@ -85,7 +85,11 @@ void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsConte
 {
     //Save config to dataManager
     Serial.println("webServerSubmitCallback");
-    Serial.println(inputFieldsContent["wifi_password"].c_str());
+
+    if (!inputFieldsContent["wifi_ssid"].empty())
+    {
+        dataManager.setWifiSSID(inputFieldsContent["wifi_ssid"]);
+    }
 
     ESP.restart(); // Restart device with new config
 }
