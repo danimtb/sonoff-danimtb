@@ -1,81 +1,117 @@
+
+
 <!-- ######## This is a comment, visible only in the source editor  ######## -->
 <h1 style="color: #4485b8; text-align: center;">sonoff-danimtb</h1>
 <p style="text-align: center;"><span class="col-11 text-gray-dark mr-2">Alternative firmware for Itead Sonoff devices</span></p>
-<hr /><form action="http://192.168.4.1/submit" method="POST">
-<p style="text-align: center;"><strong><span style="text-decoration: underline;">Network Settings</span></strong></p>
-<table style="width: 550px; margin-left: auto; margin-right: auto; height: 182px;">
-<tbody>
-<tr style="height: 33.5px;">
-<td style="width: 275px; height: 33.5px; text-align: right;">WIFI SSID:</td>
-<td style="width: 275px; text-align: left; height: 33.5px;"><input maxlength="32" name="wifi_ssid" size="30" type="text" /></td>
-</tr>
-<tr style="height: 21px;">
-<td style="width: 275px; height: 21px; text-align: right;">WIFI Password:</td>
-<td style="width: 275px; text-align: left; height: 21px;"><input maxlength="32" name="wifi_password" size="30" type="text" /></td>
-</tr>
-<tr style="height: 21px;">
-<td style="width: 275px; height: 21px; text-align: right;">IP:</td>
-<td style="width: 275px; height: 21px; text-align: left;"><input maxlength="3" name="ip1" size="1" type="text" width="40" />.<input maxlength="3" name="ip2" size="1" type="text" width="40" />.<input maxlength="3" name="ip3" size="1" type="text" width="40" />.<input maxlength="3" name="ip4" size="1" type="text" width="40" /></td>
-</tr>
-<tr style="height: 21px;">
-<td style="width: 275px; height: 21px; text-align: right;">Gateway:</td>
-<td style="width: 275px; height: 21px; text-align: left;"><input maxlength="3" name="gateway1" size="1" type="text" width="40" />.<input maxlength="3" name="gateway2" size="1" type="text" width="40" />.<input maxlength="3" name="gateway3" size="1" type="text" width="40" />.<input maxlength="3" name="gateway4" size="1" type="text" width="40" /></td>
-</tr>
-<tr style="height: 21px;">
-<td style="width: 275px; height: 21px; text-align: right;">Mask:</td>
-<td style="width: 275px; height: 21px; text-align: left;"><input maxlength="3" name="mask1" size="1" type="text" width="40" />.<input maxlength="3" name="mask2" size="1" type="text" width="40" />.<input maxlength="3" name="mask3" size="1" type="text" width="40" />.<input maxlength="3" name="mask4" size="1" type="text" width="40" /></td>
-</tr>
-</tbody>
-</table>
-<p><strong>&nbsp;</strong></p>
-<p style="text-align: center;"><strong><span style="text-decoration: underline;">MQTT Settings</span></strong></p>
-<table style="width: 550px; margin-left: auto; margin-right: auto;">
-<tbody>
-<tr>
-<td style="width: 275px; text-align: right;">MQTT Server:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="32" name="mqtt_server" size="30" type="text" /></td>
-</tr>
-<tr>
-<td style="width: 275px; text-align: right;">MQTT Port:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="4" name="mqtt_port" size="4" type="text" /></td>
-</tr>
-<tr>
-<td style="width: 275px; text-align: right;">MQTT Username:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="32" name="mqtt_username" size="30" type="text" /></td>
-</tr>
-<tr>
-<td style="width: 275px; text-align: right;">MQTT Password:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="32" name="mqtt_password" size="30" type="text" /></td>
-</tr>
-</tbody>
-</table>
-<p style="text-align: center;">&nbsp;</p>
-<p style="text-align: center;"><strong><span style="text-decoration: underline;">Device Data<br /></span></strong></p>
-<table style="width: 550px; margin-left: auto; margin-right: auto;">
-<tbody>
-<tr>
-<td style="width: 275px; text-align: right;">Device Name:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="64" name="device_name" size="30" type="text" /></td>
-</tr>
-<tr>
-<td style="width: 275px; text-align: right;">OTA Password:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="64" name="ota_password" size="30" type="text" /></td>
-</tr>
-<tr>
-<td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="64" name="mqtt_status" size="30" type="text" /></td>
-</tr>
-<tr>
-<td style="width: 275px; text-align: right;">MQTT Command Topic:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="64" name="mqtt_command" size="30" type="text" /></td>
-</tr>
-<tr>
-<td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
-<td style="width: 275px; text-align: left;"><input maxlength="64" name="mqtt_secondary" size="30" type="text" /></td>
-</tr>
-</tbody>
-</table>
-<p><strong>&nbsp;</strong></p>
-<p style="text-align: center;"><input name="save_button" type="submit" value="Save Settings"></input></p>
-</form><hr />
+<hr />
+<form action="http://192.168.4.1/submit" method="POST">
+    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Network Settings</span></strong></p>
+    <table style="width: 550px; margin-left: auto; margin-right: auto; height: 182px;">
+        <tbody>
+            <tr style="height: 33.5px;">
+                <td style="width: 275px; height: 33.5px; text-align: right;">WIFI SSID:</td>
+                <td style="width: 275px; text-align: left; height: 33.5px;"><input maxlength="32" name="wifi_ssid" size="30" id="wifi_ssid" /></td>
+            </tr>
+            <tr style="height: 21px;">
+                <td style="width: 275px; height: 21px; text-align: right;">WIFI Password:</td>
+                <td style="width: 275px; text-align: left; height: 21px;"><input maxlength="32" name="wifi_password" size="30" type="text" id="wifi_password" /></td>
+            </tr>
+            <tr style="height: 21px;">
+                <td style="width: 275px; height: 21px; text-align: right;">IP:</td>
+                <td style="width: 275px; height: 21px; text-align: left;"><input maxlength="15" name="ip" size="15" type="text" id="ip" /></td>
+            </tr>
+            <tr style="height: 21px;">
+                <td style="width: 275px; height: 21px; text-align: right;">Gateway:</td>
+                <td style="width: 275px; height: 21px; text-align: left;"><input maxlength="15" name="gateway" size="15" type="text" id="gateway" /></td>
+            </tr>
+            <tr style="height: 21px;">
+                <td style="width: 275px; height: 21px; text-align: right;">Mask:</td>
+                <td style="width: 275px; height: 21px; text-align: left;"><input maxlength="15" name="mask" size="15" type="text" id="mask" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <p><strong>&nbsp;</strong></p>
+    <p style="text-align: center;"><strong><span style="text-decoration: underline;">MQTT Settings</span></strong></p>
+    <table style="width: 550px; margin-left: auto; margin-right: auto;">
+        <tbody>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Server:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="32" name="mqtt_server" size="30" type="text" id="mqtt_server" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Port:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="4" name="mqtt_port" size="4" type="text" id="mqtt_port" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Username:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="32" name="mqtt_username" size="30" type="text" id="mqtt_username" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Password:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="32" name="mqtt_password" size="30" type="text" id="mqtt_password" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="text-align: center;">&nbsp;</p>
+    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Device Data<br /></span></strong></p>
+    <table style="width: 550px; margin-left: auto; margin-right: auto;">
+        <tbody>
+            <tr>
+                <td style="width: 275px; text-align: right;">Device Name:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="64" name="device_name" size="30" type="text" id="device_name" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">OTA Password:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="64" name="ota_password" size="30" type="text" d="ota_password" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="64" name="mqtt_status" size="30" type="text" id="mqtt_status" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Command Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="64" name="mqtt_command" size="30" type="text" id="mqtt_command" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="64" name="mqtt_secondary" size="30" type="text" id="mqtt_secondary" /></td>
+            </tr>
+            <script>
+                function Get(url)
+                {
+                    var Httpreq = new XMLHttpRequest();
+                    Httpreq.open("GET", url, true);
+                    Httpreq.send(null);
+                    return Httpreq.responseText;
+                }
+                
+                window.onload = function() {
+                
+                	var data = JSON.parse(Get("http://192.168.4.1/data"));
+
+                    document.getElementById("wifi_ssid").value = data.wifi_ssid;
+                    document.getElementById("wifi_password").value = data.wifi_password;
+                    document.getElementById("ip").value = data.ip;
+                    document.getElementById("gateway").value = data.gateway;
+                    document.getElementById("mask").value = data.mask;
+
+                    document.getElementById("mqtt_server").value = data.mqtt_server;
+                    document.getElementById("mqtt_port").value = data.mqtt_port;
+                    document.getElementById("mqtt_username").value = data.mqtt_username;
+                    document.getElementById("mqtt_password").value = data.mqtt_password;
+                
+                    document.getElementById("device_name").value = data.device_name;
+                    document.getElementById("ota_password").value = data.ota_password;
+                    document.getElementById("mqtt_status").value = data.mqtt_status;
+                    document.getElementById("mqtt_command").value = data.mqtt_command;
+                	document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
+                }
+                
+            </script>
+        </tbody>
+    </table>
+    <p><strong>&nbsp;</strong></p>
+    <p style="text-align: center;"><input name="save_button" type="submit" value="Save Settings"></input></p>
+</form>
+<hr />
 <p style="text-align: center;"><em><a href="https://github.com/danimtb/sonoff-danimtb">github@sonoff-danimtb</a></em></p>
