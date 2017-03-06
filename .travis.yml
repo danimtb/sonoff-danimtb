@@ -17,4 +17,4 @@ install:
     - pip install -U platformio
     - export PLATFORMIO_BUILD_FLAGS="-D ENABLE_SONOFF"
 script:
-    - platformio ci --project-conf=platoformio.ini
+    - platformio ci --project-conf=/platoformio.ini
