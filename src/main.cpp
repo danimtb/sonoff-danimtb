@@ -20,7 +20,7 @@
 
 //################## NETWORK DATA #################
 
-#include "../data/NetworkData.h"
+#include "NetworkData.h"
 
 //################## ============ #################
 
@@ -28,7 +28,7 @@
 
 //################## DEVICE DATA ##################
 
-#include "../data/DeviceData.h"
+#include "DeviceData.h"
 
 //################## ============ ##################
 
