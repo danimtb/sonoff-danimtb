@@ -29,28 +29,29 @@
 
 #define DM_DEVICEDATA_ADDR_START 206
 #define DM_DEVICENAME_MEM 32
-#define DM_MQTTTOPIC1_MEM 40
-#define DM_MQTTTOPIC2_MEM 40
-#define DM_MQTTTOPIC3_MEM 40
-#define DM_MQTTTOPIC4_MEM 40
-#define DM_MQTTTOPIC5_MEM 40
-#define DM_MQTTTOPIC6_MEM 40
+#define DM_MQTTTOPIC_MEM 40 // 40 x 6
 #define DM_DEVICEDATA_ADDR_END 489
 
 class DataManager
 {
 private:
-    template <class T> bool EEPROMwriteAnything(uint16_t startAddress, uint16_t maxMemory, const T& value);
-    template <class T> void EEPROMreadAnything(uint16_t startAddress, uint16_t maxMemory, T& value);
+    std::string EEPROMreadString(uint16_t startAddress, uint16_t maxMemory);
+    void EEPROMwriteString(uint16_t startAddress, uint16_t maxMemory, std::string data);
+
+    uint16_t EEPROMreadNumber(uint16_t startAddress, uint16_t maxMemory);
+    void EEPROMwrite2bNumber(uint16_t startAddress, uint16_t maxMemory, uint16_t number);
+    void EEPROMwrite1bNumber(uint16_t startAddress, uint16_t maxMemory, uint8_t number);
+
+    void addressToInt(std::string address, uint8_t& i1, uint8_t& i2, uint8_t& i3, uint8_t& i4);
 
 public:
     DataManager();
 
     void setWifiSSID(std::string wifissid);
     void setWifiPass(std::string wifipass);
-    void setIP(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4);
-    void setMask(uint8_t mask1, uint8_t mask2, uint8_t mask3, uint8_t mask4);
-    void setGateway(uint8_t gateway1, uint8_t gateway2, uint8_t gateway3, uint8_t gateway4);
+    void setIP(std::string ip);
+    void setMask(std::string mask);
+    void setGateway(std::string gateway);
     void setOta(std::string ota);
 
     void setMqttServer(std::string mqttServer);
