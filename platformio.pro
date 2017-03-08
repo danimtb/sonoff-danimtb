@@ -65,8 +65,7 @@ DEFINES += "ARDUINO_ESP8266_ESP01"
 OTHER_FILES += platformio.ini
 
 SOURCES += src/main.cpp \
-    .piolibdeps/PubSubClient_ID89/src/PubSubClient.cpp \
-    lib/Button/Button.cpp \
+	lib/Button/Button.cpp \
     lib/LED/LED.cpp \
     lib/Relay/Relay.cpp \
     lib/SimpleTimer/SimpleTimer.cpp \
@@ -79,7 +78,6 @@ DISTFILES += \
     lib/readme.txt
 
 HEADERS += \
-    .piolibdeps/PubSubClient_ID89/src/PubSubClient.h \
     lib/Button/Button.h \
     lib/LED/LED.h \
     lib/Relay/Relay.h \
@@ -87,6 +85,4 @@ HEADERS += \
     lib/DataManager/DataManager.h \
     lib/WifiManager/WifiManager.h \
     lib/MqttManager/MqttManager.h \
-    lib/WebServer/WebServer.h \
-    config/DeviceData.h \
-    config/NetworkData.h
+	lib/WebServer/WebServer.h
