@@ -1,6 +1,8 @@
 sonoff-danimtb
 ==============
 
+[![Build Status](https://travis-ci.org/danimtb/sonoff-danimtb.svg?branch=master)](https://travis-ci.org/danimtb/sonoff-danimtb)
+
 This FW is an alternative FW for some sonoff devices to use them with MQTT communication protocol. The main purpose for this firmware is to perform as best with [Home Assistant](home-assistant.io).
 
 It is design with these features in mind:

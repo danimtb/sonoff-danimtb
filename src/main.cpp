@@ -16,7 +16,7 @@
 //#################### FW DATA ####################
 
 #define FW "sonoff-danimtb"
-#define FW_VERSION "0.0.6"
+#define FW_VERSION "0.0.7"
 
 //#################### ======= ####################
 
@@ -209,21 +209,15 @@ void shortPress()
     Serial.println("button.shortPress()");
     relay.commute();
 
-    if (mqttManager.connected())
-    {
-        mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
-    }
+    mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
 }
 
 void longPress()
 {
     Serial.println("button.longPress()");
 
-    if (mqttManager.connected())
-    {
-        Serial.println("Secondary topic: TOGGLE");
-        mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
-    }
+    Serial.println("Secondary topic: TOGGLE");
+    mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
 }
 
 void longlongPress()

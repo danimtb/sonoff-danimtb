@@ -126,7 +126,7 @@ void MqttManager::publishMQTT(std::string topic, std::string payload)
             m_publishMQTT = true;
         }
     }
-    else
+    else if(m_connected)
     {
         std::pair<std::string, std::string> tempPair;
         tempPair.first = topic;
@@ -174,6 +174,8 @@ void MqttManager::loop()
 
         if (m_publishMQTT)
         {
+            this->refreshStatusTopics();
+
             if (!m_tempPublishTopics.empty())
             {
                 for (int i = 0; i < m_tempPublishTopics.size(); i++)
@@ -184,10 +186,12 @@ void MqttManager::loop()
                 m_tempPublishTopics.clear();
             }
 
-            this->refreshStatusTopics();
-
             m_publishMQTT = false;
         }
+    }
+    else
+    {
+        m_tempPublishTopics.clear(); //Delete temp publish topics buffer if there is not connection
     }
 }
 
