@@ -21,23 +21,6 @@
 //#################### ======= ####################
 
 
-
-//################## NETWORK DATA #################
-
-#include "../config/NetworkData.h"
-
-//################## ============ #################
-
-
-
-//################## DEVICE DATA ##################
-
-#include "../config/DeviceData.h"
-
-//################## ============ ##################
-
-
-
 //################## DEVICE TYPE ##################
 
 #ifdef ENABLE_SONOFF_TOUCH_ESP01
@@ -78,18 +61,18 @@ LED led;
 
 std::string wifi_ssid = dataManager.getWifiSSID();
 std::string wifi_password = dataManager.getWifiPass();
-std::string ip ;//= dataManager.getIP();
-std::string mask ;//= dataManager.getMask();
-std::string gateway ;//= dataManager.getGateway();
-std::string ota ;//= dataManager.getOta();
-std::string mqtt_server ;//= dataManager.getMqttServer();
-std::string mqtt_port ;//= dataManager.getMqttPort();
-std::string mqtt_username ;//= dataManager.getMqttUser();
-std::string mqtt_password ;//= dataManager.getMqttPass();
-std::string device_name ;//= dataManager.getDeviceName();
-std::string mqtt_status ;//= dataManager.getMqttTopic(0);
-std::string mqtt_command ;//= dataManager.getMqttTopic(1);
-std::string mqtt_secondary ;//= dataManager.getMqttTopic(2);
+std::string ip = dataManager.getIP();
+std::string mask = dataManager.getMask();
+std::string gateway = dataManager.getGateway();
+std::string ota = dataManager.getOta();
+std::string mqtt_server = dataManager.getMqttServer();
+std::string mqtt_port = dataManager.getMqttPort();
+std::string mqtt_username = dataManager.getMqttUser();
+std::string mqtt_password = dataManager.getMqttPass();
+std::string device_name = dataManager.getDeviceName();
+std::string mqtt_status = dataManager.getMqttTopic(0);
+std::string mqtt_command = dataManager.getMqttTopic(1);
+std::string mqtt_secondary = dataManager.getMqttTopic(2);
 
 std::vector<std::pair<std::string, std::string>> getWebServerData()
 {
@@ -105,53 +88,53 @@ std::vector<std::pair<std::string, std::string>> getWebServerData()
     generic_pair.second = wifi_password;
     webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "ip";
-//    generic_pair.second = ip;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "ip";
+    generic_pair.second = ip;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mask";
-//    generic_pair.second = mask;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mask";
+    generic_pair.second = mask;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "gateway";
-//    generic_pair.second = gateway;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "gateway";
+    generic_pair.second = gateway;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "ota_password";
-//    generic_pair.second = ota;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "ota_password";
+    generic_pair.second = ota;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mqtt_server";
-//    generic_pair.second = mqtt_server;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mqtt_server";
+    generic_pair.second = mqtt_server;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mqtt_port";
-//    generic_pair.second = mqtt_port;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mqtt_port";
+    generic_pair.second = mqtt_port;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mqtt_username";
-//    generic_pair.second = mqtt_username;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mqtt_username";
+    generic_pair.second = mqtt_username;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mqtt_password";
-//    generic_pair.second = mqtt_password;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mqtt_password";
+    generic_pair.second = mqtt_password;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "device_name";
-//    generic_pair.second = device_name;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "device_name";
+    generic_pair.second = device_name;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mqtt_status";
-//    generic_pair.second = mqtt_status;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mqtt_status";
+    generic_pair.second = mqtt_status;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mqtt_command";
-//    generic_pair.second = mqtt_command;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mqtt_command";
+    generic_pair.second = mqtt_command;
+    webServerData.push_back(generic_pair);
 
-//    generic_pair.first = "mqtt_secondary";
-//    generic_pair.second = mqtt_secondary;
-//    webServerData.push_back(generic_pair);
+    generic_pair.first = "mqtt_secondary";
+    generic_pair.second = mqtt_secondary;
+    webServerData.push_back(generic_pair);
 
     return webServerData;
 }
@@ -163,18 +146,18 @@ void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsConte
 
     dataManager.setWifiSSID(inputFieldsContent["wifi_ssid"]);
     dataManager.setWifiPass(inputFieldsContent["wifi_password"]);
-//    dataManager.setIP(inputFieldsContent["ip"]);
-//    dataManager.setMask(inputFieldsContent["mask"]);
-//    dataManager.setGateway(inputFieldsContent["gateway"]);
-//    dataManager.setOta(inputFieldsContent["ota_password"]);
-//    dataManager.setMqttServer(inputFieldsContent["mqtt_server"]);
-//    dataManager.setMqttPort(inputFieldsContent["mqtt_port"]);
-//    dataManager.setMqttUser(inputFieldsContent["mqtt_user"]);
-//    dataManager.setMqttPass(inputFieldsContent["mqtt_password"]);
-//    dataManager.setDeviceName(inputFieldsContent["device_name"]);
-//    dataManager.setMqttTopic(0, inputFieldsContent["mqtt_status"]);
-//    dataManager.setMqttTopic(1, inputFieldsContent["mqtt_command"]);
-//    dataManager.setMqttTopic(2, inputFieldsContent["mqtt_secondary"]);
+    dataManager.setIP(inputFieldsContent["ip"]);
+    dataManager.setMask(inputFieldsContent["mask"]);
+    dataManager.setGateway(inputFieldsContent["gateway"]);
+    dataManager.setOta(inputFieldsContent["ota_password"]);
+    dataManager.setMqttServer(inputFieldsContent["mqtt_server"]);
+    dataManager.setMqttPort(inputFieldsContent["mqtt_port"]);
+    dataManager.setMqttUser(inputFieldsContent["mqtt_username"]);
+    dataManager.setMqttPass(inputFieldsContent["mqtt_password"]);
+    dataManager.setDeviceName(inputFieldsContent["device_name"]);
+    dataManager.setMqttTopic(0, inputFieldsContent["mqtt_status"]);
+    dataManager.setMqttTopic(1, inputFieldsContent["mqtt_command"]);
+    dataManager.setMqttTopic(2, inputFieldsContent["mqtt_secondary"]);
 
     ESP.restart(); // Restart device with new config
 }
