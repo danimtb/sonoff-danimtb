@@ -16,7 +16,7 @@
 //#################### FW DATA ####################
 
 #define FW "sonoff-danimtb"
-#define FW_VERSION "0.0.7"
+#define FW_VERSION "0.0.8rc"
 
 //#################### ======= ####################
 
@@ -229,7 +229,7 @@ void longlongPress()
         WebServer::getInstance().stop();
         wifiManager.destroyApWifi();
 
-        ESP.restart(); // Restart device
+        ESP.restart();
     }
     else
     {
@@ -266,7 +266,7 @@ void setup()
     ArduinoOTA.begin();
 
     // Configure Wifi
-    wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, device_name);
+    wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, DEVICE_TYPE);
     wifiManager.connectStaWifi();
 
     // Configure MQTT
