@@ -14,35 +14,29 @@
 #define DM_NETWORKDATA_ADDR_START 0
 #define DM_WIFISSID_MEM 32
 #define DM_WIFIPASS_MEM 32
-#define DM_IP_MEM 4 //1+1+1+1
-#define DM_MASK_MEM 4 //1+1+1+1
-#define DM_GATEWAY_MEM 4 //1+1+1+1
+#define DM_IP_MEM 15
+#define DM_MASK_MEM 15
+#define DM_GATEWAY_MEM 15
 #define DM_OTA_MEM 32
-#define DM_NETWORKDATA_ADDR_END 107
+#define DM_NETWORKDATA_ADDR_END 140
 
-#define DM_MQTT_ADDR_START 108
+#define DM_MQTT_ADDR_START 141
 #define DM_MQTTSERVER_MEM 32
-#define DM_MQTTPORT_MEM 2
+#define DM_MQTTPORT_MEM 4
 #define DM_MQTTUSER_MEM 32
 #define DM_MQTTPASS_MEM 32
-#define DM_MQTT_ADDR_END 205
+#define DM_MQTT_ADDR_END 240
 
-#define DM_DEVICEDATA_ADDR_START 206
-#define DM_DEVICENAME_MEM 32
+#define DM_DEVICEDATA_ADDR_START 241
+#define DM_DEVICENAME_MEM 15
 #define DM_MQTTTOPIC_MEM 40 // 40 x 6
-#define DM_DEVICEDATA_ADDR_END 489
+#define DM_DEVICEDATA_ADDR_END 495
 
 class DataManager
 {
 private:
     std::string EEPROMreadString(uint16_t startAddress, uint16_t maxMemory);
     void EEPROMwriteString(uint16_t startAddress, uint16_t maxMemory, std::string data);
-
-    uint16_t EEPROMreadNumber(uint16_t startAddress, uint16_t maxMemory);
-    void EEPROMwrite2bNumber(uint16_t startAddress, uint16_t maxMemory, uint16_t number);
-    void EEPROMwrite1bNumber(uint16_t startAddress, uint16_t maxMemory, uint8_t number);
-
-    void addressToInt(std::string address, uint8_t& i1, uint8_t& i2, uint8_t& i3, uint8_t& i4);
 
 public:
     DataManager();
