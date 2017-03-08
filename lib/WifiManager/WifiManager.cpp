@@ -11,7 +11,14 @@ void WifiManager::setup(std::string staSSID, std::string staPASS, std::string ip
     m_staSSID = staSSID;
     m_staPASS = staPASS;
 
-    m_apSSID = apSSID;
+    if (apSSID.empty())
+    {
+        m_apSSID = "CONFIG DEVICE";
+    }
+    else
+    {
+        m_apSSID = apSSID;
+    }
 
     m_ip.fromString(ip.c_str());
     m_mask.fromString(mask.c_str());
@@ -51,7 +58,7 @@ void WifiManager::createApWifi()
         this->disconnectStaWifi();
     }
 
-    WiFi.config(IPAddress(192, 168, 1, 1), m_gateway, m_mask);
+    WiFi.config(IPAddress(192, 168, 4, 1), m_gateway, m_mask);
     WiFi.mode(WIFI_AP);
     WiFi.softAP(m_apSSID.c_str());
     delay(1000);
