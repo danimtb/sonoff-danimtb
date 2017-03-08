@@ -58,7 +58,7 @@ public:
     MqttManager();
     ~MqttManager();
 
-    void setup(std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword);
+    void setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword);
 
     void setDeviceData(std::string deviceName, std::string deviceType, std::string deviceIP, std::string fw, std::string fwVersion);
     void setCallback(void (*callback)(char*, uint8_t*, unsigned int));

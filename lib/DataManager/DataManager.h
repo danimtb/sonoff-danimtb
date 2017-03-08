@@ -55,7 +55,7 @@ public:
     void setOta(std::string ota);
 
     void setMqttServer(std::string mqttServer);
-    void setMqttPort(uint16_t mqttPort);
+    void setMqttPort(std::string mqttPort);
     void setMqttUser(std::string mqttUser);
     void setMqttPass(std::string mqttPass);
 
@@ -71,7 +71,7 @@ public:
     std::string getOta();
 
     std::string getMqttServer();
-    uint16_t getMqttPort();
+    std::string getMqttPort();
     std::string getMqttUser();
     std::string getMqttPass();
 

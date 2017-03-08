@@ -1,5 +1,6 @@
 #include <string>
 #include <map>
+#include <cstdint>
 
 #include <ArduinoOTA.h>
 
@@ -68,12 +69,6 @@
 
 //################## ============ ##################
 
-
-
-std::string setTopic = SET_TOPIC;
-std::string statusTopic = STATUS_TOPIC;
-std::string secondaryTopic = SECONDARY_TOPIC;
-
 DataManager dataManager;
 WifiManager wifiManager;
 MqttManager mqttManager;
@@ -81,15 +76,105 @@ Relay relay;
 Button button;
 LED led;
 
+std::string wifi_ssid = dataManager.getWifiSSID();
+std::string wifi_password = dataManager.getWifiPass();
+std::string ip ;//= dataManager.getIP();
+std::string mask ;//= dataManager.getMask();
+std::string gateway ;//= dataManager.getGateway();
+std::string ota ;//= dataManager.getOta();
+std::string mqtt_server ;//= dataManager.getMqttServer();
+std::string mqtt_port ;//= dataManager.getMqttPort();
+std::string mqtt_username ;//= dataManager.getMqttUser();
+std::string mqtt_password ;//= dataManager.getMqttPass();
+std::string device_name ;//= dataManager.getDeviceName();
+std::string mqtt_status ;//= dataManager.getMqttTopic(0);
+std::string mqtt_command ;//= dataManager.getMqttTopic(1);
+std::string mqtt_secondary ;//= dataManager.getMqttTopic(2);
+
+std::vector<std::pair<std::string, std::string>> getWebServerData()
+{
+    std::vector<std::pair<std::string, std::string>> webServerData;
+
+    std::pair<std::string, std::string> generic_pair;
+
+    generic_pair.first = "wifi_ssid";
+    generic_pair.second = wifi_ssid;
+    webServerData.push_back(generic_pair);
+
+    generic_pair.first = "wifi_password";
+    generic_pair.second = wifi_password;
+    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "ip";
+//    generic_pair.second = ip;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mask";
+//    generic_pair.second = mask;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "gateway";
+//    generic_pair.second = gateway;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "ota_password";
+//    generic_pair.second = ota;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mqtt_server";
+//    generic_pair.second = mqtt_server;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mqtt_port";
+//    generic_pair.second = mqtt_port;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mqtt_username";
+//    generic_pair.second = mqtt_username;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mqtt_password";
+//    generic_pair.second = mqtt_password;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "device_name";
+//    generic_pair.second = device_name;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mqtt_status";
+//    generic_pair.second = mqtt_status;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mqtt_command";
+//    generic_pair.second = mqtt_command;
+//    webServerData.push_back(generic_pair);
+
+//    generic_pair.first = "mqtt_secondary";
+//    generic_pair.second = mqtt_secondary;
+//    webServerData.push_back(generic_pair);
+
+    return webServerData;
+}
+
 void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsContent)
 {
     //Save config to dataManager
     Serial.println("webServerSubmitCallback");
 
-    if (!inputFieldsContent["wifi_ssid"].empty())
-    {
-        dataManager.setWifiSSID(inputFieldsContent["wifi_ssid"]);
-    }
+    dataManager.setWifiSSID(inputFieldsContent["wifi_ssid"]);
+    dataManager.setWifiPass(inputFieldsContent["wifi_password"]);
+//    dataManager.setIP(inputFieldsContent["ip"]);
+//    dataManager.setMask(inputFieldsContent["mask"]);
+//    dataManager.setGateway(inputFieldsContent["gateway"]);
+//    dataManager.setOta(inputFieldsContent["ota_password"]);
+//    dataManager.setMqttServer(inputFieldsContent["mqtt_server"]);
+//    dataManager.setMqttPort(inputFieldsContent["mqtt_port"]);
+//    dataManager.setMqttUser(inputFieldsContent["mqtt_user"]);
+//    dataManager.setMqttPass(inputFieldsContent["mqtt_password"]);
+//    dataManager.setDeviceName(inputFieldsContent["device_name"]);
+//    dataManager.setMqttTopic(0, inputFieldsContent["mqtt_status"]);
+//    dataManager.setMqttTopic(1, inputFieldsContent["mqtt_command"]);
+//    dataManager.setMqttTopic(2, inputFieldsContent["mqtt_secondary"]);
 
     ESP.restart(); // Restart device with new config
 }
@@ -103,25 +188,25 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length)
     //ALWAYS DO THIS: Set end of payload string to length
     payload[length] = '\0'; //Do not delete
 
-    if (!strcmp(topic, setTopic.c_str()))
+    if (!strcmp(topic, mqtt_command.c_str()))
     {
         if (!strcasecmp((char *)payload, "ON"))
         {
             Serial.println("ON");
             relay.on();
-            mqttManager.publishMQTT(statusTopic, "ON");
+            mqttManager.publishMQTT(mqtt_status, "ON");
         }
         else if (!strcasecmp((char *)payload, "OFF"))
         {
             Serial.println("OFF");
             relay.off();
-            mqttManager.publishMQTT(statusTopic, "OFF");
+            mqttManager.publishMQTT(mqtt_status, "OFF");
         }
         else if (!strcasecmp((char *)payload, "TOGGLE"))
         {
             Serial.println("TOGGLE");
             relay.commute();
-            mqttManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
+            mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
         }
         else
         {
@@ -143,7 +228,7 @@ void shortPress()
 
     if (mqttManager.connected())
     {
-        mqttManager.publishMQTT(statusTopic, relay.getState() ? "ON" : "OFF");
+        mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
     }
 }
 
@@ -154,7 +239,7 @@ void longPress()
     if (mqttManager.connected())
     {
         Serial.println("Secondary topic: TOGGLE");
-        mqttManager.publishMQTT(secondaryTopic, "TOGGLE");
+        mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
     }
 }
 
@@ -199,25 +284,26 @@ void setup()
     #endif
 
     // OTA setup
-    ArduinoOTA.setPort(OTA_PORT);
-    ArduinoOTA.setHostname(DEVICE_NAME);
-    ArduinoOTA.setPassword(OTA_PASS);
+    ArduinoOTA.setHostname(device_name.c_str());
+    ArduinoOTA.setPassword(ota.c_str());
     ArduinoOTA.begin();
 
     // Configure Wifi
-    wifiManager.setup(WIFI_SSID, WIFI_PASS, DEVICE_IP, DEVICE_MASK, DEVICE_GATEWAY, DEVICE_NAME);
+    wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, device_name);
     wifiManager.connectStaWifi();
 
     // Configure MQTT
-    mqttManager.setup(MQTT_SERVER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD);
-    mqttManager.setDeviceData(DEVICE_NAME, DEVICE_TYPE, DEVICE_IP, FW, FW_VERSION);
-    mqttManager.addStatusTopic(statusTopic);
-    mqttManager.addSubscribeTopic(setTopic);
+    mqttManager.setup(mqtt_server, mqtt_port.c_str(), mqtt_username, mqtt_password);
+    mqttManager.setDeviceData(device_name, DEVICE_TYPE, ip, FW, FW_VERSION);
+    mqttManager.addStatusTopic(mqtt_status);
+    mqttManager.addSubscribeTopic(mqtt_command);
     mqttManager.setCallback(MQTTcallback);
     mqttManager.startConnection();
 
     //Configure WebServer
     WebServer::getInstance().setup("/index.html.gz", webServerSubmitCallback);
+
+    WebServer::getInstance().setData(getWebServerData());
 }
 
 void loop()

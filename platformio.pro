@@ -70,7 +70,7 @@ SOURCES += src/main.cpp \
     lib/LED/LED.cpp \
     lib/Relay/Relay.cpp \
     lib/SimpleTimer/SimpleTimer.cpp \
-    lib/DataManager/DataManager.h \
+	lib/DataManager/DataManager.cpp \
     lib/WifiManager/WifiManager.cpp \
     lib/MqttManager/MqttManager.cpp \
     lib/WebServer/WebServer.cpp

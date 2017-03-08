@@ -9,15 +9,15 @@ MqttManager::MqttManager()
     m_checkConnectivityTimer.setup(RT_ON, 20000);
 }
 
-void MqttManager::setup(std::string mqttServer, uint16_t mqttPort, std::string mqttUsername, std::string mqttPassword)
+void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword)
 {
     m_mqttServer = mqttServer;
-    m_mqttPort = mqttPort;
+    m_mqttPort = atoi(mqttPort.c_str());
     m_mqttUsername = mqttUsername;
     m_mqttPassword = mqttPassword;
 
     m_pubSubClient = new PubSubClient(m_wifiClient);
-    m_pubSubClient->setServer(mqttServer.c_str(), mqttPort);
+    m_pubSubClient->setServer(mqttServer.c_str(), m_mqttPort);
 
     m_deviceStatusInfoTimer.start();
     m_checkConnectivityTimer.start();
