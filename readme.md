@@ -18,36 +18,50 @@ It's capabilities are:
 - ArduinoOTA  flashing over wifi.
 
 
-# How to configure for your device
-To flash a new device you need to configure some parameters for your setup gathered in two files in *data* folder:
-
-- DeviceData.h: All device data information is placed in this file. You'll new to define:
-  - DEVICE_NAME: name of your device used in device infomartion topics and to register as a client in MQTT broker.
-  - DEVICE_TYPE: name of the kind of hardware device you are using (sonoff, sonoff-touch, sonoff-s20, sonoff-touch-esp01)
-  - IP_NUMBER: last 3 numbers for the device ip number (currently only 192.168.1.XXX networks).
-  - SET_TOPIC: MQTT topic that the devices subscribes to change its state.
-  - STATUS_TOPIC: MQTT topic where the devices publishes its state.
-  - SECONDARY_TOPIC: MQTT additional topic to command other device with long press of button. It is used to togle other device state (if you don't need this option set it to the same as SET_TOPIC).
-
-- NetworkData.h: All network information of wifi, mqtt and ArduinoOTA.
-  - WIFI_SSID
-  - WIFI_PASS
-  - MQTT_SERVER: MQTT broker IP.
-  - MQTT_PORT: MQTT broker port.
-  - MQTT_USERNAME: Username to register in MQTT broker.
-  - MQTT_PASSWORD: Password to register in MQTT broker.
-  - OTA_PORT: Port to receive arduino OTA.
-  - OTA_PASS: Password to flash an OTA.
-  
-# How to flash it!
+# How to flash it
 This project is built with [platformio](platformio.org) to manage third party libraries such as PubSubClient, so you'll need to install it.
 
-To flash your devices, clone this repo and fill your device and network data. Then run this command to flash a device connected to your COM3 (remember your device should be in flash mode -GPIO0 to GND-):
+To flash your devices, clone this repo and run this command to flash a device connected to a USB port (remember your device should be in flash mode -GPIO0 to GND-). Keywords for supported devices are *sonoff*, *sonoff-touch*, *sonoff-s20*, *sonoff-touch-esp01*:
 
-`$ platformio run --target upload --upload-port COM3`
+- First flash SPIFFS:
+`$ platformio -e sonoff -t uploadfs`
+- Then flash the firmware:
+`$ platformio -e sonoff -t upload`
 
-Or to flash via Arduino OTA you'll need to indicate IP and OTA password for the device in *platformio.ini* file and then execute (ensure your device is already connected to wifi):
+Or to flash via Arduino OTA you'll need to indicate OTA password for the device in *platformio.ini* file and then execute (ensure your device is already connected to wifi):
 
-`$ platformio run --target upload`
+- First flash SPIFFS:
+`$ platformio -e sonoff -t uploadfs --upload-port your-device-IP`
+- Then flash the firmware:
+`$ platformio -e sonoff -t upload --upload-port your-device-IP`
 
 And that's all! :D
+
+# How to configure for your device
+The first time you flash a new device, you need to configure some parameters to connect the devie to your wifi network and mqtt server.
+
+To do that, press and hold for 10 seconds (then release) the button and the device will create a wifi hotspot. Connect to the wifi hotspot and open browser with IP *192.168.1.4*. I will bring you to a web to configure the parameters of your device.
+When you are done, press *Save Settings* button and the device will try to connect to the Wifi and MQTT network indicated.
+
+Parameter description:
+
+**Network Settings**
+- WIFI SSID (32): Name of wifi network to connect the device to.
+- WIFI PASS (32): Password of wifi network to connect the device to.
+- IP (15): Static IP address of the device (Usually 192.168.1.XXX)
+- MASK (15): Mask of the device in the network (Usually 255.255.0.0)
+- GATEWAY (15): Gateway of the device iun the network (Usually 192.168.1.1)
+
+**MQTT settings**
+- MQTT Server (32): MQTT server to connect the device to
+- MQTT Port (4): Port of the MQTT server
+- MQTT Username (32): Username of the device in the MQTT network
+- MQTT Password (32): Password of the device in the MQTT network
+
+**Device Data**
+- Device Name (15)
+- OTA Password (32): Password for OTA updates
+- MQTT Status topic (40): Status topic of the the device
+- MQTT Command topic (40): Topic to command the device (Payloads accepted: ON, OFF, TOGGLE)
+- MQTT Secondary Command Topic (40): Long press topic to send TOGGLE (in case you want to command other devices doing a long press of the button)
+ 
