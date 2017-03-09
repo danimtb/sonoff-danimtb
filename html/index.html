@@ -28,6 +28,10 @@
                 <td style="width: 275px; height: 21px; text-align: right;">Mask:</td>
                 <td style="width: 275px; height: 21px; text-align: left;"><input maxlength="15" name="mask" size="15" type="text" id="mask" /></td>
             </tr>
+            <tr style="height: 21px;">
+                <td style="width: 275px; text-align: right;">OTA Update Server:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="32" name="ota_server" size="30" type="text" id="ota_server" /></td>
+            </tr>
         </tbody>
     </table>
     <p><strong>&nbsp;</strong></p>
@@ -59,10 +63,6 @@
             <tr>
                 <td style="width: 275px; text-align: right;">Device Name:</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="15" name="device_name" size="30" type="text" id="device_name" /></td>
-            </tr>
-            <tr>
-                <td style="width: 275px; text-align: right;">OTA Password:</td>
-                <td style="width: 275px; text-align: left;"><input maxlength="32" name="ota_password" size="30" type="text" id="ota_password" /></td>
             </tr>
             <tr>
                 <td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
@@ -107,7 +107,7 @@
 	                    document.getElementById("mqtt_password").value = data.mqtt_password;
 	                
 	                    document.getElementById("device_name").value = data.device_name;
-	                    document.getElementById("ota_password").value = data.ota_password;
+	                    document.getElementById("ota_server").value = data.ota_server;
 	                    document.getElementById("mqtt_status").value = data.mqtt_status;
 	                    document.getElementById("mqtt_command").value = data.mqtt_command;
 	                    document.getElementById("mqtt_secondary").value = data.mqtt_secondary;

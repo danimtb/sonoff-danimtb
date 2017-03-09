@@ -103,7 +103,7 @@ std::vector<std::pair<std::string, std::string>> getWebServerData()
     generic_pair.second = gateway;
     webServerData.push_back(generic_pair);
 
-    generic_pair.first = "ota_password";
+    generic_pair.first = "ota_server";
     generic_pair.second = ota;
     webServerData.push_back(generic_pair);
 
@@ -152,7 +152,7 @@ void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsConte
     dataManager.setIP(inputFieldsContent["ip"]);
     dataManager.setMask(inputFieldsContent["mask"]);
     dataManager.setGateway(inputFieldsContent["gateway"]);
-    dataManager.setOta(inputFieldsContent["ota_password"]);
+    dataManager.setOta(inputFieldsContent["ota_server"]);
     dataManager.setMqttServer(inputFieldsContent["mqtt_server"]);
     dataManager.setMqttPort(inputFieldsContent["mqtt_port"]);
     dataManager.setMqttUser(inputFieldsContent["mqtt_username"]);
