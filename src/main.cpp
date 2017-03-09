@@ -265,7 +265,6 @@ void setup()
 
     // OTA setup
     ArduinoOTA.setHostname(device_name.c_str());
-    ArduinoOTA.setPassword(ota.c_str());
     ArduinoOTA.begin();
 
     // UpdateManager setup
