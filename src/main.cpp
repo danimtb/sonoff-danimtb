@@ -11,6 +11,8 @@
 #include "../lib/MqttManager/MqttManager.h"
 #include "../lib/WifiManager/WifiManager.h"
 #include "../lib/WebServer/WebServer.h"
+#include "../lib/UpdateManager/UpdateManager.h"
+
 
 
 //#################### FW DATA ####################
@@ -52,6 +54,7 @@
 
 //################## ============ ##################
 
+UpdateManager updateManager;
 DataManager dataManager;
 WifiManager wifiManager;
 MqttManager mqttManager;
@@ -265,6 +268,9 @@ void setup()
     ArduinoOTA.setPassword(ota.c_str());
     ArduinoOTA.begin();
 
+    // UpdateManager setup
+    updateManager.setup(ota, FW, FW_VERSION, DEVICE_TYPE);
+
     // Configure Wifi
     wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, DEVICE_TYPE);
     wifiManager.connectStaWifi();
@@ -291,10 +297,11 @@ void loop()
     // Check Wifi status
     wifiManager.loop();
 
-    // Check MQTT status
+    // Check MQTT status and Updates
     if (wifiManager.connected())
     {
         mqttManager.loop();
+        updateManager.loop();
     }
 
     // Handle OTA FW updates
