@@ -263,13 +263,6 @@ void setup()
         led.off();
     #endif
 
-    // OTA setup
-    ArduinoOTA.setHostname(device_name.c_str());
-    ArduinoOTA.begin();
-
-    // UpdateManager setup
-    updateManager.setup(ota, FW, FW_VERSION, DEVICE_TYPE);
-
     // Configure Wifi
     wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, DEVICE_TYPE);
     wifiManager.connectStaWifi();
@@ -284,8 +277,15 @@ void setup()
 
     //Configure WebServer
     WebServer::getInstance().setup("/index.html.gz", webServerSubmitCallback);
-
     WebServer::getInstance().setData(getWebServerData());
+
+    // OTA setup
+    ArduinoOTA.setHostname(device_name.c_str());
+    ArduinoOTA.begin();
+
+    // UpdateManager setup
+    updateManager.setup(ota, FW, FW_VERSION, DEVICE_TYPE);
+    updateManager.checkUpdate();
 }
 
 void loop()
@@ -296,15 +296,13 @@ void loop()
     // Check Wifi status
     wifiManager.loop();
 
-    // Check MQTT status and Updates
+    // Check MQTT status and OTA Updates
     if (wifiManager.connected())
     {
         mqttManager.loop();
         updateManager.loop();
+        ArduinoOTA.handle();
     }
-
-    // Handle OTA FW updates
-    ArduinoOTA.handle();
 
     // Handle WebServer connections
     if(wifiManager.apModeEnabled())
