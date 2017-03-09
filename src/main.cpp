@@ -174,21 +174,24 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length)
     //ALWAYS DO THIS: Set end of payload string to length
     payload[length] = '\0'; //Do not delete
 
-    if (!strcmp(topic, mqtt_command.c_str()))
+    std::string topicString(topic);
+    std::string payloadString((char *)payload);
+
+    if (topicString == mqtt_command)
     {
-        if (!strcasecmp((char *)payload, "ON"))
+        if (payloadString == "ON")
         {
             Serial.println("ON");
             relay.on();
             mqttManager.publishMQTT(mqtt_status, "ON");
         }
-        else if (!strcasecmp((char *)payload, "OFF"))
+        else if (payloadString == "OFF")
         {
             Serial.println("OFF");
             relay.off();
             mqttManager.publishMQTT(mqtt_status, "OFF");
         }
-        else if (!strcasecmp((char *)payload, "TOGGLE"))
+        else if (payloadString == "TOGGLE")
         {
             Serial.println("TOGGLE");
             relay.commute();
@@ -197,13 +200,13 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length)
         else
         {
             Serial.print("MQTT payload unknown: ");
-            Serial.println((char *)payload);
+            Serial.println(payloadString.c_str());
         }
     }
     else
     {
         Serial.print("MQTT topic unknown:");
-        Serial.println(topic);
+        Serial.println(topicString.c_str());
     }
 }
 
