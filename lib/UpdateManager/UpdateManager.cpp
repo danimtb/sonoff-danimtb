@@ -6,7 +6,7 @@
 
 UpdateManager::UpdateManager()
 {
-    m_checkUpdateTimer.setup(RT_ON, 1200000); // 20 minutes
+    m_checkUpdateTimer.setup(RT_ON, 120000); // 20 minutes
 }
 
 void UpdateManager::setup(std::string host, std::string fw, std::string fwVersion, std::string device)
@@ -24,7 +24,7 @@ std::string UpdateManager::getServerResponse()
     std::string request = m_host + "/" + m_fw + "/" + m_fwVersion + "/" + m_device;
 
     HTTPClient http;
-    http.begin(request.c_str());
+    http.begin((char *)request.c_str());
     http.useHTTP10(true); // ?
     http.setTimeout(8000);
 
@@ -67,8 +67,7 @@ void UpdateManager::checkUpdate()
             }
             else
             {
-                //error: NO FW
-                return;
+                return; // Error: no firmware
             }
 
             if (response.containsKey("spiffs"))
@@ -83,12 +82,12 @@ void UpdateManager::checkUpdate()
         }
         else
         {
-            // device up to date
+            return; // Device is up to date
         }
     }
     else
     {
-        //Could not reach update server
+        return; // Could not reach update server
     }
 
     this->update();
@@ -96,8 +95,8 @@ void UpdateManager::checkUpdate()
 
 void UpdateManager::update()
 {
-    bool spiffsSuccess;
-    bool firmwareSuccess;
+    bool spiffsSuccess = false;
+    bool firmwareSuccess = false;
 
     ESPhttpUpdate.rebootOnUpdate(false);
 
@@ -112,7 +111,7 @@ void UpdateManager::update()
 
 bool UpdateManager::updateSpiffs()
 {
-    bool spiffsSuccessful;
+    bool spiffsSuccessful = false;
 
     if (!m_spiffsDownload.empty())
     {
@@ -140,12 +139,12 @@ bool UpdateManager::updateSpiffs()
 
 bool UpdateManager::updateFirmware()
 {
-    bool firmwareSuccessful;
+    bool firmwareSuccessful = false;
 
     if (!m_firmwareDownload.empty())
     {
         std::string firmware = m_host + m_firmwareDownload;
-        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(firmware.c_str());
+        t_httpUpdate_return ret = ESPhttpUpdate.update(firmware.c_str());
 
         if (ret == HTTP_UPDATE_FAILED)
         {
