@@ -288,7 +288,6 @@ void setup()
 
     // UpdateManager setup
     updateManager.setup(ota, FW, FW_VERSION, DEVICE_TYPE);
-    updateManager.checkUpdate();
 }
 
 void loop()
