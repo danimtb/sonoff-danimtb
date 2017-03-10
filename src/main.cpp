@@ -139,6 +139,14 @@ std::vector<std::pair<std::string, std::string>> getWebServerData()
     generic_pair.second = mqtt_secondary;
     webServerData.push_back(generic_pair);
 
+    generic_pair.first = "firmware_version";
+    generic_pair.second = FW_VERSION;
+    webServerData.push_back(generic_pair);
+
+    generic_pair.first = "device_type";
+    generic_pair.second = DEVICE_TYPE;
+    webServerData.push_back(generic_pair);
+
     return webServerData;
 }
 

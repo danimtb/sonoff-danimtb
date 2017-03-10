@@ -4,6 +4,19 @@
 <h1 style="color: #4485b8; text-align: center;">sonoff-danimtb</h1>
 <p style="text-align: center;"><span class="col-11 text-gray-dark mr-2">Alternative firmware for Itead Sonoff devices</span></p>
 <hr />
+<table>
+<tbody>
+<tr>
+	<td>Firmware version:</td>
+	<td><div id="firmware_version"></div></p>
+</tr>
+<tr>
+	<td>Device type:</td>
+	<td><div id="device_type"></div></p>
+</tr>
+</tbody>
+</table>
+<hr />
 <form action="http://192.168.4.1/submit" method="POST">
     <p style="text-align: center;"><strong><span style="text-decoration: underline;">Network Settings</span></strong></p>
     <table style="width: 550px; margin-left: auto; margin-right: auto; height: 182px;">
@@ -111,6 +124,9 @@
 	                    document.getElementById("mqtt_status").value = data.mqtt_status;
 	                    document.getElementById("mqtt_command").value = data.mqtt_command;
 	                    document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
+
+	                    document.getElementById("firmware_version").innerHTML = data.firmware_version;
+	                    document.getElementById("device_type").innerHTML = data.device_type;
 
                 	});
                 }
