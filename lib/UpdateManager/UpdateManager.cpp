@@ -6,7 +6,7 @@
 
 UpdateManager::UpdateManager()
 {
-    m_checkUpdateTimer.setup(RT_ON, 120000); // 20 minutes
+    m_checkUpdateTimer.setup(RT_ON, 300000); // 5 minutes
 }
 
 void UpdateManager::setup(std::string host, std::string fw, std::string fwVersion, std::string device)
@@ -19,18 +19,17 @@ void UpdateManager::setup(std::string host, std::string fw, std::string fwVersio
     m_checkUpdateTimer.start();
 }
 
-std::string UpdateManager::getServerResponse()
+int16_t UpdateManager::getServerResponse(std::string &payload)
 {
     std::string request = m_host + "/" + m_fw + "/" + m_fwVersion + "/" + m_device;
 
     HTTPClient http;
     http.begin((char *)request.c_str());
-    http.useHTTP10(true); // ?
+    http.useHTTP10(true);
     http.setTimeout(8000);
 
-    int httpCode = http.GET();
+    int16_t httpCode = http.GET();
 
-    std::string payload;
     if (httpCode > 0)
     {
         payload = http.getString().c_str();
@@ -39,84 +38,94 @@ std::string UpdateManager::getServerResponse()
     {
         payload = "";
     }
+
     http.end();
 
-    return payload;
+    return httpCode;
 }
 
 void UpdateManager::checkUpdate()
 {
-    std::string payload = getServerResponse();
+    std::string payload;
+    std::string firmwareDownload = "";
+    std::string spiffsDownload = "";
 
-    if (!payload.empty())
+    uint16_t httpCode = this->getServerResponse(payload);
+
+
+    if (httpCode == 200)
     {
-        StaticJsonBuffer<500> jsonBuffer;
-        JsonObject& response = jsonBuffer.parseObject(payload.c_str());
-
-        if (!response.success())
+        if (!payload.empty())
         {
-          return; // parseObject() failed
-        }
+            StaticJsonBuffer<500> jsonBuffer;
+            JsonObject& response = jsonBuffer.parseObject(payload.c_str());
 
-        if (response.containsKey("version"))
-        {
-            if (response.containsKey("fw"))
+            if (!response.success())
             {
-                std::string fw(response["fw"].as<char*>());
-                m_firmwareDownload = fw;
+                return; // Error parsing JSON
+            }
+
+            if (response.containsKey("version"))
+            {
+                if (response.containsKey("fw"))
+                {
+                    firmwareDownload = response["fw"].as<char*>();
+                }
+                else
+                {
+                    return; // Error: no firmware
+                }
+
+                if (response.containsKey("spiffs"))
+                {
+                    spiffsDownload = response["spiffs"].as<char*>();
+                }
+                else
+                {
+                    // No spiffs to flash
+                }
             }
             else
             {
-                return; // Error: no firmware
+                return; // Device is up to date
             }
-
-            if (response.containsKey("spiffs"))
-            {
-                std::string spiffs(response["spiffs"].as<char*>());
-                m_spiffsDownload = spiffs;
-            }
-            else
-            {
-                // No spiffs to flash
-            }
-        }
-        else
-        {
-            return; // Device is up to date
         }
     }
-    else
+    else if (httpCode == -1)
     {
         return; // Could not reach update server
     }
+    else //(httpCode == 500 || httpCode == 404 || httpCode == 400)
+    {
+        return; // Bad request
+    }
 
-    this->update();
+    this->update(firmwareDownload, spiffsDownload);
 }
 
-void UpdateManager::update()
+void UpdateManager::update(std::string firmwarePath, std::string spiffsPath)
 {
-    bool spiffsSuccess = false;
-    bool firmwareSuccess = false;
+    firmwarePath = m_host + firmwarePath;
+    spiffsPath = m_host + spiffsPath;
 
     ESPhttpUpdate.rebootOnUpdate(false);
 
-    spiffsSuccess = this->updateSpiffs();
-    firmwareSuccess = this->updateFirmware();
-
-    if (spiffsSuccess && firmwareSuccess)
+    if (this->updateSpiffs(spiffsPath))
     {
-        ESP.restart();
+        if (this->updateFirmware(firmwarePath))
+        {
+            ESP.restart(); // Update Successful: RESTART DEVICE
+        }
     }
 }
 
-bool UpdateManager::updateSpiffs()
+bool UpdateManager::updateSpiffs(std::string spiffsUrl)
 {
     bool spiffsSuccessful = false;
 
-    if (!m_spiffsDownload.empty())
+    if (!spiffsUrl.empty())
     {
-        std::string spiffs = m_host + m_spiffsDownload;
-        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(spiffs.c_str());
+        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(spiffsUrl.c_str());
 
         if (ret == HTTP_UPDATE_FAILED)
         {
@@ -132,19 +141,16 @@ bool UpdateManager::updateSpiffs()
         spiffsSuccessful = true; //No SPIFFS to flash, continue
     }
 
-    m_spiffsDownload.clear();
-
     return spiffsSuccessful;
 }
 
-bool UpdateManager::updateFirmware()
+bool UpdateManager::updateFirmware(std::string firmwareUrl)
 {
     bool firmwareSuccessful = false;
 
-    if (!m_firmwareDownload.empty())
+    if (!firmwareUrl.empty())
     {
-        std::string firmware = m_host + m_firmwareDownload;
-        t_httpUpdate_return ret = ESPhttpUpdate.update(firmware.c_str());
+        t_httpUpdate_return ret = ESPhttpUpdate.update(firmwareUrl.c_str());
 
         if (ret == HTTP_UPDATE_FAILED)
         {
@@ -159,8 +165,6 @@ bool UpdateManager::updateFirmware()
     {
         firmwareSuccessful = false; //Error: No firmware to flash
     }
-
-    m_firmwareDownload.clear();
 
     return firmwareSuccessful;
 }
