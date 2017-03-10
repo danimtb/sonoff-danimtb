@@ -18,7 +18,7 @@
 //#################### FW DATA ####################
 
 #define FW "sonoff-danimtb"
-#define FW_VERSION "0.0.8"
+#define FW_VERSION "0.0.9"
 
 //#################### ======= ####################
 
