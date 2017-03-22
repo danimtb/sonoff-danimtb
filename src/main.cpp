@@ -13,6 +13,13 @@
 #include "../lib/WebServer/WebServer.h"
 #include "../lib/UpdateManager/UpdateManager.h"
 
+#ifdef ENABLE_SONOFF_POW
+    #include "ArduinoJson.h"
+
+    #include "../lib/SimpleTimer/SimpleTimer.h"
+    #include "../lib/PowManager/PowManager.h"
+#endif
+
 
 
 //#################### FW DATA ####################
@@ -24,6 +31,13 @@
 
 
 //################## DEVICE TYPE ##################
+
+#ifdef ENABLE_SONOFF_POW
+#define DEVICE_TYPE "sonoff-pow"
+#define BUTTON_PIN 0
+#define RELAY_PIN 12
+#define LED_PIN 13
+#endif
 
 #ifdef ENABLE_SONOFF_TOUCH_ESP01
 #define DEVICE_TYPE "sonoff-touch-esp01"
@@ -54,6 +68,11 @@
 
 //################## ============ ##################
 
+#ifdef ENABLE_SONOFF_POW
+    SimpleTimer powTimer;
+    PowManager powManager;
+#endif
+
 UpdateManager updateManager;
 DataManager dataManager;
 WifiManager wifiManager;
@@ -76,6 +95,34 @@ std::string device_name = dataManager.getDeviceName();
 std::string mqtt_status = dataManager.getMqttTopic(0);
 std::string mqtt_command = dataManager.getMqttTopic(1);
 std::string mqtt_secondary = dataManager.getMqttTopic(2);
+
+
+#ifdef ENABLE_SONOFF_POW
+    std::string mqtt_pow = mqtt_status + "/pow";
+
+    void powHandlePublish()
+    {
+        if (powTimer.check())
+        {
+            StaticJsonBuffer<500> powJsonBuffer;
+            JsonObject& powJsonObject = powJsonBuffer.createObject();
+            String powJsonString;
+
+            powJsonObject["current"] = powManager.getCurrent();
+            powJsonObject["voltage"] = powManager.getVoltage();
+            powJsonObject["activePower"] = powManager.getActivePower();
+            powJsonObject["apparentPower"] = powManager.getApparentPower();
+            powJsonObject["powerFactor"] = powManager.getPowerFactor();
+            powJsonObject["reactivePower"] = powManager.getReactivePower();
+
+            powJsonObject.printTo(powJsonString);
+
+            mqttManager.publishMQTT(mqtt_pow, std::string(powJsonString.c_str()));
+
+            powTimer.start();
+        }
+    }
+#endif
 
 std::vector<std::pair<std::string, std::string>> getWebServerData()
 {
@@ -274,6 +321,11 @@ void setup()
         led.off();
     #endif
 
+    #ifdef ENABLE_SONOFF_POW
+        powManager.setup();
+        powTimer.setup(RT_ON, 300000);
+    #endif
+
     // Configure Wifi
     wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, DEVICE_TYPE);
     wifiManager.connectStaWifi();
@@ -320,8 +372,8 @@ void loop()
         WebServer::getInstance().loop();
     }
 
+    // LED Status
     #ifdef LED_PIN
-        // LED Status
         if (mqttManager.connected())
         {
             led.on();
@@ -334,5 +386,11 @@ void loop()
         {
             led.off();
         }
+    #endif
+
+    // Pow Status
+    #ifdef ENABLE_SONOFF_POW
+        powManager.loop();
+        powHandlePublish();
     #endif
 }

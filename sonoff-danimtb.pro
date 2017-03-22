@@ -31,6 +31,7 @@ INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/SimpleTimer"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/UpdateManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiMQTTManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/PowManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/PubSubClient_ID89/src"
@@ -82,6 +83,7 @@ SOURCES += src/main.cpp \
 	lib/DataManager/DataManager.cpp \
     lib/WifiManager/WifiManager.cpp \
     lib/MqttManager/MqttManager.cpp \
+	lib/PowManager/PowManager.cpp \
 	lib/WebServer/WebServer.cpp \
 	lib/UpdateManager/UpdateManager.cpp
 
@@ -96,5 +98,6 @@ HEADERS += \
     lib/DataManager/DataManager.h \
     lib/WifiManager/WifiManager.h \
     lib/MqttManager/MqttManager.h \
+	lib/PowManager/PowManager.h \
 	lib/WebServer/WebServer.h \
 	lib/UpdateManager/UpdateManager.h
