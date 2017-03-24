@@ -24,16 +24,16 @@ This project is built with [platformio](platformio.org) to manage third party li
 To flash your devices, clone this repo and run this command to flash a device connected to a USB port (remember your device should be in flash mode -GPIO0 to GND-). Keywords for supported devices are *sonoff*, *sonoff-touch*, *sonoff-s20*, *sonoff-touch-esp01*:
 
 - First flash SPIFFS:
-`$ platformio -e sonoff -t uploadfs`
+`$ platformio run -e sonoff -t uploadfs`
 - Then flash the firmware:
-`$ platformio -e sonoff -t upload`
+`$ platformio run -e sonoff -t upload`
 
 Or to flash via Arduino OTA you'll need to indicate OTA password for the device in *platformio.ini* file and then execute (ensure your device is already connected to wifi):
 
 - First flash SPIFFS:
-`$ platformio -e sonoff -t uploadfs --upload-port your-device-IP`
+`$ platformio run -e sonoff -t uploadfs --upload-port your-device-IP`
 - Then flash the firmware:
-`$ platformio -e sonoff -t upload --upload-port your-device-IP`
+`$ platformio run -e sonoff -t upload --upload-port your-device-IP`
 
 And that's all! :D
 
