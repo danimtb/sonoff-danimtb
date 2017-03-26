@@ -24,8 +24,8 @@
 
 //#################### FW DATA ####################
 
-#define FW "sonoff-danimtb"
-#define FW_VERSION "0.0.9"
+#define FIRMWARE "sonoff-danimtb"
+#define FIRMWARE_VERSION "0.0.9"
 
 //#################### ======= ####################
 
@@ -33,7 +33,7 @@
 //################## DEVICE TYPE ##################
 
 #ifdef ENABLE_SONOFF_POW
-#define DEVICE_TYPE "sonoff-pow"
+#define HARDWARE "sonoff-pow"
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
 #define LED_PIN 15
@@ -41,13 +41,13 @@
 #endif
 
 #ifdef ENABLE_SONOFF_TOUCH_ESP01
-#define DEVICE_TYPE "sonoff-touch-esp01"
+#define HARDWARE "sonoff-touch-esp01"
 #define BUTTON_PIN 0
 #define RELAY_PIN 2
 #endif
 
 #ifdef ENABLE_SONOFF_TOUCH
-#define DEVICE_TYPE "sonoff-touch"
+#define HARDWARE "sonoff-touch"
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
 #define LED_PIN 13
@@ -55,7 +55,7 @@
 #endif
 
 #ifdef ENABLE_SONOFF_S20
-#define DEVICE_TYPE "sonoff-s20"
+#define HARDWARE "sonoff-s20"
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
 #define LED_PIN 13
@@ -63,7 +63,7 @@
 #endif
 
 #ifdef ENABLE_SONOFF
-#define DEVICE_TYPE "sonoff"
+#define HARDWARE "sonoff"
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
 #define LED_PIN 13
@@ -191,11 +191,11 @@ std::vector<std::pair<std::string, std::string>> getWebServerData()
     webServerData.push_back(generic_pair);
 
     generic_pair.first = "firmware_version";
-    generic_pair.second = FW_VERSION;
+    generic_pair.second = FIRMWARE_VERSION;
     webServerData.push_back(generic_pair);
 
-    generic_pair.first = "device_type";
-    generic_pair.second = DEVICE_TYPE;
+    generic_pair.first = "hardware";
+    generic_pair.second = HARDWARE;
     webServerData.push_back(generic_pair);
 
     return webServerData;
@@ -332,12 +332,12 @@ void setup()
     #endif
 
     // Configure Wifi
-    wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, DEVICE_TYPE);
+    wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, HARDWARE);
     wifiManager.connectStaWifi();
 
     // Configure MQTT
     mqttManager.setup(mqtt_server, mqtt_port.c_str(), mqtt_username, mqtt_password);
-    mqttManager.setDeviceData(device_name, DEVICE_TYPE, ip, FW, FW_VERSION);
+    mqttManager.setDeviceData(device_name, HARDWARE, ip, FIRMWARE, FIRMWARE_VERSION);
     mqttManager.setLastWillMQTT(mqtt_status, "OFF");
     mqttManager.addStatusTopic(mqtt_status);
     mqttManager.addSubscribeTopic(mqtt_command);
@@ -353,7 +353,7 @@ void setup()
     ArduinoOTA.begin();
 
     // UpdateManager setup
-    updateManager.setup(ota, FW, FW_VERSION, DEVICE_TYPE);
+    updateManager.setup(ota, FIRMWARE, FIRMWARE_VERSION, HARDWARE);
 }
 
 void loop()

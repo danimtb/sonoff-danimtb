@@ -11,8 +11,8 @@
 	<td><div id="firmware_version"></div></p>
 </tr>
 <tr>
-	<td>Device type:</td>
-	<td><div id="device_type"></div></p>
+	<td>Hardware:</td>
+	<td><div id="hardware"></div></p>
 </tr>
 </tbody>
 </table>
@@ -126,7 +126,7 @@
 	                    document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
 
 	                    document.getElementById("firmware_version").innerHTML = data.firmware_version;
-	                    document.getElementById("device_type").innerHTML = data.device_type;
+	                    document.getElementById("hardware").innerHTML = data.hardware;
 
                 	});
                 }
