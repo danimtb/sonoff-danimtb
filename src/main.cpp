@@ -36,7 +36,8 @@
 #define DEVICE_TYPE "sonoff-pow"
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
-#define LED_PIN 13
+#define LED_PIN 15
+#define LED_MODE LED_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_TOUCH_ESP01
@@ -50,6 +51,7 @@
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
 #define LED_PIN 13
+#define LED_MODE LED_LOW_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_S20
@@ -57,6 +59,7 @@
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
 #define LED_PIN 13
+#define LED_MODE LED_LOW_LVL
 #endif
 
 #ifdef ENABLE_SONOFF
@@ -64,6 +67,7 @@
 #define BUTTON_PIN 0
 #define RELAY_PIN 12
 #define LED_PIN 13
+#define LED_MODE LED_LOW_LVL
 #endif
 
 //################## ============ ##################
@@ -220,7 +224,7 @@ void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsConte
     ESP.restart(); // Restart device with new config
 }
 
-void MQTTcallback(char* topic, byte* payload, unsigned int length)
+void MQTTcallback(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t length, size_t index, size_t total)
 {
     Serial.print("Message arrived from topic [");
     Serial.print(topic);
@@ -315,7 +319,7 @@ void setup()
     button.setLongLongPressCallback(longlongPress);
 
     #ifdef LED_PIN
-        led.setup(LED_PIN, LED_LOW_LVL);
+        led.setup(LED_PIN, LED_MODE);
         led.on();
         delay(300);
         led.off();
@@ -323,7 +327,7 @@ void setup()
 
     #ifdef ENABLE_SONOFF_POW
         powManager.setup();
-        powTimer.setup(RT_ON, 300000);
+        powTimer.setup(RT_ON, 20000);
     #endif
 
     // Configure Wifi
@@ -336,6 +340,7 @@ void setup()
     mqttManager.addStatusTopic(mqtt_status);
     mqttManager.addSubscribeTopic(mqtt_command);
     mqttManager.setCallback(MQTTcallback);
+    mqttManager.setLastWillMQTT(mqtt_status, "OFF");
     mqttManager.startConnection();
 
     //Configure WebServer
