@@ -311,6 +311,7 @@ void setup()
 
     // Configure Relay
     relay.setup(RELAY_PIN, RELAY_HIGH_LVL);
+    relay.off();
 
     // Configure Button
     button.setup(BUTTON_PIN, PULLDOWN);
@@ -337,10 +338,10 @@ void setup()
     // Configure MQTT
     mqttManager.setup(mqtt_server, mqtt_port.c_str(), mqtt_username, mqtt_password);
     mqttManager.setDeviceData(device_name, DEVICE_TYPE, ip, FW, FW_VERSION);
+    mqttManager.setLastWillMQTT(mqtt_status, "OFF");
     mqttManager.addStatusTopic(mqtt_status);
     mqttManager.addSubscribeTopic(mqtt_command);
     mqttManager.setCallback(MQTTcallback);
-    mqttManager.setLastWillMQTT(mqtt_status, "OFF");
     mqttManager.startConnection();
 
     //Configure WebServer
