@@ -22,15 +22,15 @@
 
 
 
-//#################### FW DATA ####################
+//#################### FIRMWARE ####################
 
 #define FIRMWARE "sonoff-danimtb"
-#define FIRMWARE_VERSION "0.1.0"
+#define FIRMWARE_VERSION "0.1.1"
 
 //#################### ======= ####################
 
 
-//################## DEVICE TYPE ##################
+//################## HARDWARE ##################
 
 #ifdef ENABLE_SONOFF_POW
 #define HARDWARE "sonoff-pow"
