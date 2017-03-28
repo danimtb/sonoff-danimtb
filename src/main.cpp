@@ -25,7 +25,7 @@
 //#################### FW DATA ####################
 
 #define FIRMWARE "sonoff-danimtb"
-#define FIRMWARE_VERSION "0.0.9"
+#define FIRMWARE_VERSION "0.1.0"
 
 //#################### ======= ####################
 
@@ -72,6 +72,8 @@
 
 //################## ============ ##################
 
+
+
 #ifdef ENABLE_SONOFF_POW
     SimpleTimer powTimer;
     PowManager powManager;
@@ -99,6 +101,7 @@ std::string device_name = dataManager.getDeviceName();
 std::string mqtt_status = dataManager.getMqttTopic(0);
 std::string mqtt_command = dataManager.getMqttTopic(1);
 std::string mqtt_secondary = dataManager.getMqttTopic(2);
+
 
 
 #ifdef ENABLE_SONOFF_POW
@@ -303,6 +306,8 @@ void longlongPress()
         WebServer::getInstance().start();
     }
 }
+
+
 
 void setup()
 {
