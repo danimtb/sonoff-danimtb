@@ -229,16 +229,6 @@ void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsConte
 
 void MQTTcallback(std::string topicString, std::string payloadString)
 {
-//    Serial.print("Message arrived from topic [");
-//    Serial.print(topic);
-//    Serial.println("] ");
-
-//    //ALWAYS DO THIS: Set end of payload string to length
-//    payload[length] = '\0'; //Do not delete
-
-//    std::string topicString(topic);
-//    std::string topicString((char *)payload);
-
     if (topicString == mqtt_command)
     {
         if (payloadString == "ON")
