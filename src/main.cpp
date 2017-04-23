@@ -107,14 +107,14 @@ std::string mqtt_secondary = dataManager.getMqttTopic(2);
 #ifdef ENABLE_SONOFF_POW
     std::string mqtt_pow = mqtt_status + "/pow";
 
+    StaticJsonBuffer<500> powJsonBuffer;
+    JsonObject& powJsonObject = powJsonBuffer.createObject();
+    String powJsonString;
+
     void powHandlePublish()
     {
         if (powTimer.check())
         {
-            StaticJsonBuffer<500> powJsonBuffer;
-            JsonObject& powJsonObject = powJsonBuffer.createObject();
-            String powJsonString;
-
             powJsonObject["current"] = powManager.getCurrent();
             powJsonObject["voltage"] = powManager.getVoltage();
             powJsonObject["activePower"] = powManager.getActivePower();
@@ -124,7 +124,7 @@ std::string mqtt_secondary = dataManager.getMqttTopic(2);
 
             powJsonObject.printTo(powJsonString);
 
-            mqttManager.publishMQTT(mqtt_pow, std::string(powJsonString.c_str()));
+            mqttManager.publishMQTT(mqtt_pow, powJsonString.c_str());
 
             powTimer.start();
         }
@@ -333,7 +333,7 @@ void setup()
 
     #ifdef ENABLE_SONOFF_POW
         powManager.setup();
-        powTimer.setup(RT_ON, 20000);
+        powTimer.setup(RT_ON, 80000);
     #endif
 
     // Configure Wifi
