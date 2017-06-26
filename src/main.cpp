@@ -87,21 +87,20 @@ Relay relay;
 Button button;
 LED led;
 
-std::string wifi_ssid = dataManager.getWifiSSID();
-std::string wifi_password = dataManager.getWifiPass();
-std::string ip = dataManager.getIP();
-std::string mask = dataManager.getMask();
-std::string gateway = dataManager.getGateway();
-std::string ota = dataManager.getOta();
-std::string mqtt_server = dataManager.getMqttServer();
-std::string mqtt_port = dataManager.getMqttPort();
-std::string mqtt_username = dataManager.getMqttUser();
-std::string mqtt_password = dataManager.getMqttPass();
-std::string device_name = dataManager.getDeviceName();
-std::string mqtt_status = dataManager.getMqttTopic(0);
-std::string mqtt_command = dataManager.getMqttTopic(1);
-std::string mqtt_secondary = dataManager.getMqttTopic(2);
-
+std::string wifi_ssid = dataManager.get("wifi_ssid1");
+std::string wifi_password = dataManager.get("wifi_pass");
+std::string ip = dataManager.get("ip");
+std::string mask = dataManager.get("mask");
+std::string gateway = dataManager.get("gateway");
+std::string ota_server = dataManager.get("ota_server");
+std::string mqtt_server = dataManager.get("mqtt_server");
+std::string mqtt_port = dataManager.get("mqtt_port");
+std::string mqtt_username = dataManager.get("mqtt_username");
+std::string mqtt_password = dataManager.get("mqtt_password");
+std::string device_name = dataManager.get("device_name");
+std::string mqtt_status = dataManager.get("mqtt_status");
+std::string mqtt_command = dataManager.get("mqtt_command");
+std::string mqtt_secondary = dataManager.get("mqtt_secondary");
 
 
 #ifdef ENABLE_SONOFF_POW
@@ -158,7 +157,7 @@ std::vector<std::pair<std::string, std::string>> getWebServerData()
     webServerData.push_back(generic_pair);
 
     generic_pair.first = "ota_server";
-    generic_pair.second = ota;
+    generic_pair.second = ota_server;
     webServerData.push_back(generic_pair);
 
     generic_pair.first = "mqtt_server";
@@ -209,20 +208,20 @@ void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsConte
     //Save config to dataManager
     Serial.println("webServerSubmitCallback");
 
-    dataManager.setWifiSSID(inputFieldsContent["wifi_ssid"]);
-    dataManager.setWifiPass(inputFieldsContent["wifi_password"]);
-    dataManager.setIP(inputFieldsContent["ip"]);
-    dataManager.setMask(inputFieldsContent["mask"]);
-    dataManager.setGateway(inputFieldsContent["gateway"]);
-    dataManager.setOta(inputFieldsContent["ota_server"]);
-    dataManager.setMqttServer(inputFieldsContent["mqtt_server"]);
-    dataManager.setMqttPort(inputFieldsContent["mqtt_port"]);
-    dataManager.setMqttUser(inputFieldsContent["mqtt_username"]);
-    dataManager.setMqttPass(inputFieldsContent["mqtt_password"]);
-    dataManager.setDeviceName(inputFieldsContent["device_name"]);
-    dataManager.setMqttTopic(0, inputFieldsContent["mqtt_status"]);
-    dataManager.setMqttTopic(1, inputFieldsContent["mqtt_command"]);
-    dataManager.setMqttTopic(2, inputFieldsContent["mqtt_secondary"]);
+    dataManager.set("wifi_ssid", inputFieldsContent["wifi_ssid"]);
+    dataManager.set("wifi_password", inputFieldsContent["wifi_password"]);
+    dataManager.set("ip", inputFieldsContent["ip"]);
+    dataManager.set("mask", inputFieldsContent["mask"]);
+    dataManager.set("mask", inputFieldsContent["gateway"]);
+    dataManager.set("ota_server", inputFieldsContent["ota_server"]);
+    dataManager.set("mqtt_server", inputFieldsContent["mqtt_server"]);
+    dataManager.set("mqtt_port", inputFieldsContent["mqtt_port"]);
+    dataManager.set("mqtt_username", inputFieldsContent["mqtt_username"]);
+    dataManager.set("mqtt_password", inputFieldsContent["mqtt_password"]);
+    dataManager.set("device_name", inputFieldsContent["device_name"]);
+    dataManager.set("mqtt_status", inputFieldsContent["mqtt_status"]);
+    dataManager.set("mqtt_command", inputFieldsContent["mqtt_command"]);
+    dataManager.set("mqtt_secondary", inputFieldsContent["mqtt_secondary"]);
 
     ESP.restart(); // Restart device with new config
 }
@@ -309,7 +308,7 @@ void setup()
     relay.off();
 
     // Configure Button
-    button.setup(BUTTON_PIN, PULLDOWN);
+    button.setup(BUTTON_PIN, ButtonType::PULLUP);
     button.setShortPressCallback(shortPress);
     button.setLongPressCallback(longPress);
     button.setLongLongPressCallback(longlongPress);
@@ -348,7 +347,7 @@ void setup()
     ArduinoOTA.begin();
 
     // UpdateManager setup
-    updateManager.setup(ota, FIRMWARE, FIRMWARE_VERSION, HARDWARE);
+    updateManager.setup(ota_server, FIRMWARE, FIRMWARE_VERSION, HARDWARE);
 }
 
 void loop()
