@@ -28,7 +28,6 @@ INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/MqttManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/Relay"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/SimpleTimer"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/UpdateManager"
-INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiMQTTManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/PowManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
@@ -73,28 +72,34 @@ DEFINES += "ARDUINO_ESP8266_ESP01"
 OTHER_FILES += platformio.ini
 
 SOURCES += src/main.cpp \
-	lib/Button/Button.cpp \
-    lib/LED/LED.cpp \
-    lib/Relay/Relay.cpp \
-    lib/SimpleTimer/SimpleTimer.cpp \
-	lib/DataManager/DataManager.cpp \
-    lib/WifiManager/WifiManager.cpp \
-    lib/MqttManager/MqttManager.cpp \
-	lib/PowManager/PowManager.cpp \
-	lib/WebServer/WebServer.cpp \
-	lib/UpdateManager/UpdateManager.cpp
+           lib/Button/Button.cpp \
+           lib/DataManager/DataManager.cpp \
+           lib/LED/LED.cpp \
+           lib/MqttManager/MqttDiscoveryComponent.cpp \
+           lib/MqttManager/MqttDiscoveryLight.cpp \
+           lib/MqttManager/MqttDiscoverySensor.cpp \
+           lib/MqttManager/MqttManager.cpp \
+           lib/PowManager/PowManager.cpp \
+           lib/Relay/Relay.cpp \
+           lib/SimpleTimer/SimpleTimer.cpp \
+           lib/UpdateManager/UpdateManager.cpp \
+           lib/WebServer/WebServer.cpp \
+           lib/WifiManager/WifiManager.cpp
 
 DISTFILES += \
     lib/readme.txt
 
 HEADERS += \
-    lib/Button/Button.h \
-    lib/LED/LED.h \
-    lib/Relay/Relay.h \
-    lib/SimpleTimer/SimpleTimer.h \
-    lib/DataManager/DataManager.h \
-    lib/WifiManager/WifiManager.h \
-    lib/MqttManager/MqttManager.h \
-	lib/PowManager/PowManager.h \
-	lib/WebServer/WebServer.h \
-	lib/UpdateManager/UpdateManager.h
+           lib/Button/Button.h \
+           lib/DataManager/DataManager.h \
+           lib/LED/LED.h \
+           lib/MqttManager/MqttDiscoveryComponent.h \
+           lib/MqttManager/MqttDiscoveryLight.h \
+           lib/MqttManager/MqttDiscoverySensor.h \
+           lib/MqttManager/MqttManager.h \
+           lib/PowManager/PowManager.h \
+           lib/Relay/Relay.h \
+           lib/SimpleTimer/SimpleTimer.h \
+           lib/UpdateManager/UpdateManager.h \
+           lib/WebServer/WebServer.h \
+           lib/WifiManager/WifiManager.h
