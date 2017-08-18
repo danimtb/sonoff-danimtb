@@ -235,21 +235,18 @@ void MQTTcallback(String topicString, String payloadString)
             Serial.println("ON");
             relay.on();
             mqttManager.publishMQTT(mqtt_status, "ON");
-            mqttManager.publishMQTT(mqtt_command, "ON");
         }
         else if (payloadString == "OFF")
         {
             Serial.println("OFF");
             relay.off();
             mqttManager.publishMQTT(mqtt_status, "OFF");
-            mqttManager.publishMQTT(mqtt_command, "OFF");
         }
         else if (payloadString == "TOGGLE")
         {
             Serial.println("TOGGLE");
             relay.commute();
             mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
-            mqttManager.publishMQTT(mqtt_command, relay.getState() ? "ON" : "OFF");
         }
         else
         {
@@ -283,6 +280,14 @@ void longPress()
 
 void veryLongPress()
 {
+    //Disconnect and Restart device
+    mqttManager.stopConnection();
+    wifiManager.disconnectStaWifi();
+    ESP.restart();
+}
+
+void ultraLongPress()
+{
     Serial.println("button.longlongPress()");
 
     if(wifiManager.apModeEnabled())
@@ -299,16 +304,6 @@ void veryLongPress()
         WebServer::getInstance().start();
     }
 }
-
-void ultraLongPress()
-{
-    //Disconnect and Restart device
-    mqttManager.stopConnection();
-    wifiManager.disconnectStaWifi();
-    ESP.restart();
-}
-
-
 
 
 void setup()
