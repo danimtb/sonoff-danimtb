@@ -296,6 +296,15 @@ void veryLongPress()
     }
 }
 
+void ultraLongPress()
+{
+    //Disconnect and Restart device
+    mqttManager.stopConnection();
+    wifiManager.disconnectStaWifi();
+    ESP.restart();
+}
+
+
 
 
 void setup()
@@ -312,6 +321,7 @@ void setup()
     button.setShortPressCallback(shortPress);
     button.setLongPressCallback(longPress);
     button.setVeryLongPressCallback(veryLongPress);
+    button.setUltraLongPressCallback(ultraLongPress);
 
     #ifdef LED_PIN
         led.setup(LED_PIN, LED_MODE);
