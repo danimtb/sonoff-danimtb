@@ -12,6 +12,7 @@
 #include "../lib/WifiManager/WifiManager.h"
 #include "../lib/WebServer/WebServer.h"
 #include "../lib/UpdateManager/UpdateManager.h"
+#include "../lib/TimeWatchdog/TimeWatchdog.h"
 
 #ifdef ENABLE_SONOFF_POW
     #include "ArduinoJson.h"
@@ -86,6 +87,7 @@ MqttManager mqttManager;
 Relay relay;
 Button button;
 LED led;
+TimeWatchdog connectionWatchdog;
 
 String wifi_ssid = dataManager.get("wifi_ssid");
 String wifi_password = dataManager.get("wifi_password");
@@ -109,6 +111,7 @@ String mqtt_secondary = dataManager.get("mqtt_secondary");
     StaticJsonBuffer<500> powJsonBuffer;
     JsonObject& powJsonObject = powJsonBuffer.createObject();
     String powJsonString;
+
 
     void powHandlePublish()
     {
@@ -305,6 +308,11 @@ void ultraLongPress()
     }
 }
 
+void connectionWatchdogCallback()
+{
+    ESP.restart();
+}
+
 
 void setup()
 {
@@ -357,6 +365,9 @@ void setup()
 
     // UpdateManager setup
     updateManager.setup(ota_server, FIRMWARE, FIRMWARE_VERSION, HARDWARE);
+
+    // ConnectionWatchdog setup
+    connectionWatchdog.setup(1200000, connectionWatchdogCallback); //20 min
 }
 
 void loop()
@@ -376,26 +387,37 @@ void loop()
     }
 
     // Handle WebServer connections
-    if(wifiManager.apModeEnabled())
+    if (wifiManager.apModeEnabled())
     {
         WebServer::getInstance().loop();
     }
 
-    // LED Status
-    #ifdef LED_PIN
-        if (mqttManager.connected())
-        {
+    // LED Status and ConnectionWatchdog
+    connectionWatchdog.loop();
+
+    if (mqttManager.connected())
+    {
+        connectionWatchdog.init();
+        connectionWatchdog.feed();
+
+        #ifdef LED_PIN
             led.on();
-        }
-        else if(wifiManager.apModeEnabled())
-        {
+        #endif
+    }
+    else if(wifiManager.apModeEnabled())
+    {
+        connectionWatchdog.deinit();
+
+        #ifdef LED_PIN
             led.blink(1000);
-        }
-        else
-        {
+        #endif
+    }
+    else
+    {
+        #ifdef LED_PIN
             led.off();
-        }
-    #endif
+        #endif
+    }
 
     // Pow Status
     #ifdef ENABLE_SONOFF_POW

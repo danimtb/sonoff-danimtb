@@ -30,6 +30,7 @@ INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/SimpleTimer"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/UpdateManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/PowManager"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/TimeWatchdog"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/.piolibdeps/ArduinoJson_ID64"
 INCLUDEPATH += "$${HOMEDIR}/.platformio/packages/framework-arduinoespressif8266/libraries/ArduinoOTA"
@@ -82,6 +83,7 @@ SOURCES += src/main.cpp \
            lib/PowManager/PowManager.cpp \
            lib/Relay/Relay.cpp \
            lib/SimpleTimer/SimpleTimer.cpp \
+           lib/TimeWatchdog/TimeWatchdog.cpp \
            lib/UpdateManager/UpdateManager.cpp \
            lib/WebServer/WebServer.cpp \
            lib/WifiManager/WifiManager.cpp
@@ -100,6 +102,7 @@ HEADERS += \
            lib/PowManager/PowManager.h \
            lib/Relay/Relay.h \
            lib/SimpleTimer/SimpleTimer.h \
+           lib/TimeWatchdog/TimeWatchdog.h \
            lib/UpdateManager/UpdateManager.h \
            lib/WebServer/WebServer.h \
            lib/WifiManager/WifiManager.h
