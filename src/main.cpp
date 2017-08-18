@@ -17,7 +17,6 @@
 #ifdef ENABLE_SONOFF_POW
     #include "ArduinoJson.h"
 
-    #include "../lib/SimpleTimer/SimpleTimer.h"
     #include "../lib/PowManager/PowManager.h"
 #endif
 
@@ -76,7 +75,7 @@
 
 
 #ifdef ENABLE_SONOFF_POW
-    SimpleTimer powTimer;
+    TimeWatchdog powWatchdog;
     PowManager powManager;
 #endif
 
@@ -113,23 +112,20 @@ String mqtt_secondary = dataManager.get("mqtt_secondary");
     String powJsonString;
 
 
-    void powHandlePublish()
+    void powWatchdogCallback()
     {
-        if (powTimer.check())
-        {
-            powJsonObject["current"] = powManager.getCurrent();
-            powJsonObject["voltage"] = powManager.getVoltage();
-            powJsonObject["activePower"] = powManager.getActivePower();
-            powJsonObject["apparentPower"] = powManager.getApparentPower();
-            powJsonObject["powerFactor"] = powManager.getPowerFactor();
-            powJsonObject["reactivePower"] = powManager.getReactivePower();
+        powJsonObject["current"] = powManager.getCurrent();
+        powJsonObject["voltage"] = powManager.getVoltage();
+        powJsonObject["activePower"] = powManager.getActivePower();
+        powJsonObject["apparentPower"] = powManager.getApparentPower();
+        powJsonObject["powerFactor"] = powManager.getPowerFactor();
+        powJsonObject["reactivePower"] = powManager.getReactivePower();
 
-            powJsonObject.printTo(powJsonString);
+        powJsonObject.printTo(powJsonString);
 
-            mqttManager.publishMQTT(mqtt_pow, powJsonString.c_str());
+        mqttManager.publishMQTT(mqtt_pow, powJsonString.c_str());
 
-            powTimer.start();
-        }
+        powWatchdog.feed();
     }
 #endif
 
@@ -339,7 +335,9 @@ void setup()
 
     #ifdef ENABLE_SONOFF_POW
         powManager.setup();
-        powTimer.setup(RT_ON, 80000);
+        powWatchdog.setup(80000, powWatchdogCallback);
+        powWatchdog.init();
+        powWatchdog.feed();
     #endif
 
     // Configure Wifi
@@ -422,6 +420,6 @@ void loop()
     // Pow Status
     #ifdef ENABLE_SONOFF_POW
         powManager.loop();
-        powHandlePublish();
+        powWatchdog.loop();
     #endif
 }
