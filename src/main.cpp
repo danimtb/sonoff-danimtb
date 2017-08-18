@@ -87,24 +87,24 @@ Relay relay;
 Button button;
 LED led;
 
-std::string wifi_ssid = dataManager.get("wifi_ssid1");
-std::string wifi_password = dataManager.get("wifi_pass");
-std::string ip = dataManager.get("ip");
-std::string mask = dataManager.get("mask");
-std::string gateway = dataManager.get("gateway");
-std::string ota_server = dataManager.get("ota_server");
-std::string mqtt_server = dataManager.get("mqtt_server");
-std::string mqtt_port = dataManager.get("mqtt_port");
-std::string mqtt_username = dataManager.get("mqtt_username");
-std::string mqtt_password = dataManager.get("mqtt_password");
-std::string device_name = dataManager.get("device_name");
-std::string mqtt_status = dataManager.get("mqtt_status");
-std::string mqtt_command = dataManager.get("mqtt_command");
-std::string mqtt_secondary = dataManager.get("mqtt_secondary");
+String wifi_ssid = dataManager.get("wifi_ssid1");
+String wifi_password = dataManager.get("wifi_pass");
+String ip = dataManager.get("ip");
+String mask = dataManager.get("mask");
+String gateway = dataManager.get("gateway");
+String ota_server = dataManager.get("ota_server");
+String mqtt_server = dataManager.get("mqtt_server");
+String mqtt_port = dataManager.get("mqtt_port");
+String mqtt_username = dataManager.get("mqtt_username");
+String mqtt_password = dataManager.get("mqtt_password");
+String device_name = dataManager.get("device_name");
+String mqtt_status = dataManager.get("mqtt_status");
+String mqtt_command = dataManager.get("mqtt_command");
+String mqtt_secondary = dataManager.get("mqtt_secondary");
 
 
 #ifdef ENABLE_SONOFF_POW
-    std::string mqtt_pow = mqtt_status + "/pow";
+    String mqtt_pow = mqtt_status + "/pow";
 
     StaticJsonBuffer<500> powJsonBuffer;
     JsonObject& powJsonObject = powJsonBuffer.createObject();
@@ -130,11 +130,11 @@ std::string mqtt_secondary = dataManager.get("mqtt_secondary");
     }
 #endif
 
-std::vector<std::pair<std::string, std::string>> getWebServerData()
+std::vector<std::pair<String, String>> getWebServerData()
 {
-    std::vector<std::pair<std::string, std::string>> webServerData;
+    std::vector<std::pair<String, String>> webServerData;
 
-    std::pair<std::string, std::string> generic_pair;
+    std::pair<String, String> generic_pair;
 
     generic_pair.first = "wifi_ssid";
     generic_pair.second = wifi_ssid;
@@ -203,7 +203,7 @@ std::vector<std::pair<std::string, std::string>> getWebServerData()
     return webServerData;
 }
 
-void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsContent)
+void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
 {
     //Save config to dataManager
     Serial.println("webServerSubmitCallback");
@@ -226,7 +226,7 @@ void webServerSubmitCallback(std::map<std::string, std::string> inputFieldsConte
     ESP.restart(); // Restart device with new config
 }
 
-void MQTTcallback(std::string topicString, std::string payloadString)
+void MQTTcallback(String topicString, String payloadString)
 {
     if (topicString == mqtt_command)
     {
