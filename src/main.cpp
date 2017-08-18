@@ -87,8 +87,8 @@ Relay relay;
 Button button;
 LED led;
 
-String wifi_ssid = dataManager.get("wifi_ssid1");
-String wifi_password = dataManager.get("wifi_pass");
+String wifi_ssid = dataManager.get("wifi_ssid");
+String wifi_password = dataManager.get("wifi_password");
 String ip = dataManager.get("ip");
 String mask = dataManager.get("mask");
 String gateway = dataManager.get("gateway");
@@ -206,13 +206,13 @@ std::vector<std::pair<String, String>> getWebServerData()
 void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
 {
     //Save config to dataManager
-    Serial.println("webServerSubmitCallback");
+    Serial.println("webServerSubmitCallback()");
 
     dataManager.set("wifi_ssid", inputFieldsContent["wifi_ssid"]);
     dataManager.set("wifi_password", inputFieldsContent["wifi_password"]);
     dataManager.set("ip", inputFieldsContent["ip"]);
     dataManager.set("mask", inputFieldsContent["mask"]);
-    dataManager.set("mask", inputFieldsContent["gateway"]);
+    dataManager.set("gateway", inputFieldsContent["gateway"]);
     dataManager.set("ota_server", inputFieldsContent["ota_server"]);
     dataManager.set("mqtt_server", inputFieldsContent["mqtt_server"]);
     dataManager.set("mqtt_port", inputFieldsContent["mqtt_port"]);
