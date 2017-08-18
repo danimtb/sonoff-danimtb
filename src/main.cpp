@@ -277,7 +277,7 @@ void longPress()
     mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
 }
 
-void longlongPress()
+void veryLongPress()
 {
     Serial.println("button.longlongPress()");
 
@@ -311,7 +311,7 @@ void setup()
     button.setup(BUTTON_PIN, ButtonType::PULLUP);
     button.setShortPressCallback(shortPress);
     button.setLongPressCallback(longPress);
-    button.setLongLongPressCallback(longlongPress);
+    button.setVeryLongPressCallback(veryLongPress);
 
     #ifdef LED_PIN
         led.setup(LED_PIN, LED_MODE);
