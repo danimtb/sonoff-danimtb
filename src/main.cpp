@@ -28,7 +28,7 @@
 //#################### FIRMWARE ####################
 
 #define FIRMWARE "sonoff-danimtb"
-#define FIRMWARE_VERSION "0.2.1"
+#define FIRMWARE_VERSION "0.3.0"
 
 //#################### ======= ####################
 
