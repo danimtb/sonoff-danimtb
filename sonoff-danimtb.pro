@@ -27,6 +27,7 @@ INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/LED"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/MqttManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/Relay"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/SimpleTimer"
+INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/ToggleSwitch"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/UpdateManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/WifiManager"
 INCLUDEPATH += "$${HOMEDIR}/repos/sonoff-danimtb/lib/PowManager"
@@ -83,6 +84,7 @@ SOURCES += src/main.cpp \
            lib/PowManager/PowManager.cpp \
            lib/Relay/Relay.cpp \
            lib/SimpleTimer/SimpleTimer.cpp \
+           lib/ToggleSwitch/ToggleSwitch.cpp \
            lib/TimeWatchdog/TimeWatchdog.cpp \
            lib/UpdateManager/UpdateManager.cpp \
            lib/WebServer/WebServer.cpp \
@@ -102,6 +104,7 @@ HEADERS += \
            lib/PowManager/PowManager.h \
            lib/Relay/Relay.h \
            lib/SimpleTimer/SimpleTimer.h \
+           lib/ToggleSwitch/ToggleSwitch.h \
            lib/TimeWatchdog/TimeWatchdog.h \
            lib/UpdateManager/UpdateManager.h \
            lib/WebServer/WebServer.h \

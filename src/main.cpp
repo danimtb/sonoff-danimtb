@@ -20,12 +20,15 @@
     #include "../lib/PowManager/PowManager.h"
 #endif
 
+#ifdef ENABLE_SONOFF_SWITCH
+    #include "../lib/ToggleSwitch/ToggleSwitch.h"
+#endif
 
 
 //#################### FIRMWARE ####################
 
 #define FIRMWARE "sonoff-danimtb"
-#define FIRMWARE_VERSION "0.2.0"
+#define FIRMWARE_VERSION "0.2.1"
 
 //#################### ======= ####################
 
@@ -62,6 +65,15 @@
 #define LED_MODE LED_LOW_LVL
 #endif
 
+#ifdef ENABLE_SONOFF_SWITCH
+#define HARDWARE "sonoff-switch"
+#define BUTTON_PIN 0
+#define RELAY_PIN 12
+#define LED_PIN 13
+#define LED_MODE LED_LOW_LVL
+#define SWITCH_PIN 14
+#endif
+
 #ifdef ENABLE_SONOFF
 #define HARDWARE "sonoff"
 #define BUTTON_PIN 0
@@ -77,6 +89,10 @@
 #ifdef ENABLE_SONOFF_POW
     TimeWatchdog powWatchdog;
     PowManager powManager;
+#endif
+
+#ifdef ENABLE_SONOFF_SWITCH
+    ToggleSwitch toggleSwitch;
 #endif
 
 UpdateManager updateManager;
@@ -338,6 +354,14 @@ void setup()
         powWatchdog.setup(80000, powWatchdogCallback);
         powWatchdog.init();
         powWatchdog.feed();
+    #endif
+
+    #ifdef ENABLE_SONOFF_SWITCH
+        toggleSwitch.setup(SWITCH_PIN, ToggleSwitchType::PULLUP_INTERNAL);
+        toggleSwitch.setSingleToggleCallback(shortPress);
+        toggleSwitch.setDoubleToggleCallback(longPress);
+        toggleSwitch.setTripleToggleCallback(veryLongPress);
+        toggleSwitch.setQuadrupleToggleCallback(ultraLongPress);
     #endif
 
     // Configure Wifi
