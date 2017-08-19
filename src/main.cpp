@@ -397,6 +397,11 @@ void loop()
     // Process Button events
     button.loop();
 
+    // Process ToggleSwitch events
+    #ifdef ENABLE_SONOFF_SWITCH
+        toggleSwitch.loop();
+    #endif
+
     // Check Wifi status
     wifiManager.loop();
 
