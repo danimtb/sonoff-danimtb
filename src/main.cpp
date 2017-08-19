@@ -74,6 +74,15 @@
 #define SWITCH_PIN 14
 #endif
 
+#ifdef ENABLE_SONOFF_BUTTON
+#define HARDWARE "sonoff-button"
+#define BUTTON_PIN 0
+#define RELAY_PIN 12
+#define LED_PIN 13
+#define LED_MODE LED_LOW_LVL
+#define EXTERNAL_BUTTON_PIN 14
+#endif
+
 #ifdef ENABLE_SONOFF
 #define HARDWARE "sonoff"
 #define BUTTON_PIN 0
@@ -93,6 +102,10 @@
 
 #ifdef ENABLE_SONOFF_SWITCH
     ToggleSwitch toggleSwitch;
+#endif
+
+#ifdef ENABLE_SONOFF_BUTTON
+    Button externalButton;
 #endif
 
 UpdateManager updateManager;
@@ -342,6 +355,15 @@ void setup()
     button.setVeryLongPressCallback(veryLongPress);
     button.setUltraLongPressCallback(ultraLongPress);
 
+    // Configure external button
+    #ifdef ENABLE_SONOFF_BUTTON
+        externalButton.setup(EXTERNAL_BUTTON_PIN, ButtonType::PULLUP_INTERNAL);
+        externalButton.setShortPressCallback(shortPress);
+        externalButton.setLongPressCallback(longPress);
+        externalButton.setVeryLongPressCallback(veryLongPress);
+        externalButton.setUltraLongPressCallback(ultraLongPress);
+    #endif
+
     #ifdef LED_PIN
         led.setup(LED_PIN, LED_MODE);
         led.on();
@@ -396,6 +418,11 @@ void loop()
 {
     // Process Button events
     button.loop();
+
+    // Process External Button events
+    #ifdef ENABLE_SONOFF_BUTTON
+        externalButton.loop();
+    #endif
 
     // Process ToggleSwitch events
     #ifdef ENABLE_SONOFF_SWITCH
