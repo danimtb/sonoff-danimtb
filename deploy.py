@@ -14,3 +14,9 @@ os.system("platformio run -e sonoff-touch-esp01 -t buildfs")
 
 os.system("platformio run -e sonoff-pow")
 os.system("platformio run -e sonoff-pow -t buildfs")
+
+os.system("platformio run -e sonoff-switch")
+os.system("platformio run -e sonoff-switch -t buildfs")
+
+os.system("platformio run -e sonoff-button")
+os.system("platformio run -e sonoff-button -t buildfs")
