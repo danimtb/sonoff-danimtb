@@ -9,6 +9,7 @@
 #include "../lib/Button/Button.h"
 #include "../lib/DataManager/DataManager.h"
 #include "../lib/MqttManager/MqttManager.h"
+#include "../lib/MqttManager/MqttDiscoveryComponent.h"
 #include "../lib/WifiManager/WifiManager.h"
 #include "../lib/WebServer/WebServer.h"
 #include "../lib/UpdateManager/UpdateManager.h"
@@ -131,6 +132,8 @@ String device_name = dataManager.get("device_name");
 String mqtt_status = dataManager.get("mqtt_status");
 String mqtt_command = dataManager.get("mqtt_command");
 String mqtt_secondary = dataManager.get("mqtt_secondary");
+
+MqttDiscoveryComponent* discoveryComponent;
 
 
 #ifdef ENABLE_SONOFF_POW
@@ -392,11 +395,15 @@ void setup()
 
     // Configure MQTT
     mqttManager.setCallback(MQTTcallback);
-    mqttManager.setup(mqtt_server, mqtt_port.c_str(), mqtt_username, mqtt_password);
-    mqttManager.setLastWillMQTT(mqtt_status, "OFF");
+    mqttManager.setup(mqtt_server, mqtt_port.c_str(), mqtt_username, mqtt_password, true);
     mqttManager.setDeviceData(device_name, HARDWARE, ip, FIRMWARE, FIRMWARE_VERSION);
-    mqttManager.addStatusTopic(mqtt_status);
-    mqttManager.addSubscribeTopic(mqtt_command);
+
+    discoveryComponent = new MqttDiscoveryComponent("light", device_name);
+    discoveryComponent->setConfigurtionVariables("command_topic", mqtt_command);
+    discoveryComponent->setConfigurtionVariables("state_topic", mqtt_status);
+    discoveryComponent->setConfigurtionVariables("qos", "1");
+    discoveryComponent->setConfigurtionVariables("retain", "true");
+    mqttManager.addDiscoveryComponent(discoveryComponent);
     mqttManager.startConnection();
 
     //Configure WebServer
