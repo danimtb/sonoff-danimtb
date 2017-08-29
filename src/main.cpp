@@ -117,6 +117,7 @@ Relay relay;
 Button button;
 LED led;
 TimeWatchdog connectionWatchdog;
+MqttDiscoveryComponent* discoveryComponent;
 
 String wifi_ssid = dataManager.get("wifi_ssid");
 String wifi_password = dataManager.get("wifi_password");
@@ -129,33 +130,29 @@ String mqtt_port = dataManager.get("mqtt_port");
 String mqtt_username = dataManager.get("mqtt_username");
 String mqtt_password = dataManager.get("mqtt_password");
 String device_name = dataManager.get("device_name");
+String discovery_prefix = dataManager.get("discovery_prefix");
+String component = dataManager.get("component");
 String mqtt_status = dataManager.get("mqtt_status");
 String mqtt_command = dataManager.get("mqtt_command");
 String mqtt_secondary = dataManager.get("mqtt_secondary");
 
-MqttDiscoveryComponent* discoveryComponent;
-
 
 #ifdef ENABLE_SONOFF_POW
-    String mqtt_pow = mqtt_status + "/pow";
-
-    StaticJsonBuffer<500> powJsonBuffer;
-    JsonObject& powJsonObject = powJsonBuffer.createObject();
-    String powJsonString;
-
+    MqttDiscoveryComponent* currentSensor;
+    MqttDiscoveryComponent* voltageSensor;
+    MqttDiscoveryComponent* activePowerSensor;
+    MqttDiscoveryComponent* apparentPowerSensor;
+    MqttDiscoveryComponent* reactivePowerSensor;
+    MqttDiscoveryComponent* powerFactorSensor;
 
     void powWatchdogCallback()
     {
-        powJsonObject["current"] = powManager.getCurrent();
-        powJsonObject["voltage"] = powManager.getVoltage();
-        powJsonObject["activePower"] = powManager.getActivePower();
-        powJsonObject["apparentPower"] = powManager.getApparentPower();
-        powJsonObject["powerFactor"] = powManager.getPowerFactor();
-        powJsonObject["reactivePower"] = powManager.getReactivePower();
-
-        powJsonObject.printTo(powJsonString);
-
-        mqttManager.publishMQTT(mqtt_pow, powJsonString.c_str());
+        mqttManager.publishMQTT(currentSensor->getStateTopic(), powManager.getCurrent());
+        mqttManager.publishMQTT(voltageSensor->getStateTopic(), powManager.getVoltage());
+        mqttManager.publishMQTT(activePowerSensor->getStateTopic(), powManager.getActivePower());
+        mqttManager.publishMQTT(apparentPowerSensor->getStateTopic(), powManager.getApparentPower());
+        mqttManager.publishMQTT(reactivePowerSensor->getStateTopic(), powManager.getReactivePower());
+        mqttManager.publishMQTT(powerFactorSensor->getStateTopic(), powManager.getPowerFactor());
 
         powWatchdog.feed();
     }
@@ -211,6 +208,14 @@ std::vector<std::pair<String, String>> getWebServerData()
     generic_pair.second = device_name;
     webServerData.push_back(generic_pair);
 
+    generic_pair.first = "discovery_prefix";
+    generic_pair.second = discovery_prefix;
+    webServerData.push_back(generic_pair);
+
+    generic_pair.first = "component";
+    generic_pair.second = component;
+    webServerData.push_back(generic_pair);
+
     generic_pair.first = "mqtt_status";
     generic_pair.second = mqtt_status;
     webServerData.push_back(generic_pair);
@@ -250,6 +255,8 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
     dataManager.set("mqtt_username", inputFieldsContent["mqtt_username"]);
     dataManager.set("mqtt_password", inputFieldsContent["mqtt_password"]);
     dataManager.set("device_name", inputFieldsContent["device_name"]);
+    dataManager.set("discovery_prefix", inputFieldsContent["discovery_prefix"]);
+    dataManager.set("component", inputFieldsContent["component"]);
     dataManager.set("mqtt_status", inputFieldsContent["mqtt_status"]);
     dataManager.set("mqtt_command", inputFieldsContent["mqtt_command"]);
     dataManager.set("mqtt_secondary", inputFieldsContent["mqtt_secondary"]);
@@ -358,35 +365,12 @@ void setup()
     button.setVeryLongPressCallback(veryLongPress);
     button.setUltraLongPressCallback(ultraLongPress);
 
-    // Configure external button
-    #ifdef ENABLE_SONOFF_BUTTON
-        externalButton.setup(EXTERNAL_BUTTON_PIN, ButtonType::PULLUP_INTERNAL);
-        externalButton.setShortPressCallback(shortPress);
-        externalButton.setLongPressCallback(longPress);
-        externalButton.setVeryLongPressCallback(veryLongPress);
-        externalButton.setUltraLongPressCallback(ultraLongPress);
-    #endif
-
+    // Initial flash LED
     #ifdef LED_PIN
         led.setup(LED_PIN, LED_MODE);
         led.on();
         delay(300);
         led.off();
-    #endif
-
-    #ifdef ENABLE_SONOFF_POW
-        powManager.setup();
-        powWatchdog.setup(80000, powWatchdogCallback);
-        powWatchdog.init();
-        powWatchdog.feed();
-    #endif
-
-    #ifdef ENABLE_SONOFF_SWITCH
-        toggleSwitch.setup(SWITCH_PIN, ToggleSwitchType::PULLUP_INTERNAL);
-        toggleSwitch.setSingleToggleCallback(shortPress);
-        toggleSwitch.setDoubleToggleCallback(longPress);
-        toggleSwitch.setTripleToggleCallback(veryLongPress);
-        toggleSwitch.setQuadrupleToggleCallback(ultraLongPress);
     #endif
 
     // Configure Wifi
@@ -398,11 +382,61 @@ void setup()
     mqttManager.setup(mqtt_server, mqtt_port.c_str(), mqtt_username, mqtt_password, true);
     mqttManager.setDeviceData(device_name, HARDWARE, ip, FIRMWARE, FIRMWARE_VERSION);
 
-    discoveryComponent = new MqttDiscoveryComponent("light", device_name);
-    discoveryComponent->setConfigurtionVariables("command_topic", mqtt_command);
-    discoveryComponent->setConfigurtionVariables("state_topic", mqtt_status);
-    discoveryComponent->setConfigurtionVariables("qos", "1");
-    discoveryComponent->setConfigurtionVariables("retain", "true");
+    // Configure External Button
+    #ifdef ENABLE_SONOFF_BUTTON
+        externalButton.setup(EXTERNAL_BUTTON_PIN, ButtonType::PULLUP_INTERNAL);
+        externalButton.setShortPressCallback(shortPress);
+        externalButton.setLongPressCallback(longPress);
+        externalButton.setVeryLongPressCallback(veryLongPress);
+        externalButton.setUltraLongPressCallback(ultraLongPress);
+    #endif
+
+    // Configure Pow
+    #ifdef ENABLE_SONOFF_POW
+        powManager.setup();
+
+        currentSensor = new MqttDiscoveryComponent("sensor", device_name + " Current");
+        voltageSensor = new MqttDiscoveryComponent("sensor", device_name + " Voltage");
+        activePowerSensor = new MqttDiscoveryComponent("sensor", device_name + " Active Power");
+        apparentPowerSensor = new MqttDiscoveryComponent("sensor", device_name + " Apparent Power");
+        reactivePowerSensor = new MqttDiscoveryComponent("sensor", device_name + " Reactive Power");
+        powerFactorSensor = new MqttDiscoveryComponent("sensor", device_name + " Power Factor");
+
+        currentSensor->discovery_prefix = discovery_prefix;
+        voltageSensor->discovery_prefix = discovery_prefix;
+        activePowerSensor->discovery_prefix = discovery_prefix;
+        apparentPowerSensor->discovery_prefix = discovery_prefix;
+        reactivePowerSensor->discovery_prefix = discovery_prefix;
+        powerFactorSensor->discovery_prefix = discovery_prefix;
+
+        mqttManager.addDiscoveryComponent(currentSensor);
+        mqttManager.addDiscoveryComponent(voltageSensor);
+        mqttManager.addDiscoveryComponent(activePowerSensor);
+        mqttManager.addDiscoveryComponent(apparentPowerSensor);
+        mqttManager.addDiscoveryComponent(reactivePowerSensor);
+        mqttManager.addDiscoveryComponent(powerFactorSensor);
+
+        powWatchdog.setup(80000, powWatchdogCallback);
+        powWatchdog.init();
+        powWatchdog.feed();
+    #endif
+
+    // Configure External Switch
+    #ifdef ENABLE_SONOFF_SWITCH
+        toggleSwitch.setup(SWITCH_PIN, ToggleSwitchType::PULLUP_INTERNAL);
+        toggleSwitch.setSingleToggleCallback(shortPress);
+        toggleSwitch.setDoubleToggleCallback(longPress);
+        toggleSwitch.setTripleToggleCallback(veryLongPress);
+        toggleSwitch.setQuadrupleToggleCallback(ultraLongPress);
+    #endif
+
+    // Configure MQTT Discovery
+    discoveryComponent = new MqttDiscoveryComponent(component, device_name);
+    discoveryComponent->discovery_prefix = discovery_prefix;
+    discoveryComponent->setConfigurtionVariable("command_topic", mqtt_command);
+    discoveryComponent->setConfigurtionVariable("state_topic", mqtt_status);
+    discoveryComponent->setConfigurtionVariable("qos", "1");
+    discoveryComponent->setConfigurtionVariable("retain", "true");
     mqttManager.addDiscoveryComponent(discoveryComponent);
     mqttManager.startConnection();
 

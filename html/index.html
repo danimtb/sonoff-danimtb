@@ -78,6 +78,14 @@
                 <td style="width: 275px; text-align: left;"><input maxlength="15" name="device_name" size="30" type="text" id="device_name" /></td>
             </tr>
             <tr>
+                <td style="width: 275px; text-align: right;">Discovery Prefix:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="15" name="discovery_prefix" size="30" type="text" id="discovery_prefix" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">Component (light/switch):</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="15" name="component" size="30" type="text" id="component" /></td>
+            </tr>
+            <tr>
                 <td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="40" name="mqtt_status" size="30" type="text" id="mqtt_status" /></td>
             </tr>
@@ -113,6 +121,7 @@
 	                    document.getElementById("ip").value = data.ip;
 	                    document.getElementById("gateway").value = data.gateway;
 	                    document.getElementById("mask").value = data.mask;
+	                    document.getElementById("ota_server").value = data.ota_server;
 
 	                    document.getElementById("mqtt_server").value = data.mqtt_server;
 	                    document.getElementById("mqtt_port").value = data.mqtt_port;
@@ -120,7 +129,8 @@
 	                    document.getElementById("mqtt_password").value = data.mqtt_password;
 	                
 	                    document.getElementById("device_name").value = data.device_name;
-	                    document.getElementById("ota_server").value = data.ota_server;
+	                    document.getElementById("discovery_prefix").value = data.discovery_prefix;
+	                    document.getElementById("component").value = data.component;
 	                    document.getElementById("mqtt_status").value = data.mqtt_status;
 	                    document.getElementById("mqtt_command").value = data.mqtt_command;
 	                    document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
