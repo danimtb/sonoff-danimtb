@@ -409,6 +409,13 @@ void setup()
         reactivePowerSensor->discovery_prefix = discovery_prefix;
         powerFactorSensor->discovery_prefix = discovery_prefix;
 
+        currentSensor->setConfigurtionVariable("unit_of_measurement", "A");
+        voltageSensor->setConfigurtionVariable("unit_of_measurement", "V");
+        activePowerSensor->setConfigurtionVariable("unit_of_measurement", "W");
+        apparentPowerSensor->setConfigurtionVariable("unit_of_measurement", "VA");
+        reactivePowerSensor->setConfigurtionVariable("unit_of_measurement", "VAr");
+        powerFactorSensor->setConfigurtionVariable("unit_of_measurement", "%");
+
         mqttManager.addDiscoveryComponent(currentSensor);
         mqttManager.addDiscoveryComponent(voltageSensor);
         mqttManager.addDiscoveryComponent(activePowerSensor);
@@ -416,7 +423,7 @@ void setup()
         mqttManager.addDiscoveryComponent(reactivePowerSensor);
         mqttManager.addDiscoveryComponent(powerFactorSensor);
 
-        powWatchdog.setup(80000, powWatchdogCallback);
+        powWatchdog.setup(120000, powWatchdogCallback);
         powWatchdog.init();
         powWatchdog.feed();
     #endif
