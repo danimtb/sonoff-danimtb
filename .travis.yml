@@ -1,20 +1,29 @@
-#Template #1: General project. Test it using existing `platformio.ini`.
 
 language: python
 python:
-    - "2.7"
+  - "2.7"
 
 sudo: false
 
 cache:
-    directories:
-        - "~/.platformio"
+  directories:
+    - "~/.platformio"
 
 env:
-    - PLATFORMIO_CI_SRC=src/main.cpp
+  - PLATFORMIO_CI_SRC=src/main.cpp
 
 install:
-    - pip install -U platformio
+  - pip install -U platformio
 
 script:
-    - platformio ci --lib=lib/* --project-conf=platformio.ini src/
+  - python deploy.py
+
+deploy:
+  provider: releases
+  api_key:
+    secure: $GITHUB_OAUTH_TOKEN
+  file_glob: true
+  file: sonoff-danimtb_*.zip
+  skip_cleanup: true
+  on:
+    tags: true

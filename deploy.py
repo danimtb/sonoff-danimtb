@@ -1,22 +1,25 @@
 import os
+import shutil
+from glob import glob
 
-os.system("platformio run -e sonoff")
-os.system("platformio run -e sonoff -t buildfs")
+envs = ["sonoff", "sonoff-s20", "sonoff-touch", "sonoff-touch-esp01", "sonoff-pow", "sonoff-switch",
+        "sonoff-button"]
 
-os.system("platformio run -e sonoff-s20")
-os.system("platformio run -e sonoff-s20 -t buildfs")
+for env in envs:
+    os.system("platformio run -e %s" % env)
+    os.system("platformio run -e %s -t buildfs" % env)
+    shutil.rmtree(os.path.abspath(os.path.join(".pioenvs", env, "FrameworkArduino")))
+    shutil.rmtree(os.path.abspath(os.path.join(".pioenvs", env, "src")))
+    os.remove(os.path.abspath(os.path.join(".pioenvs", env, "libFrameworkArduino.a")))
+    os.remove(os.path.abspath(os.path.join(".pioenvs", env, "libFrameworkArduinoVariant.a")))
 
-os.system("platformio run -e sonoff-touch")
-os.system("platformio run -e sonoff-touch -t buildfs")
+    for lib in glob(os.path.abspath(os.path.join(".pioenvs", env, "lib*"))):
+         shutil.rmtree(os.path.abspath(os.path.join(".pioenvs", env, lib)))
 
-os.system("platformio run -e sonoff-touch-esp01")
-os.system("platformio run -e sonoff-touch-esp01 -t buildfs")
+for element in glob(os.path.abspath(os.path.join(".pioenvs", "*"))):
+    if os.path.isfile(element):
+        os.remove(element)
 
-os.system("platformio run -e sonoff-pow")
-os.system("platformio run -e sonoff-pow -t buildfs")
-
-os.system("platformio run -e sonoff-switch")
-os.system("platformio run -e sonoff-switch -t buildfs")
-
-os.system("platformio run -e sonoff-button")
-os.system("platformio run -e sonoff-button -t buildfs")
+shutil.make_archive(os.path.abspath("sonoff-danimtb_%s" % os.environ['TRAVIS_TAG']),
+                    'zip',
+                    os.path.abspath(os.path.join(".", ".pioenvs")))
