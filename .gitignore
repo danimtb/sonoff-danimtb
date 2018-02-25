@@ -1,6 +1,7 @@
 .pioenvs
 .piolibdeps
 .clang_complete
+.vscode
 .gcc-flags.json
 lib/readme.txt
 *.pro.user*
