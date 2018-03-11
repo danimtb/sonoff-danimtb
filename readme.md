@@ -5,33 +5,46 @@ sonoff-danimtb
 
 This is an alternative firmware for some sonoff devices to use them over Wifi with MQTT communication protocol. The main purpose of this firmware is to perform as best with [Home Assistant](home-assistant.io).
 
-It is design with these features in mind:
-- Simple low couple clases with all functionality ([esp8266-utils](https://github.com/danimtb/esp8266-utils) -Relay, LED, Button, WifiManager, MqttManager, DataManager (EEPROM)...).
+It is designed with these features in mind:
+- Simple low coupled clases with all functionality ([esp8266-utils](https://github.com/danimtb/esp8266-utils) -Relay, LED, Button, WifiManager, MqttManager, DataManager (EEPROM)...).
 - Easy to use and reusable to create firmware for other devices.
-- C++ code and Arduino interface approach (setup, loop).
+- C++ code and Arduino interface approach (``setup()``, ``loop()``).
 
 It's capabilities are:
-- Support for devices with similar pins and configuration -custom esp8266 or esp8285 based boards with just one output pin (relay) and 1 input pin (button)-. CUrrently suporting sonoff, sonoff touch, sonoff S20 and sonoff POW;
+- Support for devices with similar pins and configuration -custom esp8266 or esp8285 based boards-. Currently suporting sonoff, sonoff touch, sonoff S20 and sonoff POW.
 - Fast connection to Wifi network and MQTT broker.
 - Working button toggling relay even when disconnected from Wifi and MQTT.
 - Publish device information and state topics to MQTT at connection start and periodically.
-- ArduinoOTA to target devices flashing a new firmware over wifi.
+- ArduinoOTA to target devices flashing a new firmware over Wifi.
 - Automatic Updates from devices calling an Update Server with new releases.
-
+- Support for external switch or button using the additional GPIO (Only for sonoff). 
 
 # How to flash it
-This project is built with [platformio](platformio.org) to manage third party libraries such as AsyncMqtt, Embedis, ArduinoJson... so you will need to install it.
+This project is built with [platformio](https://platformio.org) to manage third party libraries such as AsyncMqtt, Embedis, ArduinoJson... so you will need to install it. The best way to install it is using pip (only compatible with python 2.7):
 
-To flash a device, clone this repo and run this command with the device connected to a USB port (remember your device should be in flash mode -usually GPIO0 to GND-). Keywords for supported devices are *sonoff*, *sonoff-touch*, *sonoff-s20*, *sonoff-touch-esp01*:
+```
+$ pip install platformio
+```
 
-- First flash SPIFFS:
-`$ platformio run -e sonoff -t uploadfs`
+To flash a device, clone this repo and run the following commands with the device connected to a USB port (remember your device should be in flash mode -usually GPIO0 to GND-). Keywords for supported devices are **sonoff**, **sonoff-touch**, **sonoff-s20**, **sonoff-touch-esp01**, **sonoff-switch**, **sonoff-button**:
+
+- First flash the file system (SPIFFS) where the HTML web is sotored (contents of *data* folder in this repo):
+`$ platformio run -e <device-type> -t uploadfs`
 - Then flash the firmware:
-`$ platformio run -e sonoff -t upload`
+`$ platformio run -e <device-type> -t upload`
 
-Or to flash with Arduino OTA over Wifi:
+For example, in case you want to flash a **sonoff** device:
 
-- First flash SPIFFS:
+```
+$ platformio run -e sonoff -t uploadfs
+...
+...
+$ platformio run -e sonoff -t upload
+```
+
+Or in case your device is already connected to a Wifi running an old version of this firmare, you can it flash with Arduino OTA over Wifi:
+
+- First flash the file system (SPIFFS):
 `$ platformio run -e sonoff -t uploadfs --upload-port your-device-IP`
 - Then flash the firmware:
 `$ platformio run -e sonoff -t upload --upload-port your-device-IP`
@@ -39,9 +52,9 @@ Or to flash with Arduino OTA over Wifi:
 And that's all! :D
 
 # How to configure for your device
-The first time you flash a new device, you need to configure some parameters to connect the devie to your wifi network and mqtt server.
+The first time you flash a new device, you need to configure some parameters to connect the devie to your Wifi network and MQTT server.
 
-To do that, press and hold for 10 seconds (then release) the button and the device will start flashin the LED (if any) and will create a wifi hotspot with its name. Connect to the wifi hotspot and open browser with IP *192.168.4.1*. It will bring you to a web to configure the parameters of your device.
+To do that, press and hold for 10 seconds or more (then release) the button and the device will start flashing the LED (if any) and will create a Wifi HotSpot with the name of the device type. Connect to the wifi hotspot and open browser with IP *192.168.4.1*. It will bring you to a web to configure the parameters of your device.
 When you are done, press *Save Settings* button and the device will try to connect to the Wifi and MQTT network indicated.
 
 Parameter description:
