@@ -92,8 +92,8 @@
 #define LED_MODE LED_LOW_LVL
 #endif
 
-#ifdef ENABLE_SONOFF_T1_DOUBLE
-#define HARDWARE "sonoff_t1_double"
+#ifdef ENABLE_EWELINK_TOUCH_DOUBLE
+#define HARDWARE "ewelink-touch-double"
 #define BUTTON_PIN 0
 #define BUTTON2_PIN 9
 
