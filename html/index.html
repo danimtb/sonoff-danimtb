@@ -97,51 +97,28 @@
                 <td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary" size="30" type="text" id="mqtt_secondary" /></td>
             </tr>
-            <script>
 
-            	function GetAsync(url, callback)
-				{
-				    var xmlHttp = new XMLHttpRequest();
-				    xmlHttp.onreadystatechange = function() { 
-				        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-				            callback(xmlHttp.responseText);
-				    }
-				    xmlHttp.open("GET", url, true);
-				    xmlHttp.send(null);
-				}
-                
-                window.onload = function() {
-                
-                	GetAsync("http://192.168.4.1/data", function(response) {
 
-                		var data = JSON.parse(response);
+            <tr>
+                <td style="width: 275px; text-align: right;">--- If your device has two relays ---</td>
+            </tr>
 
-	                	document.getElementById("wifi_ssid").value = data.wifi_ssid;
-	                    document.getElementById("wifi_password").value = data.wifi_password;
-	                    document.getElementById("ip").value = data.ip;
-	                    document.getElementById("gateway").value = data.gateway;
-	                    document.getElementById("mask").value = data.mask;
-	                    document.getElementById("ota_server").value = data.ota_server;
-
-	                    document.getElementById("mqtt_server").value = data.mqtt_server;
-	                    document.getElementById("mqtt_port").value = data.mqtt_port;
-	                    document.getElementById("mqtt_username").value = data.mqtt_username;
-	                    document.getElementById("mqtt_password").value = data.mqtt_password;
-	                
-	                    document.getElementById("device_name").value = data.device_name;
-	                    document.getElementById("discovery_prefix").value = data.discovery_prefix;
-	                    document.getElementById("component").value = data.component;
-	                    document.getElementById("mqtt_status").value = data.mqtt_status;
-	                    document.getElementById("mqtt_command").value = data.mqtt_command;
-	                    document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
-
-	                    document.getElementById("firmware_version").innerHTML = data.firmware_version;
-	                    document.getElementById("hardware").innerHTML = data.hardware;
-
-                	});
-                }
-                
-            </script>
+            <tr>
+                <td style="width: 275px; text-align: right;">Component (light/switch):</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="component2" size="30" type="text" id="component2" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_status2" size="30" type="text" id="mqtt_status2" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Command Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_command2" size="30" type="text" id="mqtt_command2" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary2" size="30" type="text" id="mqtt_secondary2" /></td>
+            </tr>
         </tbody>
     </table>
     <p><strong>&nbsp;</strong></p>
@@ -149,3 +126,53 @@
 </form>
 <hr />
 <p style="text-align: center;"><em><a href="https://github.com/danimtb/sonoff-danimtb">github@sonoff-danimtb</a></em></p>
+<script>
+
+    function GetAsync(url, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send(null);
+    }
+
+    window.onload = function() {
+
+        GetAsync("http://192.168.4.1/data", function(response) {
+
+            var data = JSON.parse(response);
+
+            document.getElementById("wifi_ssid").value = data.wifi_ssid;
+            document.getElementById("wifi_password").value = data.wifi_password;
+            document.getElementById("ip").value = data.ip;
+            document.getElementById("gateway").value = data.gateway;
+            document.getElementById("mask").value = data.mask;
+            document.getElementById("ota_server").value = data.ota_server;
+
+            document.getElementById("mqtt_server").value = data.mqtt_server;
+            document.getElementById("mqtt_port").value = data.mqtt_port;
+            document.getElementById("mqtt_username").value = data.mqtt_username;
+            document.getElementById("mqtt_password").value = data.mqtt_password;
+
+            document.getElementById("device_name").value = data.device_name;
+            document.getElementById("discovery_prefix").value = data.discovery_prefix;
+            document.getElementById("component").value = data.component;
+            document.getElementById("mqtt_status").value = data.mqtt_status;
+            document.getElementById("mqtt_command").value = data.mqtt_command;
+            document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
+
+            document.getElementById("component2").value = data.component2;
+            document.getElementById("mqtt_status2").value = data.mqtt_status2;
+            document.getElementById("mqtt_command2").value = data.mqtt_command2;
+            document.getElementById("mqtt_secondary2").value = data.mqtt_secondary2;
+
+            document.getElementById("firmware_version").innerHTML = data.firmware_version;
+            document.getElementById("hardware").innerHTML = data.hardware;
+
+        });
+    }
+
+</script>

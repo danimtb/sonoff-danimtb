@@ -92,6 +92,20 @@
 #define LED_MODE LED_LOW_LVL
 #endif
 
+#ifdef ENABLE_SONOFF_T1_DOUBLE
+#define HARDWARE "sonoff_t1_double"
+#define BUTTON_PIN 0
+#define BUTTON2_PIN 9
+
+#define RELAY_PIN 12
+#define RELAY2_PIN 5
+
+#define LED_PIN 13
+#define LED_MODE LED_LOW_LVL
+
+#define RELAY2_ENABLED 1
+#endif
+
 //################## ============ ##################
 
 
@@ -114,10 +128,15 @@ DataManager dataManager;
 WifiManager wifiManager;
 MqttManager mqttManager;
 Relay relay;
+
+#ifdef RELAY2_ENABLED
+   Relay relay2;
+   Button button2;
+#endif
+
 Button button;
 LED led;
 TimeWatchdog connectionWatchdog;
-MqttDiscoveryComponent* discoveryComponent;
 
 String wifi_ssid = dataManager.get("wifi_ssid");
 String wifi_password = dataManager.get("wifi_password");
@@ -136,6 +155,12 @@ String mqtt_status = dataManager.get("mqtt_status");
 String mqtt_command = dataManager.get("mqtt_command");
 String mqtt_secondary = dataManager.get("mqtt_secondary");
 
+#ifdef RELAY2_ENABLED
+    String component2 = dataManager.get("component2");
+    String mqtt_status2 = dataManager.get("mqtt_status2");
+    String mqtt_command2 = dataManager.get("mqtt_command2");
+    String mqtt_secondary2 = dataManager.get("mqtt_secondary2");
+#endif
 
 #ifdef ENABLE_SONOFF_POW
     MqttDiscoveryComponent* currentSensor;
@@ -228,6 +253,24 @@ std::vector<std::pair<String, String>> getWebServerData()
     generic_pair.second = mqtt_secondary;
     webServerData.push_back(generic_pair);
 
+    #ifdef RELAY2_ENABLED
+        generic_pair.first = "component2";
+        generic_pair.second = component2;
+        webServerData.push_back(generic_pair);
+
+        generic_pair.first = "mqtt_status2";
+        generic_pair.second = mqtt_status2;
+        webServerData.push_back(generic_pair);
+
+        generic_pair.first = "mqtt_command2";
+        generic_pair.second = mqtt_command2;
+        webServerData.push_back(generic_pair);
+
+        generic_pair.first = "mqtt_secondary2";
+        generic_pair.second = mqtt_secondary2;
+        webServerData.push_back(generic_pair);
+    #endif
+
     generic_pair.first = "firmware_version";
     generic_pair.second = FIRMWARE_VERSION;
     webServerData.push_back(generic_pair);
@@ -260,43 +303,60 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
     dataManager.set("mqtt_status", inputFieldsContent["mqtt_status"]);
     dataManager.set("mqtt_command", inputFieldsContent["mqtt_command"]);
     dataManager.set("mqtt_secondary", inputFieldsContent["mqtt_secondary"]);
-
+    #ifdef RELAY2_ENABLED
+        dataManager.set("component2", inputFieldsContent["component2"]);
+        dataManager.set("mqtt_status2", inputFieldsContent["mqtt_status2"]);
+        dataManager.set("mqtt_command2", inputFieldsContent["mqtt_command2"]);
+        dataManager.set("mqtt_secondary2", inputFieldsContent["mqtt_secondary2"]);
+    #endif
     ESP.restart(); // Restart device with new config
 }
 
 void MQTTcallback(String topicString, String payloadString)
 {
-    if (topicString == mqtt_command)
+    Relay the_relay;
+    String the_status;
+
+    if (topicString == mqtt_command){
+        the_relay = relay;
+        the_status = mqtt_status;
+    }
+    #ifdef RELAY2_ENABLED
+    else if(topicString == mqtt_command2){
+        the_relay = relay2;
+        the_status = mqtt_status2;
+    }
+    #endif
+    else{
+        Serial.print("MQTT topic unknown:");
+        Serial.println(topicString.c_str());
+        return;
+    }
+
+    if (payloadString == "ON")
     {
-        if (payloadString == "ON")
-        {
-            Serial.println("ON");
-            relay.on();
-            mqttManager.publishMQTT(mqtt_status, "ON");
-        }
-        else if (payloadString == "OFF")
-        {
-            Serial.println("OFF");
-            relay.off();
-            mqttManager.publishMQTT(mqtt_status, "OFF");
-        }
-        else if (payloadString == "TOGGLE")
-        {
-            Serial.println("TOGGLE");
-            relay.commute();
-            mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
-        }
-        else
-        {
-            Serial.print("MQTT payload unknown: ");
-            Serial.println(payloadString.c_str());
-        }
+        Serial.println("ON");
+        the_relay.on();
+        mqttManager.publishMQTT(the_status, "ON");
+    }
+    else if (payloadString == "OFF")
+    {
+        Serial.println("OFF");
+        the_relay.off();
+        mqttManager.publishMQTT(the_status, "OFF");
+    }
+    else if (payloadString == "TOGGLE")
+    {
+        Serial.println("TOGGLE");
+        the_relay.commute();
+        mqttManager.publishMQTT(the_status, the_relay.getState() ? "ON" : "OFF");
     }
     else
     {
-        Serial.print("MQTT topic unknown:");
-        Serial.println(topicString.c_str());
+        Serial.print("MQTT payload unknown: ");
+        Serial.println(payloadString.c_str());
     }
+
 }
 
 void shortPress()
@@ -307,6 +367,17 @@ void shortPress()
     mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
     mqttManager.publishMQTT(mqtt_command, relay.getState() ? "ON" : "OFF");
 }
+
+#ifdef RELAY2_ENABLED
+    void shortPress2()
+    {
+        Serial.println("button2.shortPress()");
+        relay2.commute();
+
+        mqttManager.publishMQTT(mqtt_status2, relay2.getState() ? "ON" : "OFF");
+        mqttManager.publishMQTT(mqtt_command2, relay2.getState() ? "ON" : "OFF");
+    }
+#endif
 
 void longPress()
 {
@@ -349,6 +420,19 @@ void connectionWatchdogCallback()
 }
 
 
+void configureMQTTDiscovery(String device_name, String component, String mqtt_command, String mqtt_status){
+    MqttDiscoveryComponent* discoveryComponent;
+    discoveryComponent = new MqttDiscoveryComponent(component, device_name);
+    discoveryComponent->discovery_prefix = discovery_prefix;
+    discoveryComponent->setConfigurtionVariable("command_topic", mqtt_command);
+    discoveryComponent->setConfigurtionVariable("state_topic", mqtt_status);
+    discoveryComponent->setConfigurtionVariable("qos", "1");
+    discoveryComponent->setConfigurtionVariable("retain", "true");
+    mqttManager.addDiscoveryComponent(discoveryComponent);
+    mqttManager.startConnection();
+}
+
+
 void setup()
 {
     // Init serial comm
@@ -358,12 +442,22 @@ void setup()
     relay.setup(RELAY_PIN, RELAY_HIGH_LVL);
     relay.off();
 
+    #ifdef RELAY2_ENABLED
+        relay2.setup(RELAY2_PIN, RELAY_HIGH_LVL);
+        relay2.off();
+    #endif
+
     // Configure Button
     button.setup(BUTTON_PIN, ButtonType::PULLUP);
     button.setShortPressCallback(shortPress);
     button.setLongPressCallback(longPress);
     button.setVeryLongPressCallback(veryLongPress);
     button.setUltraLongPressCallback(ultraLongPress);
+
+    #ifdef RELAY2_ENABLED
+        button2.setup(BUTTON2_PIN, ButtonType::PULLUP);
+        button2.setShortPressCallback(shortPress2);
+    #endif
 
     // Initial flash LED
     #ifdef LED_PIN
@@ -438,14 +532,10 @@ void setup()
     #endif
 
     // Configure MQTT Discovery
-    discoveryComponent = new MqttDiscoveryComponent(component, device_name);
-    discoveryComponent->discovery_prefix = discovery_prefix;
-    discoveryComponent->setConfigurtionVariable("command_topic", mqtt_command);
-    discoveryComponent->setConfigurtionVariable("state_topic", mqtt_status);
-    discoveryComponent->setConfigurtionVariable("qos", "1");
-    discoveryComponent->setConfigurtionVariable("retain", "true");
-    mqttManager.addDiscoveryComponent(discoveryComponent);
-    mqttManager.startConnection();
+    configureMQTTDiscovery(device_name, component, mqtt_command, mqtt_status);
+    #ifdef RELAY2_ENABLED
+        configureMQTTDiscovery(device_name, component2, mqtt_command2, mqtt_status2);
+    #endif
 
     //Configure WebServer
     WebServer::getInstance().setup("/index.html.gz", webServerSubmitCallback);
@@ -462,6 +552,8 @@ void setup()
     connectionWatchdog.setup(1200000, connectionWatchdogCallback); //20 min
 }
 
+
+
 void loop()
 {
     // Process Button events
@@ -475,6 +567,11 @@ void loop()
     // Process ToggleSwitch events
     #ifdef ENABLE_SONOFF_SWITCH
         toggleSwitch.loop();
+    #endif
+
+    // Process the Second relay
+    #ifdef RELAY2_ENABLED
+        button2.loop();
     #endif
 
     // Check Wifi status
