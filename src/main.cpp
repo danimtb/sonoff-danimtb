@@ -42,12 +42,14 @@
 #define RELAY_PIN 12
 #define LED_PIN 15
 #define LED_MODE LED_HIGH_LVL
+#define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_TOUCH_ESP01
 #define HARDWARE "sonoff-touch-esp01"
 #define BUTTON_PIN 0
 #define RELAY_PIN 2
+#define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_TOUCH
@@ -56,6 +58,7 @@
 #define RELAY_PIN 12
 #define LED_PIN 13
 #define LED_MODE LED_LOW_LVL
+#define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_S20
@@ -64,6 +67,7 @@
 #define RELAY_PIN 12
 #define LED_PIN 13
 #define LED_MODE LED_LOW_LVL
+#define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_SWITCH
@@ -73,6 +77,7 @@
 #define LED_PIN 13
 #define LED_MODE LED_LOW_LVL
 #define SWITCH_PIN 14
+#define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_BUTTON
@@ -82,6 +87,7 @@
 #define LED_PIN 13
 #define LED_MODE LED_LOW_LVL
 #define EXTERNAL_BUTTON_PIN 14
+#define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF
@@ -90,20 +96,19 @@
 #define RELAY_PIN 12
 #define LED_PIN 13
 #define LED_MODE LED_LOW_LVL
+#define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_EWELINK_TOUCH_DOUBLE
 #define HARDWARE "ewelink-touch-double"
 #define BUTTON_PIN 0
 #define BUTTON2_PIN 9
-
 #define RELAY_PIN 12
 #define RELAY2_PIN 5
-
 #define LED_PIN 13
 #define LED_MODE LED_LOW_LVL
-
 #define RELAY2_ENABLED 1
+#define RELAY_MODE RELAY_LOW_LVL
 #endif
 
 //################## ============ ##################
@@ -439,11 +444,11 @@ void setup()
     Serial.begin(115200);
 
     // Configure Relay
-    relay.setup(RELAY_PIN, RELAY_HIGH_LVL);
+    relay.setup(RELAY_PIN, RELAY_MODE);
     relay.off();
 
     #ifdef RELAY2_ENABLED
-        relay2.setup(RELAY2_PIN, RELAY_HIGH_LVL);
+        relay2.setup(RELAY2_PIN, RELAY_MODE);
         relay2.off();
     #endif
 
