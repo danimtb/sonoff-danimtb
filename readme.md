@@ -17,23 +17,95 @@ It's capabilities are:
 - Publish device information and state topics to MQTT at connection start and periodically.
 - ArduinoOTA to target devices flashing a new firmware over Wifi.
 - Automatic Updates from devices calling an Update Server with new releases.
-- Support for external switch or button using the additional GPIO (Only for sonoff). 
+- Support for external switch or button using the additional GPIO (Only for sonoff).
+
+Supported devices
+-----------------
+
+### Sonoff Basic
+
+<p align="center">
+  <img width="300" src="http://sonoff.itead.cc/images/basicw.jpg">
+  <img width="300" src="https://camo.githubusercontent.com/0a599aedf8072580f5c46cbfddbbf0eb7a861386/687474703a2f2f74696e6b65726d616e2e6361742f77702d636f6e74656e742f75706c6f6164732f323031362f30362f70696e6f75745f66726f6e74782e6a7067">
+</p>
+
+- Device information: [Sonoff Basic: iTead WiFi Wireless Smart Switch](http://sonoff.itead.cc/en/products/sonoff/sonoff-basic)
+
+#### Firmware types:
+
+- `sonoff`: Without external peripherals.
+- `sonoff-button`: With external button connected to GPIO 14 and GND.
+- `sonoff-switch`: With external switch connected to GPIO 14 and GND.
+
+### Sonoff Touch
+
+<p align="center">
+  <img width="300" src="https://cdn.itead.cc/media/catalog/product/s/o/sonoff_touch_eu_02.jpg">
+  <img width="300" src="https://raw.githubusercontent.com/davidmpye/davidmpye.github.io/master/img/sonoff_touch/prog_pinouts.jpg">
+ 
+ - Device information: [Sonoff Touch: WiFi Remote Smart Wall Switch Light Switch](https://www.itead.cc/sonoff-touch.html)ç
+ 
+#### Firmware types:
+
+- `sonoff-touch`
+
+### Sonoff Pow
+
+<p align="center">
+  <img width="300" src="https://images-na.ssl-images-amazon.com/images/I/51QXDh-q6jL._SX425_.jpg">
+  <img width="300" src="https://www.cnx-software.com/wp-content/uploads/2016/11/Sonoff-POW-Board-Large.jpg">
+
+- Device information: [Sonoff Pow: Electricity/Consumption Monitor Switch](https://www.itead.cc/sonoff-pow.html)
+
+#### Firmware types:
+
+- `sonoff-pow`
+
+### Sonoff S20
+
+<p align="center">
+  <img width="300" src="http://sonoff.itead.cc/images/euusuk2.jpg">
+  <img width="300" src="http://razvancoloja.com/wp-content/uploads/2017/10/03.jpg">
+ 
+- Device information: [Sonoff S20 Socket: iTead WiFi Smart Power Outlet with Timer Function](http://sonoff.itead.cc/en/products/residential/s20-socket)
+
+#### Firmware types:
+
+- `sonoff-s20`
+
+### Sonoff Touch Custom
+
+- Device information: Custom device with esp01 chip and push button. It uses the original Sonoff Touch enclosure and power supply.
+
+#### Firmware types:
+
+- `sonoff-touch-esp01`
 
 # How to flash it
-This project is built with [platformio](https://platformio.org) to manage third party libraries such as AsyncMqtt, Embedis, ArduinoJson... so you will need to install it. The best way to install it is using pip (only compatible with python 2.7):
+
+Power your device in flash mode:
+
+1. Press the button or pull the GPIO 0 down to GND.
+2. Connec the device to the USB port.
+
+**WARNING:** Do NOT connect any device to the USB port of your computer while connected to mains.
+
+This project is built with [platformio](https://platformio.org) to manage third party libraries such as AsyncMqtt, Embedis, ArduinoJson... so you will need to install it. The best way to install it is using pip (only compatible with Python 2.7):
 
 ```
 $ pip install platformio
 ```
 
-To flash a device, clone this repo and run the following commands with the device connected to a USB port (remember your device should be in flash mode -usually GPIO0 to GND-). Keywords for supported devices are **sonoff**, **sonoff-touch**, **sonoff-s20**, **sonoff-touch-esp01**, **sonoff-switch**, **sonoff-button**:
+To flash a device, clone this repo and run the following commands with the device connected to a USB port (remember your device should be in flash mode -usually GPIO0 to GND-).
 
-- First flash the file system (SPIFFS) where the HTML web is sotored (contents of *data* folder in this repo):
+Firmware types for supported devices are: `sonoff`, `sonoff-button`, `sonoff-switch`, `sonoff-touch`, `sonoff-s20`, `sonoff-touch-esp01`.
+
+- First flash the file system (SPIFFS) where the HTML web is stored (contents of *data* folder in this repo):
 `$ platformio run -e <device-type> -t uploadfs`
 - Then flash the firmware:
 `$ platformio run -e <device-type> -t upload`
 
-For example, in case you want to flash a **sonoff** device:
+For example, in case you want to flash a Sonoff Basic device with `sonoff` firmware type:
 
 ```
 $ platformio run -e sonoff -t uploadfs
@@ -42,7 +114,7 @@ $ platformio run -e sonoff -t uploadfs
 $ platformio run -e sonoff -t upload
 ```
 
-Or in case your device is already connected to a Wifi running an old version of this firmare, you can it flash with Arduino OTA over Wifi:
+Or in case your device is already connected to a Wifi running an old version of this firmare, you can flash it with Arduino OTA over Wifi:
 
 - First flash the file system (SPIFFS):
 `$ platformio run -e sonoff -t uploadfs --upload-port your-device-IP`
@@ -52,6 +124,7 @@ Or in case your device is already connected to a Wifi running an old version of 
 And that's all! :D
 
 # How to configure for your device
+
 The first time you flash a new device, you need to configure some parameters to connect the devie to your Wifi network and MQTT server.
 
 To do that, press and hold for 10 seconds or more (then release) the button and the device will start flashing the LED (if any) and will create a Wifi HotSpot with the name of the device type. Connect to the wifi hotspot and open browser with IP *192.168.4.1*. It will bring you to a web to configure the parameters of your device.
