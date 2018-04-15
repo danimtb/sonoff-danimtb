@@ -12,8 +12,8 @@ version = os.getenv("TRAVIS_TAG", "test-build")
 # Iterate to generate firmware files and remove not needed ones
 for env in envs:
     # Iterate to generate firmware files
-    os.system("platformio run -e %s" % env)
     os.system("platformio run -e %s -t buildfs" % env)
+    os.system("platformio run -e %s" % env)
 
     # Remove not needed files
     shutil.rmtree(os.path.abspath(os.path.join(".pioenvs", env, "FrameworkArduino")))
