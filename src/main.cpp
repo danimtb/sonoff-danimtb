@@ -26,92 +26,86 @@
 #endif
 
 
-//#################### FIRMWARE ####################
+//################## FIRMWARE ##################
 
 #define FIRMWARE "sonoff-danimtb"
 #define FIRMWARE_VERSION "1.2.0"
 
-//#################### ======= ####################
-
-
 //################## HARDWARE ##################
 
-#ifdef ENABLE_SONOFF_POW
-#define HARDWARE "sonoff-pow"
-#define BUTTON_PIN 0
-#define RELAY_PIN 12
-#define LED_PIN 15
-#define LED_MODE LED_HIGH_LVL
-#define RELAY_MODE RELAY_HIGH_LVL
-#endif
-
-#ifdef ENABLE_SONOFF_TOUCH_ESP01
-#define HARDWARE "sonoff-touch-esp01"
-#define BUTTON_PIN 0
-#define RELAY_PIN 2
-#define RELAY_MODE RELAY_HIGH_LVL
-#endif
-
-#ifdef ENABLE_SONOFF_TOUCH
-#define HARDWARE "sonoff-touch"
-#define BUTTON_PIN 0
-#define RELAY_PIN 12
-#define LED_PIN 13
-#define LED_MODE LED_LOW_LVL
-#define RELAY_MODE RELAY_HIGH_LVL
-#endif
-
-#ifdef ENABLE_SONOFF_S20
-#define HARDWARE "sonoff-s20"
-#define BUTTON_PIN 0
-#define RELAY_PIN 12
-#define LED_PIN 13
-#define LED_MODE LED_LOW_LVL
-#define RELAY_MODE RELAY_HIGH_LVL
-#endif
-
-#ifdef ENABLE_SONOFF_SWITCH
-#define HARDWARE "sonoff-switch"
-#define BUTTON_PIN 0
-#define RELAY_PIN 12
-#define LED_PIN 13
-#define LED_MODE LED_LOW_LVL
-#define SWITCH_PIN 14
-#define RELAY_MODE RELAY_HIGH_LVL
+#ifdef ENABLE_SONOFF
+    #define HARDWARE "sonoff"
+    #define BUTTON_PIN 0
+    #define LED_PIN 13
+    #define LED_MODE LED_LOW_LVL
+    #define RELAY_PIN 12
+    #define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_SONOFF_BUTTON
-#define HARDWARE "sonoff-button"
-#define BUTTON_PIN 0
-#define RELAY_PIN 12
-#define LED_PIN 13
-#define LED_MODE LED_LOW_LVL
-#define EXTERNAL_BUTTON_PIN 14
-#define RELAY_MODE RELAY_HIGH_LVL
+    #define HARDWARE "sonoff-button"
+    #define BUTTON_PIN 0
+    #define LED_PIN 13
+    #define LED_MODE LED_LOW_LVL
+    #define RELAY_PIN 12
+    #define RELAY_MODE RELAY_HIGH_LVL
+    #define EXTERNAL_BUTTON_PIN 14
 #endif
 
-#ifdef ENABLE_SONOFF
-#define HARDWARE "sonoff"
-#define BUTTON_PIN 0
-#define RELAY_PIN 12
-#define LED_PIN 13
-#define LED_MODE LED_LOW_LVL
-#define RELAY_MODE RELAY_HIGH_LVL
+#ifdef ENABLE_SONOFF_SWITCH
+    #define HARDWARE "sonoff-switch"
+    #define BUTTON_PIN 0
+    #define LED_PIN 13
+    #define LED_MODE LED_LOW_LVL
+    #define RELAY_PIN 12
+    #define RELAY_MODE RELAY_HIGH_LVL
+    #define SWITCH_PIN 14
+#endif
+
+#ifdef ENABLE_SONOFF_TOUCH
+    #define HARDWARE "sonoff-touch"
+    #define BUTTON_PIN 0
+    #define LED_PIN 13
+    #define LED_MODE LED_LOW_LVL
+    #define RELAY_PIN 12
+    #define RELAY_MODE RELAY_HIGH_LVL
+#endif
+
+#ifdef ENABLE_SONOFF_POW
+    #define HARDWARE "sonoff-pow"
+    #define BUTTON_PIN 0
+    #define LED_PIN 15
+    #define LED_MODE LED_HIGH_LVL
+    #define RELAY_PIN 12
+    #define RELAY_MODE RELAY_HIGH_LVL
+#endif
+
+#ifdef ENABLE_SONOFF_S20
+    #define HARDWARE "sonoff-s20"
+    #define BUTTON_PIN 0
+    #define LED_PIN 13
+    #define LED_MODE LED_LOW_LVL
+    #define RELAY_PIN 12
+    #define RELAY_MODE RELAY_HIGH_LVL
+#endif
+
+#ifdef ENABLE_SONOFF_TOUCH_ESP01
+    #define HARDWARE "sonoff-touch-esp01"
+    #define BUTTON_PIN 0
+    #define RELAY_PIN 2
+    #define RELAY_MODE RELAY_HIGH_LVL
 #endif
 
 #ifdef ENABLE_EWELINK_TOUCH_DOUBLE
-#define HARDWARE "ewelink-touch-double"
-#define BUTTON_PIN 0
-#define BUTTON2_PIN 9
-#define RELAY_PIN 12
-#define RELAY2_PIN 5
-#define LED_PIN 13
-#define LED_MODE LED_LOW_LVL
-#define RELAY2_ENABLED 1
-#define RELAY_MODE RELAY_LOW_LVL
+    #define HARDWARE "ewelink-touch-double"
+    #define BUTTON_PIN 0
+    #define LED_PIN 13
+    #define LED_MODE LED_LOW_LVL
+    #define RELAY_PIN 12
+    #define RELAY_MODE RELAY_LOW_LVL
+    #define BUTTON2_PIN 9
+    #define RELAY2_PIN 5
 #endif
-
-//################## ============ ##################
 
 
 
@@ -134,7 +128,7 @@ WifiManager wifiManager;
 MqttManager mqttManager;
 Relay relay;
 
-#ifdef RELAY2_ENABLED
+#ifdef RELAY2_PIN
    Relay relay2;
    Button button2;
 #endif
@@ -160,7 +154,7 @@ String mqtt_status = dataManager.get("mqtt_status");
 String mqtt_command = dataManager.get("mqtt_command");
 String mqtt_secondary = dataManager.get("mqtt_secondary");
 
-#ifdef RELAY2_ENABLED
+#ifdef RELAY2_PIN
     String component2 = dataManager.get("component2");
     String mqtt_status2 = dataManager.get("mqtt_status2");
     String mqtt_command2 = dataManager.get("mqtt_command2");
@@ -258,7 +252,7 @@ std::vector<std::pair<String, String>> getWebServerData()
     generic_pair.second = mqtt_secondary;
     webServerData.push_back(generic_pair);
 
-    #ifdef RELAY2_ENABLED
+    #ifdef RELAY2_PIN
         generic_pair.first = "component2";
         generic_pair.second = component2;
         webServerData.push_back(generic_pair);
@@ -308,7 +302,7 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
     dataManager.set("mqtt_status", inputFieldsContent["mqtt_status"]);
     dataManager.set("mqtt_command", inputFieldsContent["mqtt_command"]);
     dataManager.set("mqtt_secondary", inputFieldsContent["mqtt_secondary"]);
-    #ifdef RELAY2_ENABLED
+    #ifdef RELAY2_PIN
         dataManager.set("component2", inputFieldsContent["component2"]);
         dataManager.set("mqtt_status2", inputFieldsContent["mqtt_status2"]);
         dataManager.set("mqtt_command2", inputFieldsContent["mqtt_command2"]);
@@ -322,17 +316,20 @@ void MQTTcallback(String topicString, String payloadString)
     Relay the_relay;
     String the_status;
 
-    if (topicString == mqtt_command){
+    if (topicString == mqtt_command)
+    {
         the_relay = relay;
         the_status = mqtt_status;
     }
-    #ifdef RELAY2_ENABLED
-    else if(topicString == mqtt_command2){
+    #ifdef RELAY2_PIN
+    else if(topicString == mqtt_command2)
+    {
         the_relay = relay2;
         the_status = mqtt_status2;
     }
     #endif
-    else{
+    else
+    {
         Serial.print("MQTT topic unknown:");
         Serial.println(topicString.c_str());
         return;
@@ -361,7 +358,6 @@ void MQTTcallback(String topicString, String payloadString)
         Serial.print("MQTT payload unknown: ");
         Serial.println(payloadString.c_str());
     }
-
 }
 
 void shortPress()
@@ -373,7 +369,7 @@ void shortPress()
     mqttManager.publishMQTT(mqtt_command, relay.getState() ? "ON" : "OFF");
 }
 
-#ifdef RELAY2_ENABLED
+#ifdef RELAY2_PIN
     void shortPress2()
     {
         Serial.println("button2.shortPress()");
@@ -424,8 +420,8 @@ void connectionWatchdogCallback()
     ESP.restart();
 }
 
-
-void configureMQTTDiscovery(String device_name, String component, String mqtt_command, String mqtt_status){
+void configureMQTTDiscovery(String device_name, String component, String mqtt_command, String mqtt_status)
+{
     MqttDiscoveryComponent* discoveryComponent;
     discoveryComponent = new MqttDiscoveryComponent(component, device_name);
     discoveryComponent->discovery_prefix = discovery_prefix;
@@ -434,7 +430,6 @@ void configureMQTTDiscovery(String device_name, String component, String mqtt_co
     discoveryComponent->setConfigurtionVariable("qos", "1");
     discoveryComponent->setConfigurtionVariable("retain", "true");
     mqttManager.addDiscoveryComponent(discoveryComponent);
-    mqttManager.startConnection();
 }
 
 
@@ -447,7 +442,7 @@ void setup()
     relay.setup(RELAY_PIN, RELAY_MODE);
     relay.off();
 
-    #ifdef RELAY2_ENABLED
+    #ifdef RELAY2_PIN
         relay2.setup(RELAY2_PIN, RELAY_MODE);
         relay2.off();
     #endif
@@ -459,9 +454,12 @@ void setup()
     button.setVeryLongPressCallback(veryLongPress);
     button.setUltraLongPressCallback(ultraLongPress);
 
-    #ifdef RELAY2_ENABLED
+    #ifdef RELAY2_PIN
         button2.setup(BUTTON2_PIN, ButtonType::PULLUP);
         button2.setShortPressCallback(shortPress2);
+        button2.setLongPressCallback(longPress);
+        button2.setVeryLongPressCallback(veryLongPress);
+        button2.setUltraLongPressCallback(ultraLongPress);
     #endif
 
     // Initial flash LED
@@ -472,7 +470,7 @@ void setup()
         led.off();
     #endif
 
-    // Configure Wifi
+    // Configure and connect Wifi
     wifiManager.setup(wifi_ssid, wifi_password, ip, mask, gateway, HARDWARE);
     wifiManager.connectStaWifi();
 
@@ -538,9 +536,12 @@ void setup()
 
     // Configure MQTT Discovery
     configureMQTTDiscovery(device_name, component, mqtt_command, mqtt_status);
-    #ifdef RELAY2_ENABLED
+    #ifdef RELAY2_PIN
         configureMQTTDiscovery(device_name, component2, mqtt_command2, mqtt_status2);
     #endif
+
+    // Connect MQTT
+    mqttManager.startConnection();
 
     //Configure WebServer
     WebServer::getInstance().setup("/index.html.gz", webServerSubmitCallback);
@@ -557,8 +558,6 @@ void setup()
     connectionWatchdog.setup(1200000, connectionWatchdogCallback); //20 min
 }
 
-
-
 void loop()
 {
     // Process Button events
@@ -574,8 +573,8 @@ void loop()
         toggleSwitch.loop();
     #endif
 
-    // Process the Second relay
-    #ifdef RELAY2_ENABLED
+    // Process 2nd Button events
+    #ifdef RELAY2_PIN
         button2.loop();
     #endif
 
