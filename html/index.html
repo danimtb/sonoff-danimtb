@@ -8,11 +8,11 @@
 <tbody>
 <tr>
 	<td>Firmware version:</td>
-	<td><div id="firmware_version"></div></p>
+	<td><div id="firmware_version"></div></td>
 </tr>
 <tr>
 	<td>Hardware:</td>
-	<td><div id="hardware"></div></p>
+	<td><div id="hardware"></div></td>
 </tr>
 </tbody>
 </table>
@@ -97,12 +97,19 @@
                 <td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary" size="30" type="text" id="mqtt_secondary" /></td>
             </tr>
-
-
+    </table>
+    <p style="text-align: center;">&nbsp;</p>
+    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Device Data 2 (If your device has two relays)<br /></span></strong></p>
+    <table style="width: 550px; margin-left: auto; margin-right: auto;">
+        <tbody>
             <tr>
-                <td style="width: 275px; text-align: right;">--- If your device has two relays ---</td>
+                <td style="width: 275px; text-align: right;">Device Name:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="device_name2" size="30" type="text" id="device_name2" /></td>
             </tr>
-
+            <tr>
+                <td style="width: 275px; text-align: right;">Discovery Prefix:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix2" size="30" type="text" id="discovery_prefix2" /></td>
+            </tr>
             <tr>
                 <td style="width: 275px; text-align: right;">Component (light/switch):</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="component2" size="30" type="text" id="component2" /></td>
@@ -164,6 +171,8 @@
             document.getElementById("mqtt_command").value = data.mqtt_command;
             document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
 
+            document.getElementById("device_name2").value = data.device_name2;
+            document.getElementById("discovery_prefix2").value = data.discovery_prefix2;
             document.getElementById("component2").value = data.component2;
             document.getElementById("mqtt_status2").value = data.mqtt_status2;
             document.getElementById("mqtt_command2").value = data.mqtt_command2;
