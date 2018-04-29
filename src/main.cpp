@@ -102,7 +102,7 @@
     #define LED_PIN 13
     #define LED_MODE LED_LOW_LVL
     #define RELAY_PIN 12
-    #define RELAY_MODE RELAY_LOW_LVL
+    #define RELAY_MODE RELAY_HIGH_LVL
     #define BUTTON2_PIN 9
     #define RELAY2_PIN 5
 #endif
@@ -381,6 +381,15 @@ void shortPress()
     mqttManager.publishMQTT(mqtt_command, relay.getState() ? "ON" : "OFF");
 }
 
+void longPress()
+{
+    Serial.println("button.longPress()");
+
+    Serial.println("Secondary topic: TOGGLE");
+    mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
+}
+
+
 #ifdef RELAY2_PIN
     void shortPress2()
     {
@@ -390,15 +399,14 @@ void shortPress()
         mqttManager.publishMQTT(mqtt_status2, relay2.getState() ? "ON" : "OFF");
         mqttManager.publishMQTT(mqtt_command2, relay2.getState() ? "ON" : "OFF");
     }
+    void longPress2()
+    {
+        Serial.println("button2.longPress()");
+        Serial.println("Secondary topic: TOGGLE");
+        mqttManager.publishMQTT(mqtt_secondary2, "TOGGLE");
+    }
 #endif
 
-void longPress()
-{
-    Serial.println("button.longPress()");
-
-    Serial.println("Secondary topic: TOGGLE");
-    mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
-}
 
 void veryLongPress()
 {
@@ -469,7 +477,7 @@ void setup()
     #ifdef RELAY2_PIN
         button2.setup(BUTTON2_PIN, ButtonType::PULLUP);
         button2.setShortPressCallback(shortPress2);
-        button2.setLongPressCallback(longPress);
+        button2.setLongPressCallback(longPress2);
         button2.setVeryLongPressCallback(veryLongPress);
         button2.setUltraLongPressCallback(ultraLongPress);
     #endif
