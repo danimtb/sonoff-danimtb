@@ -120,7 +120,13 @@ This project is built with [platformio](https://platformio.org) to manage third 
 $ pip install platformio
 ```
 
-To flash a device, clone this repo and run the following commands with the device connected to a USB port (remember your device should be in flash mode -usually GPIO0 to GND-).
+To flash a device, clone this repo and run the following commands with the device connected to a USB port.
+
+```
+$ git clone --recursive https://github.com/danimtb/sonoff-danimtb.git
+```
+
+To enter your device in **flash mode** remeber to push the button of your device (this will make pin 0 -GPIO0- connect to ground -GND-) and then connect your device to the USB port.
 
 Firmware types for supported devices are: `sonoff`, `sonoff-button`, `sonoff-switch`, `sonoff-touch`, `sonoff-s20`, `sonoff-touch-esp01`.
 
