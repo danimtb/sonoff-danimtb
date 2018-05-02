@@ -95,7 +95,7 @@
 #endif
 
 #ifdef ENABLE_EWELINK_TOUCH_SINGLE
-    #define HARDWARE "sonoff"
+    #define HARDWARE "ewelink-touch-single"
     #define BUTTON_PIN 0
     #define LED_PIN 13
     #define LED_MODE LED_LOW_LVL
