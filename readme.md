@@ -81,6 +81,30 @@ Supported devices
 
 - `sonoff-touch-esp01`
 
+### Ewelink Touch Single
+
+<p align="center">
+  <img width="300" src="https://ae01.alicdn.com/kf/HTB124M5iP3z9KJjy0Fmq6xiwXXa4/Sonoff-ewelink-App-control-tipo-UE-WiFi-smart-switch-t-ctil-del-panel-pared-led-luces.jpg">
+  <img width="300" src="http://evertdekker.com/wp/wp-content/gallery/ewelinktouch/pcbfront_connection.jpg">
+
+- Device information: [Aliexpress](https://es.aliexpress.com/item/EU-Standard-SESOO-Remote-Control-Switch-2-Gang-1-Way-Crystal-Glass-Switch-Panel-Remote-Wall/32773302151.html?spm=a2g0s.9042311.0.0.kBKMfI), [EWelink touch hack](http://evertdekker.com/?p=1015)
+
+#### Firmware types:
+
+- `ewelink-touch-single`
+
+### Ewelink Touch Double
+
+<p align="center">
+  <img width="300" src="http://evertdekker.com/wp/wp-content/gallery/ewelinktouch/touchfront.jpg">
+  <img width="300" src="http://evertdekker.com/wp/wp-content/gallery/ewelinktouch/pcbfront_connection.jpg">
+
+- Device information: [Aliexpress](https://es.aliexpress.com/item/EU-Standard-SESOO-Remote-Control-Switch-2-Gang-1-Way-Crystal-Glass-Switch-Panel-Remote-Wall/32773302151.html?spm=a2g0s.9042311.0.0.kBKMfI), [EWelink touch hack](http://evertdekker.com/?p=1015)
+
+#### Firmware types:
+
+- `ewelink-touch-double`
+
 # How to flash it
 
 Power your device in flash mode:
@@ -109,17 +133,14 @@ For example, in case you want to flash a Sonoff Basic device with `sonoff` firmw
 
 ```
 $ platformio run -e sonoff -t uploadfs
-...
-...
+
 $ platformio run -e sonoff -t upload
 ```
 
 Or in case your device is already connected to a Wifi running an old version of this firmare, you can flash it with Arduino OTA over Wifi:
 
-- First flash the file system (SPIFFS):
-`$ platformio run -e sonoff -t uploadfs --upload-port your-device-IP`
-- Then flash the firmware:
-`$ platformio run -e sonoff -t upload --upload-port your-device-IP`
+- First flash the file system (SPIFFS): `$ platformio run -e sonoff -t uploadfs --upload-port your-device-IP`
+- Then flash the firmware: `$ platformio run -e sonoff -t upload --upload-port your-device-IP`
 
 And that's all! :D
 
@@ -151,4 +172,3 @@ Parameter description:
 - MQTT Status topic: Status topic of the the device
 - MQTT Command topic: Topic to command the device (Payloads accepted: ON, OFF, TOGGLE)
 - MQTT Secondary Command Topic: Long press topic to send TOGGLE (in case you want to command other devices doing a long press of the button -if not, leave it empty or the same as MQTT Command Topic-)
- 

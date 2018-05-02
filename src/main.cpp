@@ -1,6 +1,4 @@
-#include <string>
 #include <map>
-#include <cstdint>
 
 #include <ArduinoOTA.h>
 
@@ -93,6 +91,15 @@
     #define HARDWARE "sonoff-touch-esp01"
     #define BUTTON_PIN 0
     #define RELAY_PIN 2
+    #define RELAY_MODE RELAY_HIGH_LVL
+#endif
+
+#ifdef ENABLE_EWELINK_TOUCH_SINGLE
+    #define HARDWARE "sonoff"
+    #define BUTTON_PIN 0
+    #define LED_PIN 13
+    #define LED_MODE LED_LOW_LVL
+    #define RELAY_PIN 12
     #define RELAY_MODE RELAY_HIGH_LVL
 #endif
 

@@ -4,7 +4,7 @@ from glob import glob
 
 # Set platfomio envirnoments to build
 envs = ["sonoff", "sonoff-button", "sonoff-switch", "sonoff-touch", "sonoff-pow",
-        "sonoff-s20", "sonoff-touch-esp01", "ewelink-touch-double"]
+        "sonoff-s20", "sonoff-touch-esp01", "ewelink-touch-single", "ewelink-touch-double"]
 
 # Get version of firmware from travis tag, otherwise set test-build
 version = os.getenv("TRAVIS_TAG", "test-build")
