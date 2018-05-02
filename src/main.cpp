@@ -149,15 +149,17 @@ String mqtt_username = dataManager.get("mqtt_username");
 String mqtt_password = dataManager.get("mqtt_password");
 String device_name = dataManager.get("device_name");
 String discovery_prefix = dataManager.get("discovery_prefix");
-String discovery_prefix2 = dataManager.get("discovery_prefix2");
-String component = dataManager.get("component");
-String mqtt_status = dataManager.get("mqtt_status");
-String mqtt_command = dataManager.get("mqtt_command");
-String mqtt_secondary = dataManager.get("mqtt_secondary");
+String component_name1 = dataManager.get("component_name1");
+String component_type1 = dataManager.get("component_type1");
+String discovery_prefix1 = dataManager.get("discovery_prefix1");
+String mqtt_status1 = dataManager.get("mqtt_status1");
+String mqtt_command1 = dataManager.get("mqtt_command1");
+String mqtt_secondary1 = dataManager.get("mqtt_secondary1");
 
 #ifdef RELAY2_PIN
-    String device_name2 = dataManager.get("device_name2");
-    String component2 = dataManager.get("component2");
+    String component_name2 = dataManager.get("component_name2");
+    String component_type2 = dataManager.get("component_type2");
+    String discovery_prefix2 = dataManager.get("discovery_prefix2");
     String mqtt_status2 = dataManager.get("mqtt_status2");
     String mqtt_command2 = dataManager.get("mqtt_command2");
     String mqtt_secondary2 = dataManager.get("mqtt_secondary2");
@@ -238,33 +240,41 @@ std::vector<std::pair<String, String>> getWebServerData()
     generic_pair.second = discovery_prefix;
     webServerData.push_back(generic_pair);
 
-    generic_pair.first = "component";
-    generic_pair.second = component;
+    generic_pair.first = "component_name1";
+    generic_pair.second = component_name1;
     webServerData.push_back(generic_pair);
 
-    generic_pair.first = "mqtt_status";
-    generic_pair.second = mqtt_status;
+    generic_pair.first = "component_type1";
+    generic_pair.second = component_type1;
     webServerData.push_back(generic_pair);
 
-    generic_pair.first = "mqtt_command";
-    generic_pair.second = mqtt_command;
+    generic_pair.first = "discovery_prefix1";
+    generic_pair.second = discovery_prefix1;
     webServerData.push_back(generic_pair);
 
-    generic_pair.first = "mqtt_secondary";
-    generic_pair.second = mqtt_secondary;
+    generic_pair.first = "mqtt_status1";
+    generic_pair.second = mqtt_status1;
+    webServerData.push_back(generic_pair);
+
+    generic_pair.first = "mqtt_command1";
+    generic_pair.second = mqtt_command1;
+    webServerData.push_back(generic_pair);
+
+    generic_pair.first = "mqtt_secondary1";
+    generic_pair.second = mqtt_secondary1;
     webServerData.push_back(generic_pair);
 
     #ifdef RELAY2_PIN
-        generic_pair.first = "device_name2";
-        generic_pair.second = device_name2;
+        generic_pair.first = "component_name2";
+        generic_pair.second = component_name2;
+        webServerData.push_back(generic_pair);
+
+        generic_pair.first = "component_type2";
+        generic_pair.second = component_type2;
         webServerData.push_back(generic_pair);
 
         generic_pair.first = "discovery_prefix2";
         generic_pair.second = discovery_prefix2;
-        webServerData.push_back(generic_pair);
-
-        generic_pair.first = "component2";
-        generic_pair.second = component2;
         webServerData.push_back(generic_pair);
 
         generic_pair.first = "mqtt_status2";
@@ -308,14 +318,16 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
     dataManager.set("mqtt_password", inputFieldsContent["mqtt_password"]);
     dataManager.set("device_name", inputFieldsContent["device_name"]);
     dataManager.set("discovery_prefix", inputFieldsContent["discovery_prefix"]);
-    dataManager.set("component", inputFieldsContent["component"]);
-    dataManager.set("mqtt_status", inputFieldsContent["mqtt_status"]);
-    dataManager.set("mqtt_command", inputFieldsContent["mqtt_command"]);
-    dataManager.set("mqtt_secondary", inputFieldsContent["mqtt_secondary"]);
+    dataManager.set("component_name1", inputFieldsContent["component_name1"]);
+    dataManager.set("component_type1", inputFieldsContent["component_type1"]);
+    dataManager.set("discovery_prefix1", inputFieldsContent["discovery_prefix1"]);
+    dataManager.set("mqtt_status1", inputFieldsContent["mqtt_status1"]);
+    dataManager.set("mqtt_command1", inputFieldsContent["mqtt_command1"]);
+    dataManager.set("mqtt_secondary1", inputFieldsContent["mqtt_secondary1"]);
     #ifdef RELAY2_PIN
-        dataManager.set("device_name2", inputFieldsContent["device_name2"]);
+        dataManager.set("component_name2", inputFieldsContent["component_name2"]);
+        dataManager.set("component_type2", inputFieldsContent["component_type2"]);
         dataManager.set("discovery_prefix2", inputFieldsContent["discovery_prefix2"]);
-        dataManager.set("component2", inputFieldsContent["component2"]);
         dataManager.set("mqtt_status2", inputFieldsContent["mqtt_status2"]);
         dataManager.set("mqtt_command2", inputFieldsContent["mqtt_command2"]);
         dataManager.set("mqtt_secondary2", inputFieldsContent["mqtt_secondary2"]);
@@ -440,11 +452,11 @@ void connectionWatchdogCallback()
     ESP.restart();
 }
 
-void configureMQTTDiscovery(String prefix, String device_name, String component, String mqtt_command, String mqtt_status)
+void configureMQTTDiscovery(String component_name, String component_type, String discovery_prefix, String mqtt_command, String mqtt_status)
 {
     MqttDiscoveryComponent* discoveryComponent;
-    discoveryComponent = new MqttDiscoveryComponent(component, device_name);
-    discoveryComponent->discovery_prefix = prefix;
+    discoveryComponent = new MqttDiscoveryComponent(component_type, component_name);
+    discoveryComponent->discovery_prefix = discovery_prefix;
     discoveryComponent->setConfigurtionVariable("command_topic", mqtt_command);
     discoveryComponent->setConfigurtionVariable("state_topic", mqtt_status);
     discoveryComponent->setConfigurtionVariable("qos", "1");
@@ -497,7 +509,7 @@ void setup()
     // Configure MQTT
     mqttManager.setCallback(MQTTcallback);
     mqttManager.setup(mqtt_server, mqtt_port.c_str(), mqtt_username, mqtt_password, true);
-    mqttManager.setDeviceData(device_name, HARDWARE, ip, FIRMWARE, FIRMWARE_VERSION);
+    mqttManager.setDeviceData(device_name, HARDWARE, ip, FIRMWARE, FIRMWARE_VERSION, discovery_prefix);
 
     // Configure External Button
     #ifdef ENABLE_SONOFF_BUTTON
@@ -512,19 +524,19 @@ void setup()
     #ifdef ENABLE_SONOFF_POW
         powManager.setup();
 
-        currentSensor = new MqttDiscoveryComponent("sensor", device_name + " Current");
-        voltageSensor = new MqttDiscoveryComponent("sensor", device_name + " Voltage");
-        activePowerSensor = new MqttDiscoveryComponent("sensor", device_name + " Active Power");
-        apparentPowerSensor = new MqttDiscoveryComponent("sensor", device_name + " Apparent Power");
-        reactivePowerSensor = new MqttDiscoveryComponent("sensor", device_name + " Reactive Power");
-        powerFactorSensor = new MqttDiscoveryComponent("sensor", device_name + " Power Factor");
+        currentSensor = new MqttDiscoveryComponent("sensor", component_name1 + " Current");
+        voltageSensor = new MqttDiscoveryComponent("sensor", component_name1 + " Voltage");
+        activePowerSensor = new MqttDiscoveryComponent("sensor", component_name1 + " Active Power");
+        apparentPowerSensor = new MqttDiscoveryComponent("sensor", component_name1 + " Apparent Power");
+        reactivePowerSensor = new MqttDiscoveryComponent("sensor", component_name1 + " Reactive Power");
+        powerFactorSensor = new MqttDiscoveryComponent("sensor", component_name1 + " Power Factor");
 
-        currentSensor->discovery_prefix = discovery_prefix;
-        voltageSensor->discovery_prefix = discovery_prefix;
-        activePowerSensor->discovery_prefix = discovery_prefix;
-        apparentPowerSensor->discovery_prefix = discovery_prefix;
-        reactivePowerSensor->discovery_prefix = discovery_prefix;
-        powerFactorSensor->discovery_prefix = discovery_prefix;
+        currentSensor->discovery_prefix = discovery_prefix1;
+        voltageSensor->discovery_prefix = discovery_prefix1;
+        activePowerSensor->discovery_prefix = discovery_prefix1;
+        apparentPowerSensor->discovery_prefix = discovery_prefix1;
+        reactivePowerSensor->discovery_prefix = discovery_prefix1;
+        powerFactorSensor->discovery_prefix = discovery_prefix1;
 
         currentSensor->setConfigurtionVariable("unit_of_measurement", "A");
         voltageSensor->setConfigurtionVariable("unit_of_measurement", "V");
@@ -555,9 +567,9 @@ void setup()
     #endif
 
     // Configure MQTT Discovery
-    configureMQTTDiscovery(discovery_prefix, device_name, component, mqtt_command, mqtt_status);
+    configureMQTTDiscovery(component_name1, component_type1, discovery_prefix1, mqtt_command1, mqtt_status1);
     #ifdef RELAY2_PIN
-        configureMQTTDiscovery(discovery_prefix2, device_name2, component2, mqtt_command2, mqtt_status2);
+        configureMQTTDiscovery(component_name2, component_type2, discovery_prefix2, mqtt_command2, mqtt_status2);
     #endif
 
     // Connect MQTT

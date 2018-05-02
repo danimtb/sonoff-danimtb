@@ -82,41 +82,54 @@
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="device_name" size="30" type="text" id="device_name" /></td>
             </tr>
             <tr>
-                <td style="width: 275px; text-align: right;">Discovery Prefix:</td>
+                <td style="width: 275px; text-align: right;">MQTT Discovery Prefix:</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix" size="30" type="text" id="discovery_prefix" /></td>
-            </tr>
-            <tr>
-                <td style="width: 275px; text-align: right;">Component (light/switch):</td>
-                <td style="width: 275px; text-align: left;"><input maxlength="50" name="component" size="30" type="text" id="component" /></td>
-            </tr>
-            <tr>
-                <td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
-                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_status" size="30" type="text" id="mqtt_status" /></td>
-            </tr>
-            <tr>
-                <td style="width: 275px; text-align: right;">MQTT Command Topic:</td>
-                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_command" size="30" type="text" id="mqtt_command" /></td>
-            </tr>
-            <tr>
-                <td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
-                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary" size="30" type="text" id="mqtt_secondary" /></td>
             </tr>
     </table>
     <p style="text-align: center;">&nbsp;</p>
-    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Device Data 2 (If your device has two relays)<br /></span></strong></p>
+    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Component 1<br /></span></strong></p>
     <table style="width: 550px; margin-left: auto; margin-right: auto;">
         <tbody>
             <tr>
-                <td style="width: 275px; text-align: right;">Device Name:</td>
-                <td style="width: 275px; text-align: left;"><input maxlength="50" name="device_name2" size="30" type="text" id="device_name2" /></td>
+                <td style="width: 275px; text-align: right;">Component Name:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_name1" size="30" type="text" id="component_name1" /></td>
             </tr>
             <tr>
-                <td style="width: 275px; text-align: right;">Discovery Prefix:</td>
+                <td style="width: 275px; text-align: right;">Component type (light/switch):</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_type1" size="30" type="text" id="component_type1" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Discovery Prefix:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix1" size="30" type="text" id="discovery_prefix1" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_status1" size="30" type="text" id="mqtt_status1" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Command Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_command1" size="30" type="text" id="mqtt_command1" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary1" size="30" type="text" id="mqtt_secondary1" /></td>
+            </tr>
+    </table>
+    <p style="text-align: center;">&nbsp;</p>
+    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Component 2 (If your device has two relays)<br /></span></strong></p>
+    <table style="width: 550px; margin-left: auto; margin-right: auto;">
+        <tbody>
+            <tr>
+                <td style="width: 275px; text-align: right;">Component Name:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_name2" size="30" type="text" id="component_name2" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">Component type (light/switch):</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_type2" size="30" type="text" id="component_type2" /></td>
+            </tr>
+            <tr>
+                <td style="width: 275px; text-align: right;">MQTT Discovery Prefix:</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix2" size="30" type="text" id="discovery_prefix2" /></td>
-            </tr>
-            <tr>
-                <td style="width: 275px; text-align: right;">Component (light/switch):</td>
-                <td style="width: 275px; text-align: left;"><input maxlength="50" name="component2" size="30" type="text" id="component2" /></td>
             </tr>
             <tr>
                 <td style="width: 275px; text-align: right;">MQTT Status Topic:</td>
@@ -178,14 +191,17 @@
 
             document.getElementById("device_name").value = data.device_name;
             document.getElementById("discovery_prefix").value = data.discovery_prefix;
-            document.getElementById("component").value = data.component;
-            document.getElementById("mqtt_status").value = data.mqtt_status;
-            document.getElementById("mqtt_command").value = data.mqtt_command;
-            document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
 
-            document.getElementById("device_name2").value = data.device_name2;
+            document.getElementById("component_name1").value = data.component_name1;
+            document.getElementById("component_type1").value = data.component_type1;
+            document.getElementById("discovery_prefix1").value = data.discovery_prefix1;
+            document.getElementById("mqtt_status1").value = data.mqtt_status1;
+            document.getElementById("mqtt_command1").value = data.mqtt_command1;
+            document.getElementById("mqtt_secondary1").value = data.mqtt_secondary1;
+
+            document.getElementById("component_name2").value = data.component_name2;
+            document.getElementById("component_type2").value = data.component_type2;
             document.getElementById("discovery_prefix2").value = data.discovery_prefix2;
-            document.getElementById("component2").value = data.component2;
             document.getElementById("mqtt_status2").value = data.mqtt_status2;
             document.getElementById("mqtt_command2").value = data.mqtt_command2;
             document.getElementById("mqtt_secondary2").value = data.mqtt_secondary2;
