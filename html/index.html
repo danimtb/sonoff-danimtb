@@ -1,6 +1,10 @@
-
+<html>
+<head></head>
+<body>
 
 <!-- ######## This is a comment, visible only in the source editor  ######## -->
+<div id="resetting" style="display:none"><b> The device is resetting now, you can close this window </b></div>
+<div id="form_contents">
 <h1 style="color: #4485b8; text-align: center;">sonoff-danimtb</h1>
 <p style="text-align: center;"><span class="col-11 text-gray-dark mr-2">Alternative firmware for Itead Sonoff devices</span></p>
 <hr />
@@ -8,16 +12,16 @@
 <tbody>
 <tr>
 	<td>Firmware version:</td>
-	<td><div id="firmware_version"></div></p>
+	<td><div id="firmware_version"></div></td>
 </tr>
 <tr>
 	<td>Hardware:</td>
-	<td><div id="hardware"></div></p>
+	<td><div id="hardware"></div></td>
 </tr>
 </tbody>
 </table>
 <hr />
-<form action="http://192.168.4.1/submit" method="POST">
+<form action="http://192.168.4.1/submit" onsubmit="show_resetting()" method="POST">
     <p style="text-align: center;"><strong><span style="text-decoration: underline;">Network Settings</span></strong></p>
     <table style="width: 550px; margin-left: auto; margin-right: auto; height: 182px;">
         <tbody>
@@ -97,12 +101,19 @@
                 <td style="width: 275px; text-align: right;">MQTT Secondary Command Topic:</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary" size="30" type="text" id="mqtt_secondary" /></td>
             </tr>
-
-
+    </table>
+    <p style="text-align: center;">&nbsp;</p>
+    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Device Data 2 (If your device has two relays)<br /></span></strong></p>
+    <table style="width: 550px; margin-left: auto; margin-right: auto;">
+        <tbody>
             <tr>
-                <td style="width: 275px; text-align: right;">--- If your device has two relays ---</td>
+                <td style="width: 275px; text-align: right;">Device Name:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="device_name2" size="30" type="text" id="device_name2" /></td>
             </tr>
-
+            <tr>
+                <td style="width: 275px; text-align: right;">Discovery Prefix:</td>
+                <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix2" size="30" type="text" id="discovery_prefix2" /></td>
+            </tr>
             <tr>
                 <td style="width: 275px; text-align: right;">Component (light/switch):</td>
                 <td style="width: 275px; text-align: left;"><input maxlength="50" name="component2" size="30" type="text" id="component2" /></td>
@@ -122,11 +133,19 @@
         </tbody>
     </table>
     <p><strong>&nbsp;</strong></p>
-    <p style="text-align: center;"><input name="save_button" type="submit" value="Save Settings"></input></p>
+    <p style="text-align: center;"><input name="save_button" type="submit" value="Save Settings"/></p>
 </form>
 <hr />
+</div>
 <p style="text-align: center;"><em><a href="https://github.com/danimtb/sonoff-danimtb">github@sonoff-danimtb</a></em></p>
 <script>
+
+    function show_resetting(){
+        document.getElementById("form_contents").style.display = "none";
+        document.getElementById("resetting").style.display = "block";
+        // Validation could go here
+        return true;
+    }
 
     function GetAsync(url, callback)
     {
@@ -164,6 +183,8 @@
             document.getElementById("mqtt_command").value = data.mqtt_command;
             document.getElementById("mqtt_secondary").value = data.mqtt_secondary;
 
+            document.getElementById("device_name2").value = data.device_name2;
+            document.getElementById("discovery_prefix2").value = data.discovery_prefix2;
             document.getElementById("component2").value = data.component2;
             document.getElementById("mqtt_status2").value = data.mqtt_status2;
             document.getElementById("mqtt_command2").value = data.mqtt_command2;
@@ -176,3 +197,6 @@
     }
 
 </script>
+
+</body>
+</html>

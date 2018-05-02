@@ -102,7 +102,7 @@
     #define LED_PIN 13
     #define LED_MODE LED_LOW_LVL
     #define RELAY_PIN 12
-    #define RELAY_MODE RELAY_LOW_LVL
+    #define RELAY_MODE RELAY_HIGH_LVL
     #define BUTTON2_PIN 9
     #define RELAY2_PIN 5
 #endif
@@ -149,12 +149,14 @@ String mqtt_username = dataManager.get("mqtt_username");
 String mqtt_password = dataManager.get("mqtt_password");
 String device_name = dataManager.get("device_name");
 String discovery_prefix = dataManager.get("discovery_prefix");
+String discovery_prefix2 = dataManager.get("discovery_prefix2");
 String component = dataManager.get("component");
 String mqtt_status = dataManager.get("mqtt_status");
 String mqtt_command = dataManager.get("mqtt_command");
 String mqtt_secondary = dataManager.get("mqtt_secondary");
 
 #ifdef RELAY2_PIN
+    String device_name2 = dataManager.get("device_name2");
     String component2 = dataManager.get("component2");
     String mqtt_status2 = dataManager.get("mqtt_status2");
     String mqtt_command2 = dataManager.get("mqtt_command2");
@@ -253,6 +255,14 @@ std::vector<std::pair<String, String>> getWebServerData()
     webServerData.push_back(generic_pair);
 
     #ifdef RELAY2_PIN
+        generic_pair.first = "device_name2";
+        generic_pair.second = device_name2;
+        webServerData.push_back(generic_pair);
+
+        generic_pair.first = "discovery_prefix2";
+        generic_pair.second = discovery_prefix2;
+        webServerData.push_back(generic_pair);
+
         generic_pair.first = "component2";
         generic_pair.second = component2;
         webServerData.push_back(generic_pair);
@@ -303,6 +313,8 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
     dataManager.set("mqtt_command", inputFieldsContent["mqtt_command"]);
     dataManager.set("mqtt_secondary", inputFieldsContent["mqtt_secondary"]);
     #ifdef RELAY2_PIN
+        dataManager.set("device_name2", inputFieldsContent["device_name2"]);
+        dataManager.set("discovery_prefix2", inputFieldsContent["discovery_prefix2"]);
         dataManager.set("component2", inputFieldsContent["component2"]);
         dataManager.set("mqtt_status2", inputFieldsContent["mqtt_status2"]);
         dataManager.set("mqtt_command2", inputFieldsContent["mqtt_command2"]);
@@ -369,6 +381,15 @@ void shortPress()
     mqttManager.publishMQTT(mqtt_command, relay.getState() ? "ON" : "OFF");
 }
 
+void longPress()
+{
+    Serial.println("button.longPress()");
+
+    Serial.println("Secondary topic: TOGGLE");
+    mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
+}
+
+
 #ifdef RELAY2_PIN
     void shortPress2()
     {
@@ -378,15 +399,14 @@ void shortPress()
         mqttManager.publishMQTT(mqtt_status2, relay2.getState() ? "ON" : "OFF");
         mqttManager.publishMQTT(mqtt_command2, relay2.getState() ? "ON" : "OFF");
     }
+    void longPress2()
+    {
+        Serial.println("button2.longPress()");
+        Serial.println("Secondary topic: TOGGLE");
+        mqttManager.publishMQTT(mqtt_secondary2, "TOGGLE");
+    }
 #endif
 
-void longPress()
-{
-    Serial.println("button.longPress()");
-
-    Serial.println("Secondary topic: TOGGLE");
-    mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
-}
 
 void veryLongPress()
 {
@@ -420,11 +440,11 @@ void connectionWatchdogCallback()
     ESP.restart();
 }
 
-void configureMQTTDiscovery(String device_name, String component, String mqtt_command, String mqtt_status)
+void configureMQTTDiscovery(String prefix, String device_name, String component, String mqtt_command, String mqtt_status)
 {
     MqttDiscoveryComponent* discoveryComponent;
     discoveryComponent = new MqttDiscoveryComponent(component, device_name);
-    discoveryComponent->discovery_prefix = discovery_prefix;
+    discoveryComponent->discovery_prefix = prefix;
     discoveryComponent->setConfigurtionVariable("command_topic", mqtt_command);
     discoveryComponent->setConfigurtionVariable("state_topic", mqtt_status);
     discoveryComponent->setConfigurtionVariable("qos", "1");
@@ -457,7 +477,7 @@ void setup()
     #ifdef RELAY2_PIN
         button2.setup(BUTTON2_PIN, ButtonType::PULLUP);
         button2.setShortPressCallback(shortPress2);
-        button2.setLongPressCallback(longPress);
+        button2.setLongPressCallback(longPress2);
         button2.setVeryLongPressCallback(veryLongPress);
         button2.setUltraLongPressCallback(ultraLongPress);
     #endif
@@ -535,9 +555,9 @@ void setup()
     #endif
 
     // Configure MQTT Discovery
-    configureMQTTDiscovery(device_name, component, mqtt_command, mqtt_status);
+    configureMQTTDiscovery(discovery_prefix, device_name, component, mqtt_command, mqtt_status);
     #ifdef RELAY2_PIN
-        configureMQTTDiscovery(device_name, component2, mqtt_command2, mqtt_status2);
+        configureMQTTDiscovery(discovery_prefix2, device_name2, component2, mqtt_command2, mqtt_status2);
     #endif
 
     // Connect MQTT
