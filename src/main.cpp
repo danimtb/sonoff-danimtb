@@ -338,18 +338,18 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
 void MQTTcallback(String topicString, String payloadString)
 {
     Relay the_relay;
-    String the_status;
+    String the_status_topic;
 
-    if (topicString == mqtt_command)
+    if (topicString == mqtt_command1)
     {
         the_relay = relay;
-        the_status = mqtt_status;
+        the_status_topic = mqtt_status1;
     }
     #ifdef RELAY2_PIN
     else if(topicString == mqtt_command2)
     {
         the_relay = relay2;
-        the_status = mqtt_status2;
+        the_status_topic = mqtt_status2;
     }
     #endif
     else
@@ -363,19 +363,19 @@ void MQTTcallback(String topicString, String payloadString)
     {
         Serial.println("ON");
         the_relay.on();
-        mqttManager.publishMQTT(the_status, "ON");
+        mqttManager.publishMQTT(the_status_topic, "ON");
     }
     else if (payloadString == "OFF")
     {
         Serial.println("OFF");
         the_relay.off();
-        mqttManager.publishMQTT(the_status, "OFF");
+        mqttManager.publishMQTT(the_status_topic, "OFF");
     }
     else if (payloadString == "TOGGLE")
     {
         Serial.println("TOGGLE");
         the_relay.commute();
-        mqttManager.publishMQTT(the_status, the_relay.getState() ? "ON" : "OFF");
+        mqttManager.publishMQTT(the_status_topic, the_relay.getState() ? "ON" : "OFF");
     }
     else
     {
@@ -389,8 +389,8 @@ void shortPress()
     Serial.println("button.shortPress()");
     relay.commute();
 
-    mqttManager.publishMQTT(mqtt_status, relay.getState() ? "ON" : "OFF");
-    mqttManager.publishMQTT(mqtt_command, relay.getState() ? "ON" : "OFF");
+    mqttManager.publishMQTT(mqtt_status1, relay.getState() ? "ON" : "OFF");
+    mqttManager.publishMQTT(mqtt_command1, relay.getState() ? "ON" : "OFF");
 }
 
 void longPress()
@@ -398,7 +398,7 @@ void longPress()
     Serial.println("button.longPress()");
 
     Serial.println("Secondary topic: TOGGLE");
-    mqttManager.publishMQTT(mqtt_secondary, "TOGGLE");
+    mqttManager.publishMQTT(mqtt_secondary1, "TOGGLE");
 }
 
 
@@ -411,6 +411,7 @@ void longPress()
         mqttManager.publishMQTT(mqtt_status2, relay2.getState() ? "ON" : "OFF");
         mqttManager.publishMQTT(mqtt_command2, relay2.getState() ? "ON" : "OFF");
     }
+
     void longPress2()
     {
         Serial.println("button2.longPress()");
