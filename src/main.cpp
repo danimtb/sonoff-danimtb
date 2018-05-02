@@ -344,18 +344,18 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
 
 void MQTTcallback(String topicString, String payloadString)
 {
-    Relay the_relay;
+    Relay *the_relay;
     String the_status_topic;
 
     if (topicString == mqtt_command1)
     {
-        the_relay = relay;
+        the_relay = &relay;
         the_status_topic = mqtt_status1;
     }
     #ifdef RELAY2_PIN
     else if(topicString == mqtt_command2)
     {
-        the_relay = relay2;
+        the_relay = &relay2;
         the_status_topic = mqtt_status2;
     }
     #endif
@@ -369,20 +369,20 @@ void MQTTcallback(String topicString, String payloadString)
     if (payloadString == "ON")
     {
         Serial.println("ON");
-        the_relay.on();
+        the_relay->on();
         mqttManager.publishMQTT(the_status_topic, "ON");
     }
     else if (payloadString == "OFF")
     {
         Serial.println("OFF");
-        the_relay.off();
+        the_relay->off();
         mqttManager.publishMQTT(the_status_topic, "OFF");
     }
     else if (payloadString == "TOGGLE")
     {
         Serial.println("TOGGLE");
-        the_relay.commute();
-        mqttManager.publishMQTT(the_status_topic, the_relay.getState() ? "ON" : "OFF");
+        the_relay->commute();
+        mqttManager.publishMQTT(the_status_topic, the_relay->getState() ? "ON" : "OFF");
     }
     else
     {
