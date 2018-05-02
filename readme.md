@@ -107,26 +107,24 @@ Supported devices
 
 # How to flash it
 
-Power your device in flash mode:
+Power your device in **flash mode**:
 
 1. Press the button or pull the GPIO 0 down to GND.
-2. Connec the device to the USB port.
+2. Connect the device to the USB port.
 
 **WARNING:** Do NOT connect any device to the USB port of your computer while connected to mains.
+
+Clone this repo and its submodule:
+
+```
+$ git clone --recursive https://github.com/danimtb/sonoff-danimtb.git
+```
 
 This project is built with [platformio](https://platformio.org) to manage third party libraries such as AsyncMqtt, Embedis, ArduinoJson... so you will need to install it. The best way to install it is using pip (only compatible with Python 2.7):
 
 ```
 $ pip install platformio
 ```
-
-To flash a device, clone this repo and run the following commands with the device connected to a USB port.
-
-```
-$ git clone --recursive https://github.com/danimtb/sonoff-danimtb.git
-```
-
-To enter your device in **flash mode** remeber to push the button of your device (this will make pin 0 -GPIO0- connect to ground -GND-) and then connect your device to the USB port.
 
 Firmware types for supported devices are: `sonoff`, `sonoff-button`, `sonoff-switch`, `sonoff-touch`, `sonoff-s20`, `sonoff-touch-esp01`.
 
@@ -145,8 +143,10 @@ $ platformio run -e sonoff -t upload
 
 Or in case your device is already connected to a Wifi running an old version of this firmare, you can flash it with Arduino OTA over Wifi:
 
-- First flash the file system (SPIFFS): `$ platformio run -e sonoff -t uploadfs --upload-port your-device-IP`
-- Then flash the firmware: `$ platformio run -e sonoff -t upload --upload-port your-device-IP`
+- First flash the file system (SPIFFS):
+  `$ platformio run -e sonoff -t uploadfs --upload-port your-device-IP`
+- Then flash the firmware:
+  `$ platformio run -e sonoff -t upload --upload-port your-device-IP`
 
 And that's all! :D
 
