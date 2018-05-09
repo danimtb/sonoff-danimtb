@@ -27,7 +27,7 @@
 //################## FIRMWARE ##################
 
 #define FIRMWARE "sonoff-danimtb"
-#define FIRMWARE_VERSION "1.3.3"
+#define FIRMWARE_VERSION "1.3.2"
 
 //################## HARDWARE ##################
 
@@ -403,16 +403,8 @@ void shortPress()
 void longPress()
 {
     Serial.println("button.longPress()");
-
     Serial.println("Secondary topic: TOGGLE");
-    if(!mqtt_secondary1.empty())
-    {
-        mqttManager.publishMQTT(mqtt_secondary1, "TOGGLE");
-    }
-    else
-    {
-        mqttManager.publishMQTT(mqtt_command1, "TOGGLE");
-    }
+    mqttManager.publishMQTT(mqtt_secondary1, "TOGGLE");
 }
 
 
@@ -430,14 +422,7 @@ void longPress()
     {
         Serial.println("button2.longPress()");
         Serial.println("Secondary topic: TOGGLE");
-        if(!mqtt_secondary2.empty())
-        {
-            mqttManager.publishMQTT(mqtt_secondary2, "TOGGLE");
-        }
-        else
-        {
-            mqttManager.publishMQTT(mqtt_command2, "TOGGLE");
-        }
+        mqttManager.publishMQTT(mqtt_secondary2, "TOGGLE");
     }
 #endif
 
