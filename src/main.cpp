@@ -403,7 +403,6 @@ void shortPress()
 void longPress()
 {
     Serial.println("button.longPress()");
-
     Serial.println("Secondary topic: TOGGLE");
     mqttManager.publishMQTT(mqtt_secondary1, "TOGGLE");
 }

@@ -1,7 +1,122 @@
 <html>
+<head>
+    <style>
+body{
+    font-family: sans, Verdana;
+    font-size: 10px;
+}
+table{
+    font-size: 10px;
+}
+small{
+    font-size: 10px;
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    font-size: 10px;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 8px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    text-transform: none;
+}
+.tooltip .tooltiptext a{
+    color:white;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.clear{
+    clear:both;
+}
+.wrapper {
+    font-family:verdana;
+    margin: 5px 15px 15px 15px;
+    padding:  5px 15px 15px 15px;
+    background: #3c78a7; /* You can change the main color of thew form here. */
+    font-size: 14px;
+    width:100%;
+    max-width:300px;
+    box-sizing: border-box;
+    float:left;
+    min-height: 400px;
+}
+.submit{
+    margin: 30px auto;
+    max-width:200px;
+}
+input {
+    height: 18px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 0 10px #444;
+    -moz-box-shadow: 0 0 10px #444;
+    box-shadow: 0 0 10px #444;
+    border: 1px solid #fff;
+}
+input[type="text"]:hover, textarea:hover {
+    border: 1px solid #fff;
+    -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.25) inset, 0 0 5px rgba(255, 255, 255, 0.4);
+    -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.25) inset, 0 0 5px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25) inset, 0 0 5px rgba(255, 255, 255, 0.4);
+}
+input#submit {
+    text-align: center;
+    color: #fff;
+    height: 50px;
+    padding: 0;
+    text-shadow: 1px 1px 1px #000;
+    font-size: 15px;
+    text-transform: uppercase;
+    margin-top: 50px;
+    border: 1px solid #000;
+    background: #000;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #3b3b3b), color-stop(100%, #000000));
+    background: -webkit-linear-gradient(top, #3b3b3b 0%,#000000 100%);
+    background: -moz-linear-gradient(top, #3b3b3b 0%,#000000 100%);
+    background: -o-linear-gradient(top, #3b3b3b 0%,#000000 100%);
+    background: -ms-linear-gradient(top, #3b3b3b 0%,#000000 100%);
+    background: linear-gradient(top, #3b3b3b 0%,#000000 100%);
+    opacity: 0.5;
+}
+h2 {
+    color: white;
+    font-size: 20px;
+}
+input#submit:hover {
+    color: #ccc;
+    cursor: pointer;
+    opacity: 0.8;
+}
+label {
+    text-transform: uppercase;
+    font-size: 12px;
+    display: block;
+    padding: 6px 0;
+    color: #eaeaea;
+    text-shadow: 1px 1px 1px #666;
+}
+</style>
+</head>
     <body>
-        <div id="resetting" style="display:none"><b> The device is resetting now, you can close this window </b></div>
-        <div id="form_contents">
+    <div id="resetting" style="display:none"><b> The device is resetting now, you can close this window </b></div>
+    <div id="form_contents">
         <h1 style="color: #4485b8; text-align: center;">sonoff-danimtb</h1>
         <p style="text-align: center;"><span class="col-11 text-gray-dark mr-2">Alternative firmware for Itead Sonoff (ESP8266/ESP8285 based) devices to use them in Home Assistant</span></p>
         <hr />
@@ -17,224 +132,144 @@
                 </tr>
             </tbody>
         </table>
-        <hr />
+        <hr/>
         <form action="http://192.168.4.1/submit" onsubmit="show_resetting()" method="POST">
-            <p style="text-align: center;"><strong><span style="text-decoration: underline;">Network Settings</span></strong></p>
-            <table style="width: 550px; margin-left: auto; margin-right: auto; height: 182px;">
-                <tbody>
-                    <tr style="height: 33.5px;">
-                        <td style="width: 275px; height: 33.5px; text-align: right;"><strong>WIFI SSID:</strong></td>
-                        <td style="width: 275px; text-align: left; height: 33.5px;"><input maxlength="50" name="wifi_ssid" size="30" id="wifi_ssid" /></td>
-                    </tr>
-                    <tr style="height: 21px;">
-                        <td style="width: 275px; height: 21px; text-align: right;"><strong>WIFI Password:</strong></td>
-                        <td style="width: 275px; text-align: left; height: 21px;"><input maxlength="50" name="wifi_password" size="30" type="text" id="wifi_password" /></td>
-                    </tr>
-                    <tr style="height: 21px;">
-                        <td style="width: 275px; height: 21px; text-align: right;"><strong>IP:</strong></td>
-                        <td style="width: 275px; height: 21px; text-align: left;"><input maxlength="50" name="ip" size="15" type="text" id="ip" /></td>
-                    </tr>
-                    <tr style="height: 21px;">
-                        <td style="width: 275px; height: 21px; text-align: right;"><strong>Gateway:</strong></td>
-                        <td style="width: 275px; height: 21px; text-align: left;"><input maxlength="50" name="gateway" size="15" type="text" id="gateway" /></td>
-                    </tr>
-                    <tr style="height: 21px;">
-                        <td style="width: 275px; height: 21px; text-align: right;"><strong>Mask:</strong></td>
-                        <td style="width: 275px; height: 21px; text-align: left;"><input maxlength="50" name="mask" size="15" type="text" id="mask" /></td>
-                    </tr>
-                    <tr style="height: 21px;">
-                        <td style="width: 275px; text-align: right;"><strong>OTA Update Server:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="ota_server" size="30" type="text" id="ota_server" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <p><strong>&nbsp;</strong></p>
-            <p style="text-align: center;"><strong><span style="text-decoration: underline;">MQTT Settings</span></strong></p>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Server:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_server" size="30" type="text" id="mqtt_server" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Port:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="4" name="mqtt_port" size="4" type="text" id="mqtt_port" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Username:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_username" size="30" type="text" id="mqtt_username" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Password:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_password" size="30" type="text" id="mqtt_password" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <p style="text-align: center;">&nbsp;</p>
-            <p style="text-align: center;"><strong><span style="text-decoration: underline;">Device Data<br /></span></strong></p>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>Device Name:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="device_name" size="30" type="text" id="device_name" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Device name will be used to publish device information over MQTT such as IP, MAC, connection status...</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Discovery Prefix:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix" size="30" type="text" id="discovery_prefix" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Prefix used for the MQTT discovery topic where the device configuration will be published (Read more: <em><a href="https://www.home-assistant.io/docs/mqtt/discovery/">Home Assistant: MQTT Discovery</a></em>). Leave it empty if you are not using the discovery feature.</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <p style="text-align: center;">&nbsp;</p>
-            <p style="text-align: center;"><strong><span style="text-decoration: underline;">Component 1<br /></span></strong></p>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>Component Name:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_name1" size="30" type="text" id="component_name1" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Name to display in Home Assistant's frontend. It is recommended to use the same value as in Device Name field for devices with only one relay.</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>Component type (light/switch):</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_type1" size="30" type="text" id="component_type1" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Home Assistant's MQTT component type to be configured in the discovery. Use "light" or "switch".</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Discovery Prefix:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix1" size="30" type="text" id="discovery_prefix1" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Prefix used for the MQTT discovery topic where the component configuration will be published (Read more: <em><a href="https://www.home-assistant.io/docs/mqtt/discovery/">Home Assistant: MQTT Discovery</a></em>). Leave it empty if you are not using the discovery feature.</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Status Topic:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_status1" size="30" type="text" id="mqtt_status1" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Topic where component status will be published.</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Command Topic:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_command1" size="30" type="text" id="mqtt_command1" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Topic where component will subscribe to listen to status changes.</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                </tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Secondary Command Topic:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary1" size="30" type="text" id="mqtt_secondary1" /></td>
-                    </tr>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Topic to publish "TOGGLE" payload whenever a long press in the button is received. Useful to command other MQTT devices directly or to <em><a href="https://www.home-assistant.io/docs/automation/trigger/#mqtt-trigger">trigger automations in Home Assistant</a></em>. Leave it empty if you don't want to use this feature.</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <p style="text-align: center;">&nbsp;</p>
-            <p style="text-align: center;"><strong><span style="text-decoration: underline;">Component 2<br /></span></strong></p>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 550px; text-align: center;">Fill this fields ONLY if your device has a second button and relay.</td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table style="width: 550px; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>Component Name:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_name2" size="30" type="text" id="component_name2" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>Component type (light/switch):</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="component_type2" size="30" type="text" id="component_type2" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Discovery Prefix:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="discovery_prefix2" size="30" type="text" id="discovery_prefix2" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Status Topic:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_status2" size="30" type="text" id="mqtt_status2" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Command Topic:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_command2" size="30" type="text" id="mqtt_command2" /></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 275px; text-align: right;"><strong>MQTT Secondary Command Topic:</strong></td>
-                        <td style="width: 275px; text-align: left;"><input maxlength="50" name="mqtt_secondary2" size="30" type="text" id="mqtt_secondary2" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <p><strong>&nbsp;</strong></p>
-            <p style="text-align: center;"><input name="save_button" type="submit" value="Save Settings"/></p>
+            <div class="wrapper">
+                <h2>Network Settings</h2>
+                <label for="wifi_ssid">WIFI SSID:</label>
+                <input type="text" id="wifi_ssid" name="wifi_ssid" maxlength="50"/>
+                <label for="wifi_password">WIFI password:</label>
+                <input type="text" id="wifi_password" name="wifi_password" maxlength="50"/>
+                <label for="ip">IP:</label>
+                <input type="text" id="ip" name="ip" maxlength="50"/>
+                <label for="gateway">Gateway:</label>
+                <input type="text" id="gateway" name="gateway" maxlength="50"/>
+                <label for="mask">Mask:</label>
+                <input type="text" id="mask" name="mask" maxlength="50"/>
+                <label for="ota_server">OTA server:</label>
+                <input type="text" id="ota_server" name="ota_server" maxlength="50"/>
+            </div>
+            <div class="wrapper">
+                <h2>MQTT Settings</h2>
+                <label for="mqtt_server">MQTT Server:</label>
+                <input type="text" id="mqtt_server" name="mqtt_server" maxlength="50"/>
+                <label for="mqtt_port">MQTT Port:</label>
+                <input type="text" id="mqtt_port" name="mqtt_port" maxlength="4"/>
+                <label for="mqtt_username">MQTT Username:</label>
+                <input type="text" id="mqtt_username" name="mqtt_username" maxlength="50"/>
+                <label for="mqtt_password">MQTT Password</label>
+                <input type="text" id="mqtt_password" name="mqtt_password" maxlength="50"/>
+            </div>
+            <div class="wrapper">
+                <h2>Device Data</h2>
+                <label for="device_name">Device Name:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Device name will be used to publish device information over MQTT such as IP, MAC, connection status...</span>
+                    </div>
+                </label>
+                <input type="text" id="device_name" name="device_name" maxlength="50"/>
+                <label for="discovery_prefix">discovery_prefix
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Prefix used for the MQTT discovery topic where the device configuration will be published (Read more: <em><a href="https://www.home-assistant.io/docs/mqtt/discovery/">Home Assistant: MQTT Discovery</a></em>). Leave it empty if you are not using the discovery feature.</span>
+                    </div>
+                </label>
+                <input type="text" id="discovery_prefix" name="discovery_prefix" maxlength="4"/>
+            </div>
+            <div class="wrapper clear">
+                <h2>Component 1</h2>
+                <label for="component_name1">Component Name:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Name to display in Home Assistant's frontend. It is recommended to use the same value as in Device Name field for devices with only one relay.</span>
+                    </div>
+                </label>
+                <input type="text" id="component_name1" name="component_name1" maxlength="50"/>
+
+                <label for="component_type1">Component Type:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Home Assistant's MQTT component type to be configured in the discovery. Use "light" or "switch".</span>
+                    </div>
+                </label>
+                <input type="text" id="component_type1" name="component_type1" maxlength="50"/>
+
+                <label for="discovery_prefix1">MQTT Discovery Prefix:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Prefix used for the MQTT discovery topic where the component configuration will be published (Read more: Home Assistant: MQTT Discovery). Leave it empty if you are not using the discovery feature.</span>
+                    </div>
+                </label>
+                <input type="text" id="discovery_prefix1" name="discovery_prefix1" maxlength="50"/>
+
+                <label for="mqtt_status1">MQTT Status Topic:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Topic where component status will be published.</span>
+                    </div>
+                </label>
+                <input type="text" id="mqtt_status1" name="mqtt_status1" maxlength="50"/>
+
+                <label for="mqtt_command1">MQTT Command Topic:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Topic where component will subscribe to listen to status changes.</span>
+                    </div>
+                </label>
+                <input type="text" id="mqtt_command1" name="mqtt_command1" maxlength="50"/>
+
+                <label for="mqtt_secondary1">MQTT Secondary Command Topic:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Topic to publish "TOGGLE" payload whenever a long press in the button is received. Useful to command other MQTT devices directly or to trigger automations in Home Assistant. Leave it empty if you don't want to use this feature.</span>
+                    </div>
+                </label>
+                <input type="text" id="mqtt_secondary1" name="mqtt_secondary1" maxlength="50"/>
+            </div>
+            <div class="wrapper">
+                <h2>Component 2 &nbsp;<div class="tooltip"> [?]
+                      <span class="tooltiptext">Fill this fields ONLY if your device has a second button and relay.</span>
+                    </div></h2>
+                <label for="component_name2">Component Name:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Name to display in Home Assistant's frontend. It is recommended to use the same value as in Device Name field for devices with only one relay.</span>
+                    </div>
+                </label>
+                <input type="text" id="component_name2" name="component_name2" maxlength="50"/>
+
+                <label for="component_type2">Component Type:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Home Assistant's MQTT component type to be configured in the discovery. Use "light" or "switch".</span>
+                    </div>
+                </label>
+                <input type="text" id="component_type2" name="component_type2" maxlength="50"/>
+
+                <label for="discovery_prefix2">MQTT Discovery Prefix:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Prefix used for the MQTT discovery topic where the component configuration will be published (Read more: Home Assistant: MQTT Discovery). Leave it empty if you are not using the discovery feature.</span>
+                    </div>
+                </label>
+                <input type="text" id="discovery_prefix2" name="discovery_prefix2" maxlength="50"/>
+
+                <label for="mqtt_status2">MQTT Status Topic:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Topic where component status will be published.</span>
+                    </div>
+                </label>
+                <input type="text" id="mqtt_status2" name="mqtt_status2" maxlength="50"/>
+
+                <label for="mqtt_command2">MQTT Command Topic:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Topic where component will subscribe to listen to status changes.</span>
+                    </div>
+                </label>
+                <input type="text" id="mqtt_command2" name="mqtt_command2" maxlength="50"/>
+
+                <label for="mqtt_secondary2">MQTT Secondary Command Topic:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Topic to publish "TOGGLE" payload whenever a long press in the button is received. Useful to command other MQTT devices directly or to trigger automations in Home Assistant. Leave it empty if you don't want to use this feature.</span>
+                    </div>
+                </label>
+                <input type="text" id="mqtt_secondary2" name="mqtt_secondary2" maxlength="50"/>
+            </div>
+            <div class="submit clear">
+                <input type="submit" value="Save" name="submit" id="submit" />
+            </div>
         </form>
-        <hr />
-        </div>
+    </div>
         <p style="text-align: center;"><em><a href="https://github.com/danimtb/sonoff-danimtb">github@sonoff-danimtb</a></em></p>
         <script>
 
@@ -287,12 +322,14 @@
                     document.getElementById("mqtt_command1").value = data.mqtt_command1;
                     document.getElementById("mqtt_secondary1").value = data.mqtt_secondary1;
 
-                    document.getElementById("component_name2").value = data.component_name2;
-                    document.getElementById("component_type2").value = data.component_type2;
-                    document.getElementById("discovery_prefix2").value = data.discovery_prefix2;
-                    document.getElementById("mqtt_status2").value = data.mqtt_status2;
-                    document.getElementById("mqtt_command2").value = data.mqtt_command2;
-                    document.getElementById("mqtt_secondary2").value = data.mqtt_secondary2;
+                    if(data.component_name2 != undefined){
+                        document.getElementById("component_name2").value = data.component_name2;
+                        document.getElementById("component_type2").value = data.component_type2;
+                        document.getElementById("discovery_prefix2").value = data.discovery_prefix2;
+                        document.getElementById("mqtt_status2").value = data.mqtt_status2;
+                        document.getElementById("mqtt_command2").value = data.mqtt_command2;
+                        document.getElementById("mqtt_secondary2").value = data.mqtt_secondary2;
+                    }
                 });
             }
         </script>
