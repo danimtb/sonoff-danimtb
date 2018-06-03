@@ -12,6 +12,7 @@
 #include "../lib/WebServer/WebServer.h"
 #include "../lib/UpdateManager/UpdateManager.h"
 #include "../lib/TimeWatchdog/TimeWatchdog.h"
+#include "../lib/SimpleTimer/SimpleTimer.h"
 
 #ifdef ENABLE_SONOFF_POW
     #include "ArduinoJson.h"
@@ -114,35 +115,36 @@
     #define RELAY2_PIN 5
 #endif
 
+//################## ######## ##################
 
 
-#ifdef ENABLE_SONOFF_POW
-    TimeWatchdog powWatchdog;
-    PowManager powManager;
-#endif
-
-#ifdef ENABLE_SONOFF_SWITCH
-    ToggleSwitch toggleSwitch;
-#endif
-
-#ifdef ENABLE_SONOFF_BUTTON
-    Button externalButton;
-#endif
 
 UpdateManager updateManager;
 DataManager dataManager;
 WifiManager wifiManager;
 MqttManager mqttManager;
-Relay relay;
-
-#ifdef RELAY2_PIN
-   Relay relay2;
-   Button button2;
-#endif
-
 Button button;
-LED led;
 TimeWatchdog connectionWatchdog;
+Relay relay;
+SimpleTimer offDelayTimer1;
+#ifdef LED_PIN
+    LED led;
+#endif
+#ifdef ENABLE_SONOFF_BUTTON
+    Button externalButton;
+#endif
+#ifdef ENABLE_SONOFF_SWITCH
+    ToggleSwitch toggleSwitch;
+#endif
+#ifdef ENABLE_SONOFF_POW
+    TimeWatchdog powWatchdog;
+    PowManager powManager;
+#endif
+#ifdef RELAY2_PIN
+    Relay relay2;
+    Button button2;
+    SimpleTimer offDelayTimer2;
+#endif
 
 String wifi_ssid = dataManager.get("wifi_ssid");
 String wifi_password = dataManager.get("wifi_password");
@@ -162,6 +164,7 @@ String discovery_prefix1 = dataManager.get("discovery_prefix1");
 String mqtt_status1 = dataManager.get("mqtt_status1");
 String mqtt_command1 = dataManager.get("mqtt_command1");
 String mqtt_secondary1 = dataManager.get("mqtt_secondary1");
+int16_t off_delay1 = atoi(dataManager.get("off_delay1").c_str());
 
 #ifdef RELAY2_PIN
     String component_name2 = dataManager.get("component_name2");
@@ -170,6 +173,7 @@ String mqtt_secondary1 = dataManager.get("mqtt_secondary1");
     String mqtt_status2 = dataManager.get("mqtt_status2");
     String mqtt_command2 = dataManager.get("mqtt_command2");
     String mqtt_secondary2 = dataManager.get("mqtt_secondary2");
+    int16_t off_delay2 = atoi(dataManager.get("off_delay2").c_str());
 #endif
 
 #ifdef ENABLE_SONOFF_POW
@@ -196,8 +200,15 @@ String mqtt_secondary1 = dataManager.get("mqtt_secondary1");
 std::vector<std::pair<String, String>> getWebServerData()
 {
     std::vector<std::pair<String, String>> webServerData;
-
     std::pair<String, String> generic_pair;
+
+    generic_pair.first = "firmware_version";
+    generic_pair.second = FIRMWARE_VERSION;
+    webServerData.push_back(generic_pair);
+
+    generic_pair.first = "hardware";
+    generic_pair.second = HARDWARE;
+    webServerData.push_back(generic_pair);
 
     generic_pair.first = "wifi_ssid";
     generic_pair.second = wifi_ssid;
@@ -271,6 +282,10 @@ std::vector<std::pair<String, String>> getWebServerData()
     generic_pair.second = mqtt_secondary1;
     webServerData.push_back(generic_pair);
 
+    generic_pair.first = "off_delay1";
+    generic_pair.second = String(off_delay1);
+    webServerData.push_back(generic_pair);
+
     #ifdef RELAY2_PIN
         generic_pair.first = "component_name2";
         generic_pair.second = component_name2;
@@ -295,15 +310,11 @@ std::vector<std::pair<String, String>> getWebServerData()
         generic_pair.first = "mqtt_secondary2";
         generic_pair.second = mqtt_secondary2;
         webServerData.push_back(generic_pair);
+
+        generic_pair.first = "off_delay2";
+        generic_pair.second = String(off_delay2);
+        webServerData.push_back(generic_pair);
     #endif
-
-    generic_pair.first = "firmware_version";
-    generic_pair.second = FIRMWARE_VERSION;
-    webServerData.push_back(generic_pair);
-
-    generic_pair.first = "hardware";
-    generic_pair.second = HARDWARE;
-    webServerData.push_back(generic_pair);
 
     return webServerData;
 }
@@ -331,6 +342,7 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
     dataManager.set("mqtt_status1", inputFieldsContent["mqtt_status1"]);
     dataManager.set("mqtt_command1", inputFieldsContent["mqtt_command1"]);
     dataManager.set("mqtt_secondary1", inputFieldsContent["mqtt_secondary1"]);
+    dataManager.set("off_delay1", inputFieldsContent["off_delay1"]);
     #ifdef RELAY2_PIN
         dataManager.set("component_name2", inputFieldsContent["component_name2"]);
         dataManager.set("component_type2", inputFieldsContent["component_type2"]);
@@ -338,6 +350,7 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
         dataManager.set("mqtt_status2", inputFieldsContent["mqtt_status2"]);
         dataManager.set("mqtt_command2", inputFieldsContent["mqtt_command2"]);
         dataManager.set("mqtt_secondary2", inputFieldsContent["mqtt_secondary2"]);
+        dataManager.set("off_delay2", inputFieldsContent["off_delay2"]);
     #endif
     ESP.restart(); // Restart device with new config
 }
@@ -345,17 +358,23 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
 void MQTTcallback(String topicString, String payloadString)
 {
     Relay *the_relay;
+    SimpleTimer *the_timer;
+    int16_t the_off_delay;
     String the_status_topic;
 
     if (topicString == mqtt_command1)
     {
         the_relay = &relay;
+        the_timer = &offDelayTimer1;
+        the_off_delay = off_delay1
         the_status_topic = mqtt_status1;
     }
     #ifdef RELAY2_PIN
     else if(topicString == mqtt_command2)
     {
         the_relay = &relay2;
+        the_timer = &offDelayTimer1;
+        the_off_delay = off_delay1
         the_status_topic = mqtt_status2;
     }
     #endif
@@ -369,6 +388,10 @@ void MQTTcallback(String topicString, String payloadString)
     if (payloadString == "ON")
     {
         Serial.println("ON");
+        if (the_off_delay != 0)
+        {
+            the_timer->start();
+        }
         the_relay->on();
         mqttManager.publishMQTT(the_status_topic, "ON");
     }
@@ -381,6 +404,10 @@ void MQTTcallback(String topicString, String payloadString)
     else if (payloadString == "TOGGLE")
     {
         Serial.println("TOGGLE");
+        if (the_off_delay != 0 && !the_relay->getState())
+        {
+            the_timer->start();
+        }
         the_relay->commute();
         mqttManager.publishMQTT(the_status_topic, the_relay->getState() ? "ON" : "OFF");
     }
@@ -393,39 +420,37 @@ void MQTTcallback(String topicString, String payloadString)
 
 void shortPress()
 {
-    Serial.println("button.shortPress()");
+    if (!relay.getState() && off_delay1 != 0)
+    {
+        offDelayTimer1.start();
+    }
     relay.commute();
-
     mqttManager.publishMQTT(mqtt_status1, relay.getState() ? "ON" : "OFF");
     mqttManager.publishMQTT(mqtt_command1, relay.getState() ? "ON" : "OFF");
 }
 
 void longPress()
 {
-    Serial.println("button.longPress()");
-    Serial.println("Secondary topic: TOGGLE");
     mqttManager.publishMQTT(mqtt_secondary1, "TOGGLE");
 }
-
 
 #ifdef RELAY2_PIN
     void shortPress2()
     {
-        Serial.println("button2.shortPress()");
+        if (!relay2.getState() && off_delay2 != 0)
+        {
+            offDelayTimer2.start();
+        }
         relay2.commute();
-
         mqttManager.publishMQTT(mqtt_status2, relay2.getState() ? "ON" : "OFF");
         mqttManager.publishMQTT(mqtt_command2, relay2.getState() ? "ON" : "OFF");
     }
 
     void longPress2()
     {
-        Serial.println("button2.longPress()");
-        Serial.println("Secondary topic: TOGGLE");
         mqttManager.publishMQTT(mqtt_secondary2, "TOGGLE");
     }
 #endif
-
 
 void veryLongPress()
 {
@@ -437,8 +462,6 @@ void veryLongPress()
 
 void ultraLongPress()
 {
-    Serial.println("button.longlongPress()");
-
     if(wifiManager.apModeEnabled())
     {
         WebServer::getInstance().stop();
@@ -595,6 +618,12 @@ void setup()
 
     // ConnectionWatchdog setup
     connectionWatchdog.setup(1200000, connectionWatchdogCallback); //20 min
+
+    // OFF delay timer setup
+    offDelayTimer1.setup((off_delay1 * 1000), RT_ON);
+    #ifdef RELAY2_PIN
+        offDelayTimer2.setup((off_delay2 * 1000), RT_ON);
+    #endif
 }
 
 void loop()
@@ -633,6 +662,18 @@ void loop()
     {
         WebServer::getInstance().loop();
     }
+
+    // Dealy off timers
+    if(off_delay1 != 0 && offDelayTimer1.check() && relay.getState())
+    {
+        shortPress();
+    }
+    #ifdef RELAY2_PIN
+        if(off_delay2 != 0 && offDelayTimer1.check() && relay2.getState())
+        {
+            shortPress2();
+        }
+    #endif
 
     // LED Status and ConnectionWatchdog
     connectionWatchdog.loop();

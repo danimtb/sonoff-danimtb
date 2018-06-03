@@ -218,6 +218,13 @@ label {
                     </div>
                 </label>
                 <input type="text" id="mqtt_secondary1" name="mqtt_secondary1" maxlength="50"/>
+
+                <label for="off_delay1">Return to OFF delay:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Set seconds to return to OFF automatically after turned ON. Set to 0 to disable this feature.</span>
+                    </div>
+                </label>
+                <input type="text" id="off_delay1" name="off_delay1" maxlength="50"/>
             </div>
             <div class="wrapper">
                 <h2>Component 2 &nbsp;<div class="tooltip"> [?]
@@ -264,6 +271,13 @@ label {
                     </div>
                 </label>
                 <input type="text" id="mqtt_secondary2" name="mqtt_secondary2" maxlength="50"/>
+
+                <label for="off_delay2">Return to OFF delay:
+                    <div class="tooltip">[?]
+                      <span class="tooltiptext">Set seconds to return to OFF automatically after turned ON. Set to 0 to disable this feature.</span>
+                    </div>
+                </label>
+                <input type="text" id="off_delay2" name="off_delay2" maxlength="50"/>
             </div>
             <div class="submit clear">
                 <input type="submit" value="Save" name="submit" id="submit" />
@@ -273,7 +287,8 @@ label {
         <p style="text-align: center;"><em><a href="https://github.com/danimtb/sonoff-danimtb">github@sonoff-danimtb</a></em></p>
         <script>
 
-            function show_resetting(){
+            function show_resetting()
+            {
                 document.getElementById("form_contents").style.display = "none";
                 document.getElementById("resetting").style.display = "block";
                 // Validation could go here
@@ -291,6 +306,18 @@ label {
                 xmlHttp.send(null);
             }
 
+            function setDataValueNotUndefined(id, data_element)
+            {
+                if (data_element != undefined)
+                {
+                    document.getElementById(id).value = data_element;
+                }
+                else
+                {
+                    document.getElementById(id).value = "";
+                }
+            }
+
             window.onload = function() {
 
                 GetAsync("http://192.168.4.1/data", function(response) {
@@ -300,36 +327,36 @@ label {
                     document.getElementById("firmware_version").innerHTML = data.firmware_version;
                     document.getElementById("hardware").innerHTML = data.hardware;
 
-                    document.getElementById("wifi_ssid").value = data.wifi_ssid;
-                    document.getElementById("wifi_password").value = data.wifi_password;
-                    document.getElementById("ip").value = data.ip;
-                    document.getElementById("gateway").value = data.gateway;
-                    document.getElementById("mask").value = data.mask;
-                    document.getElementById("ota_server").value = data.ota_server;
+                    setDataValueNotUndefined("wifi_ssid", data.wifi_ssid);
+                    setDataValueNotUndefined("wifi_password", data.wifi_password);
+                    setDataValueNotUndefined("ip", data.ip);
+                    setDataValueNotUndefined("gateway", data.gateway);
+                    setDataValueNotUndefined("mask", data.mask);
+                    setDataValueNotUndefined("ota_server", data.ota_server);
 
-                    document.getElementById("mqtt_server").value = data.mqtt_server;
-                    document.getElementById("mqtt_port").value = data.mqtt_port;
-                    document.getElementById("mqtt_username").value = data.mqtt_username;
-                    document.getElementById("mqtt_password").value = data.mqtt_password;
+                    setDataValueNotUndefined("mqtt_server", data.mqtt_server);
+                    setDataValueNotUndefined("mqtt_port", data.mqtt_port);
+                    setDataValueNotUndefined("mqtt_username", data.mqtt_username);
+                    setDataValueNotUndefined("mqtt_password", data.mqtt_password);
 
-                    document.getElementById("device_name").value = data.device_name;
-                    document.getElementById("discovery_prefix").value = data.discovery_prefix;
+                    setDataValueNotUndefined("device_name", data.device_name);
+                    setDataValueNotUndefined("discovery_prefix", data.discovery_prefix);
 
-                    document.getElementById("component_name1").value = data.component_name1;
-                    document.getElementById("component_type1").value = data.component_type1;
-                    document.getElementById("discovery_prefix1").value = data.discovery_prefix1;
-                    document.getElementById("mqtt_status1").value = data.mqtt_status1;
-                    document.getElementById("mqtt_command1").value = data.mqtt_command1;
-                    document.getElementById("mqtt_secondary1").value = data.mqtt_secondary1;
+                    setDataValueNotUndefined("component_name1", data.component_name1);
+                    setDataValueNotUndefined("component_type1", data.component_type1);
+                    setDataValueNotUndefined("discovery_prefix1", data.discovery_prefix1);
+                    setDataValueNotUndefined("mqtt_status1", data.mqtt_status1);
+                    setDataValueNotUndefined("mqtt_command1", data.mqtt_command1);
+                    setDataValueNotUndefined("mqtt_secondary1", data.mqtt_secondary1);
+                    setDataValueNotUndefined("off_delay1", data.off_delay1);
 
-                    if(data.component_name2 != undefined){
-                        document.getElementById("component_name2").value = data.component_name2;
-                        document.getElementById("component_type2").value = data.component_type2;
-                        document.getElementById("discovery_prefix2").value = data.discovery_prefix2;
-                        document.getElementById("mqtt_status2").value = data.mqtt_status2;
-                        document.getElementById("mqtt_command2").value = data.mqtt_command2;
-                        document.getElementById("mqtt_secondary2").value = data.mqtt_secondary2;
-                    }
+                    setDataValueNotUndefined("component_name2", data.component_name2);
+                    setDataValueNotUndefined("component_type2", data.component_type2);
+                    setDataValueNotUndefined("discovery_prefix2", data.discovery_prefix2);
+                    setDataValueNotUndefined("mqtt_status2", data.mqtt_status2);
+                    setDataValueNotUndefined("mqtt_command2", data.mqtt_command2);
+                    setDataValueNotUndefined("mqtt_secondary2", data.mqtt_secondary2);
+                    setDataValueNotUndefined("off_delay2", data.off_delay2);
                 });
             }
         </script>
