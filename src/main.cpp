@@ -366,7 +366,7 @@ void MQTTcallback(String topicString, String payloadString)
     {
         the_relay = &relay;
         the_timer = &offDelayTimer1;
-        the_off_delay = off_delay1
+        the_off_delay = off_delay1;
         the_status_topic = mqtt_status1;
     }
     #ifdef RELAY2_PIN
