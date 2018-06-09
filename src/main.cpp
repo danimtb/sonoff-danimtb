@@ -341,16 +341,30 @@ void webServerSubmitCallback(std::map<String, String> inputFieldsContent)
     dataManager.set("discovery_prefix1", inputFieldsContent["discovery_prefix1"]);
     dataManager.set("mqtt_status1", inputFieldsContent["mqtt_status1"]);
     dataManager.set("mqtt_command1", inputFieldsContent["mqtt_command1"]);
-    dataManager.set("mqtt_secondary1", inputFieldsContent["mqtt_secondary1"]);
     dataManager.set("off_delay1", inputFieldsContent["off_delay1"]);
+    if (inputFieldsContent["mqtt_secondary1"] == "")
+    {
+        dataManager.set("mqtt_secondary1", inputFieldsContent["mqtt_command1"]);
+    }
+    else
+    {
+        dataManager.set("mqtt_secondary1", inputFieldsContent["mqtt_secondary1"]);
+    }
     #ifdef RELAY2_PIN
         dataManager.set("component_name2", inputFieldsContent["component_name2"]);
         dataManager.set("component_type2", inputFieldsContent["component_type2"]);
         dataManager.set("discovery_prefix2", inputFieldsContent["discovery_prefix2"]);
         dataManager.set("mqtt_status2", inputFieldsContent["mqtt_status2"]);
         dataManager.set("mqtt_command2", inputFieldsContent["mqtt_command2"]);
-        dataManager.set("mqtt_secondary2", inputFieldsContent["mqtt_secondary2"]);
         dataManager.set("off_delay2", inputFieldsContent["off_delay2"]);
+        if (inputFieldsContent["mqtt_secondary2"] == "")
+        {
+            dataManager.set("mqtt_secondary2", inputFieldsContent["mqtt_command2"]);
+        }
+        else
+        {
+            dataManager.set("mqtt_secondary2", inputFieldsContent["mqtt_secondary2"]);
+        }
     #endif
     ESP.restart(); // Restart device with new config
 }
