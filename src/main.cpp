@@ -683,7 +683,7 @@ void loop()
         shortPress();
     }
     #ifdef RELAY2_PIN
-        if(off_delay2 != 0 && offDelayTimer1.check() && relay2.getState())
+        if(off_delay2 != 0 && offDelayTimer2.check() && relay2.getState())
         {
             shortPress2();
         }
