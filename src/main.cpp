@@ -380,15 +380,15 @@ void MQTTcallback(String topicString, String payloadString)
     {
         the_relay = &relay;
         the_timer = &offDelayTimer1;
-        the_off_delay = off_delay1
+        the_off_delay = off_delay1;
         the_status_topic = mqtt_status1;
     }
     #ifdef RELAY2_PIN
     else if(topicString == mqtt_command2)
     {
         the_relay = &relay2;
-        the_timer = &offDelayTimer1;
-        the_off_delay = off_delay1
+        the_timer = &offDelayTimer2;
+        the_off_delay = off_delay2;
         the_status_topic = mqtt_status2;
     }
     #endif
